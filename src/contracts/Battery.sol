@@ -7,7 +7,7 @@ contract Battery{
 
     address public owner;
 
-    mapping (string => battery) batteries; //mapping address as key to struct battery with mapping name batteries
+    mapping (string => battery) batteries; //mapping "string" address as key to struct battery with mapping name batteries
     
     //assigning the contract AddBattery as the owner
     //a modifier onlyOwner is created to limit the access to function AddNewBattery to contract AddBattery
