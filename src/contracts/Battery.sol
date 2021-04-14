@@ -1,4 +1,5 @@
 pragma solidity >=0.4.21 <0.7.0;
+pragma experimental ABIEncoderV2;
 
 /*Battery Management Smart Contract*/
 
@@ -6,12 +7,28 @@ contract Battery{
 
     address public owner;
 
-    mapping (address => battery) batteries; //mapping address as key to struct battery with mapping name batteries
+    mapping (string => battery) batteries; //mapping address as key to struct battery with mapping name batteries
     
     //assigning the contract AddBattery as the owner
     //a modifier onlyOwner is created to limit the access to function AddNewBattery to contract AddBattery
-    constructor() public{
+    /*constructor() public{
         owner=msg.sender;
+    }*/
+
+    struct battery{
+        string batteryId; //batteryId is battery's ethereum address
+        uint batteryData;
+        bool isexist;
+    }
+
+    battery[] public listOfbatteries;
+
+    //assigning the battery details to a key (batteryId)
+    constructor (string memory batteryId, uint batteryData) public {
+        owner=msg.sender;
+        require(batteries[batteryId].isexist==false, "Battery details already added");
+        batteries[batteryId] = battery(batteryId, batteryData, true);
+        listOfbatteries.push(battery(batteryId, batteryData, true));
     }
 
     modifier onlyOwner{
@@ -19,33 +36,20 @@ contract Battery{
         _;
     }
 
-    struct battery{
-        address batteryId; //batteryId is battery's ethereum address
-        string name;
-        bool isexist;
-    }
-
-    address[] public listOfbatteries;
-
-    //assigning the battery details to a key (batteryId)
-    /*function isExist(address batteryId) public view returns(bool isIndeed) {
-        if(listOfbatteries.length == 0) return false;
-        return batteries[batteryId].isexist;
-    }*/
-
-    function AddNewBattery (address batteryId, string memory name) public onlyOwner {
+    function addNewBattery (string memory batteryId, uint batteryData) public onlyOwner returns(bool) {
         require(batteries[batteryId].isexist==false, "Battery details already added");
-        batteries[batteryId] = battery(batteryId, name, true);
-        listOfbatteries.push(batteryId);
+        batteries[batteryId] = battery(batteryId, batteryData, true);
+        listOfbatteries.push(battery(batteryId, batteryData, true));
+        return true;
     }
 
-    function showAllbatteries () public view returns (address[] memory){
+    function showAllBatteries () public view returns (battery[] memory){
         return listOfbatteries;
     }
 
     //function to get the details of a battery when batteryId is given
     //returning battery's eth address and id of battery to corresponding key
-    function getBatteryDetails(address batteryId) public view returns (address, string memory){
-        return (batteries[batteryId].batteryId, batteries[batteryId].name);
+    function getBatteryDetails(string memory batteryId) public view returns (string memory, uint){
+        return (batteries[batteryId].batteryId, batteries[batteryId].batteryData);
     }
 }
