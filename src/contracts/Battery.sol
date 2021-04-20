@@ -5,7 +5,7 @@ pragma experimental ABIEncoderV2;
 //Create a contract owner
 contract owned {
     
-    address owner;
+    address public owner;
     
     constructor() public {
         owner = msg.sender;
@@ -21,8 +21,6 @@ contract owned {
 //Contract that allows battery address to be registered
 contract batteryRegistry is owned {
 
-    //address public owner;
-
     event batteryAdded(address indexed batteryID);
 
     struct battery {
@@ -32,21 +30,17 @@ contract batteryRegistry is owned {
         bool isExist;                 //Check if battery exist into addNewBattery function
     }
 
-    //mapping uint as key to struct battery with mapping name batteries
+    //mapping address as key to struct battery with mapping name batteries
     mapping (address => battery) batteries;
-
     battery[] public listOfBatteries;
 
-    //only registered batteries can call this function to make changes
-    modifier onlyRegisteredBattery {
-        require(msg.sender == batteryID, "Only owner of battery can call this function.");
-         _;
+    constructor () public{
+        addNewBattery(msg.sender, "chris", 123);
     }
 
     //add a battery
-    function addNewBattery (address batteryID, uint32 date, string memory nameOfBatteryOwner) public onlyOwner returns(bool) {
+    function addNewBattery (address batteryID, string memory nameOfBatteryOwner, uint32 date) public onlyOwner returns(bool) {
         require(batteries[batteryID].isExist==false, "Battery details already added");
-        //batteryID = msg.sender;
         batteries[batteryID] = battery(batteryID, nameOfBatteryOwner, date, true);
 
         listOfBatteries.push(battery({
@@ -94,7 +88,6 @@ contract batteryRegistry is owned {
 contract energyBid is batteryRegistry {
 
     event bidMade(address indexed batteryID, uint32 indexed day, uint32 indexed price, uint64 energy);
-    //event bidRevoked(address indexed batteryID, uint32 indexed day, uint32 indexed price, uint64 energy);
 
     uint64 constant mWh = 1;
     uint64 constant Wh = 1000 * mWh;
@@ -114,14 +107,14 @@ contract energyBid is batteryRegistry {
 
     mapping(address => mapping(uint32 => mapping(uint=> uint))) public bids;
     bid[] public listOfBids;
-    uint public nextNumberOfBid; 
+    uint nextNumberOfBid; 
 
     constructor () public{                            
         energyOffer(20052020, 130, 1000, 1618653420);   
     }                                                 
 
     //create energy offer
-    function energyOffer(uint32 _day, uint32 _price, uint64 _energy, uint64 _timestamp) public onlyRegisteredBattery{
+    function energyOffer(uint32 _day, uint32 _price, uint64 _energy, uint64 _timestamp) public onlyOwner{
         require(_energy >= Wh, "Wrong energy input require a minimum offer of 1 Wh (1000mWh)");
         uint index = bids[msg.sender][_day][nextNumberOfBid];
 
