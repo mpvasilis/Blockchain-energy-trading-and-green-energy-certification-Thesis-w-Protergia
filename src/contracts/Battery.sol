@@ -1,55 +1,156 @@
 pragma solidity >=0.4.21 <0.7.0;
 pragma experimental ABIEncoderV2;
 
-/*Battery Management Smart Contract*/
-
-contract Battery{
-
-    address public owner;
-
-    mapping (string => battery) batteries; //mapping "string" address as key to struct battery with mapping name batteries
+/*----------------------------------------owned Contract----------------------------------------*/
+//Create a contract owner
+contract owned {
     
-    //assigning the contract AddBattery as the owner
-    //a modifier onlyOwner is created to limit the access to function AddNewBattery to contract AddBattery
-    /*constructor() public{
-        owner=msg.sender;
-    }*/
+    address owner;
+    
+    constructor() public {
+        owner = msg.sender;
+    }
+    
+    modifier onlyOwner {
+        require(msg.sender == owner, "Only owner can call this function.");
+         _;
+    }
+}
 
-    struct battery{
-        string batteryId; //batteryId is battery's ethereum address
-        uint batteryData;
-        bool isexist;
+/*----------------------------------------batteryRegistry Contract----------------------------------------*/
+//Contract that allows battery address to be registered
+contract batteryRegistry is owned {
+
+    //address public owner;
+
+    event batteryAdded(address indexed batteryID);
+
+    struct battery {
+        address batteryID;            //batteryID is Owner of battery ethereum address
+        string nameOfBatteryOwner;    //Name of battery owner 
+        uint32 date;                  //Creation date
+        bool isExist;                 //Check if battery exist into addNewBattery function
     }
 
-    battery[] public listOfbatteries;
+    //mapping uint as key to struct battery with mapping name batteries
+    mapping (address => battery) batteries;
 
-    //assigning the battery details to a key (batteryId)
-    constructor (string memory batteryId, uint batteryData) public {
-        owner=msg.sender;
-        require(batteries[batteryId].isexist==false, "Battery details already added");
-        batteries[batteryId] = battery(batteryId, batteryData, true);
-        listOfbatteries.push(battery(batteryId, batteryData, true));
+    battery[] public listOfBatteries;
+
+    //only registered batteries can call this function to make changes
+    modifier onlyRegisteredBattery {
+        require(msg.sender == batteryID, "Only owner of battery can call this function.");
+         _;
     }
 
-    modifier onlyOwner{
-        require(msg.sender==owner);
-        _;
-    }
+    //add a battery
+    function addNewBattery (address batteryID, uint32 date, string memory nameOfBatteryOwner) public onlyOwner returns(bool) {
+        require(batteries[batteryID].isExist==false, "Battery details already added");
+        //batteryID = msg.sender;
+        batteries[batteryID] = battery(batteryID, nameOfBatteryOwner, date, true);
 
-    function addNewBattery (string memory batteryId, uint batteryData) public onlyOwner returns(bool) {
-        require(batteries[batteryId].isexist==false, "Battery details already added");
-        batteries[batteryId] = battery(batteryId, batteryData, true);
-        listOfbatteries.push(battery(batteryId, batteryData, true));
+        listOfBatteries.push(battery({
+            batteryID: batteryID,
+            nameOfBatteryOwner: nameOfBatteryOwner,
+            date: date,
+            isExist: true
+            }));
+        emit batteryAdded(batteryID);
         return true;
     }
 
-    function showAllBatteries () public view returns (battery[] memory){
-        return listOfbatteries;
+    //to view all batteries
+    function viewAllBatteries () public view returns (battery[] memory){
+        return listOfBatteries;
     }
 
-    //function to get the details of a battery when batteryId is given
-    //returning battery's eth address and id of battery to corresponding key
-    function getBatteryDetails(string memory batteryId) public view returns (string memory, uint){
-        return (batteries[batteryId].batteryId, batteries[batteryId].batteryData);
+    //change details of a battery
+    function updateBattery(address batteryID, string memory nameOfBatteryOwner) public onlyOwner{
+        for(uint i = 0; i<listOfBatteries.length; i++){
+            if(listOfBatteries[i].batteryID == batteryID){
+                listOfBatteries[i].nameOfBatteryOwner = nameOfBatteryOwner;
+            }
+        }
+    }
+
+    //delete a battery by batteryID
+    function removeBattery(address batteryID) public onlyOwner{
+        for(uint i = 0; i<listOfBatteries.length; i++){
+            if(listOfBatteries[i].batteryID == batteryID){
+                delete listOfBatteries[i];
+                listOfBatteries.length--;
+            }
+        }
+    }
+
+    //view single battery by battery id
+    function getBatteryByID(address batteryID) public view returns (address, string memory, uint32){
+        return (batteries[batteryID].batteryID, batteries[batteryID].nameOfBatteryOwner, batteries[batteryID].date);
+    }
+}
+
+/*----------------------------------------energyBid Contract----------------------------------------*/
+//Contract for energy offers from current batteries
+contract energyBid is batteryRegistry {
+
+    event bidMade(address indexed batteryID, uint32 indexed day, uint32 indexed price, uint64 energy);
+    //event bidRevoked(address indexed batteryID, uint32 indexed day, uint32 indexed price, uint64 energy);
+
+    uint64 constant mWh = 1;
+    uint64 constant Wh = 1000 * mWh;
+    uint64 constant kWh = 1000 * Wh;
+    uint64 constant MWh = 1000 * kWh;
+    uint64 constant GWh = 1000 * MWh;
+    uint64 constant TWh = 1000 * GWh;
+
+    struct bid{
+        address batteryID;    //battery public key
+        uint numberOfBid;     //A battery can create more than one energy offer
+        uint32 day;           //day for which the offer is valid
+        uint32 price;         //price vs market price
+        uint64 energy;        //energy to trade
+        uint64 timestamp;     //timestamp for when the bid was created
+    }
+
+    mapping(address => mapping(uint32 => mapping(uint=> uint))) public bids;
+    bid[] public listOfBids;
+    uint public nextNumberOfBid; 
+
+    constructor () public{                            
+        energyOffer(20052020, 130, 1000, 1618653420);   
+    }                                                 
+
+    //create energy offer
+    function energyOffer(uint32 _day, uint32 _price, uint64 _energy, uint64 _timestamp) public onlyRegisteredBattery{
+        require(_energy >= Wh, "Wrong energy input require a minimum offer of 1 Wh (1000mWh)");
+        uint index = bids[msg.sender][_day][nextNumberOfBid];
+
+        index = listOfBids.length;
+        bids[msg.sender][_day][nextNumberOfBid] = index;
+        listOfBids.push(bid({
+            batteryID: msg.sender,
+            numberOfBid: nextNumberOfBid,
+            day: _day,
+            price: _price,
+            energy: _energy,
+            timestamp: _timestamp
+        }));
+        emit bidMade(listOfBids[index].batteryID, listOfBids[index].day, listOfBids[index].price, listOfBids[index].energy);
+        nextNumberOfBid++;
+    }
+
+    //view all bids 
+    function viewAllBids () public view returns (bid[] memory){
+      return listOfBids;
+    }
+
+    //view single bid by batteryID
+    function getBidByBatteryID (address batteryID, uint32 day, uint numberOfBid) public view returns (uint, uint32, uint32, uint64){
+        uint index = bids[batteryID][day][numberOfBid];
+        require(listOfBids.length > index, "Wrong index");
+        require(listOfBids[index].day == day, "There is no offer on this day");
+        require(listOfBids[index].batteryID == batteryID, "Wrong Battery ID");
+        return (listOfBids[index].numberOfBid, listOfBids[index].day, listOfBids[index].price, listOfBids[index].energy);
+        //return (listOfBids[batteryID].day, listOfBids[batteryID].price, listOfBids[batteryID].energy);
     }
 }
