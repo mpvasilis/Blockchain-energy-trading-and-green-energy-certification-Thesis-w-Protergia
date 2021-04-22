@@ -1,9 +1,16 @@
-const Battery = artifacts.require("./Battery.sol");
-const EnergyBid = artifacts.require("./EnergyBid.sol");
-const Owned = artifacts.require("./Owned.sol");
+const Battery = artifacts.require("Battery");
+
+module.exports = function (deployer) {
+    var batteryId = 0x8c17bc83f96ccCaF34Edd84868C75bfb53CABd03;
+    var date = 12345;
+    var nameOfBatteryOwner = "chris"
+  deployer.deploy(batteryId, nameOfBatteryOwner, date);
+};
+
+/*let batteryRegistry = artifacts.require("./Battery.sol");
+let energyBid = artifacts.require("./Battery.sol");
 
 module.exports = (deployer) => {
-	deployer.deploy(Battery,'0xdcB1e30Af1233B6A42C51D6C9EAdEedD01F894ea', 'chris', 123);
-    deployer.deploy(EnergyBid, 20202020, 125, 1500, 12388888);
-    deployer.deploy(Owned);
-};
+	deployer.deploy(batteryRegistry('0x5c094FAec7524cB442386d657828c16EdB63443f', "chris", 123));
+    deployer.deploy(energyBid(20052020, 130, 1000000, 1618653420));
+};*/

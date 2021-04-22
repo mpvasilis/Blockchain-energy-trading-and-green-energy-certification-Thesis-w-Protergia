@@ -34,8 +34,23 @@ contract batteryRegistry is owned {
     mapping (address => battery) batteries;
     battery[] public listOfBatteries;
 
+    /*
     constructor () public{
         addNewBattery(msg.sender, "chris", 123);
+    }
+     */
+
+    constructor (address batteryID, string memory nameOfBatteryOwner, uint32 date) public{
+        require(batteries[batteryID].isExist==false, "Battery details already added");
+        batteries[batteryID] = battery(batteryID, nameOfBatteryOwner, date, true);
+
+        listOfBatteries.push(battery({
+            batteryID: batteryID,
+            nameOfBatteryOwner: nameOfBatteryOwner,
+            date: date,
+            isExist: true
+            }));
+        emit batteryAdded(batteryID);
     }
 
     //add a battery
@@ -85,7 +100,7 @@ contract batteryRegistry is owned {
 
 /*----------------------------------------energyBid Contract----------------------------------------*/
 //Contract for energy offers from current batteries
-contract energyBid is batteryRegistry {
+contract energyBid is owned, batteryRegistry {
 
     event bidMade(address indexed batteryID, uint32 indexed day, uint32 indexed price, uint64 energy);
 
@@ -107,15 +122,35 @@ contract energyBid is batteryRegistry {
 
     mapping(address => mapping(uint32 => mapping(uint=> uint))) public bids;
     bid[] public listOfBids;
-    uint nextNumberOfBid; 
+    uint nextNumberOfBid;  
 
+    /*
     constructor () public{                            
-        energyOffer(20052020, 130, 1000, 1618653420);   
-    }                                                 
+        energyOffer(20052020, 130, 1000000, 1618653420);   
+    } 
+     */  
+
+    constructor (uint32 _day, uint32 _price, uint64 _energy, uint64 _timestamp) public{
+        require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh (1.000.000mWh)");
+        uint index = bids[msg.sender][_day][nextNumberOfBid];
+
+        index = listOfBids.length;
+        bids[msg.sender][_day][nextNumberOfBid] = index;
+        listOfBids.push(bid({
+            batteryID: msg.sender,
+            numberOfBid: nextNumberOfBid,
+            day: _day,
+            price: _price,
+            energy: _energy,
+            timestamp: _timestamp
+        }));
+        emit bidMade(listOfBids[index].batteryID, listOfBids[index].day, listOfBids[index].price, listOfBids[index].energy);
+        nextNumberOfBid++;
+    }                                          
 
     //create energy offer
     function energyOffer(uint32 _day, uint32 _price, uint64 _energy, uint64 _timestamp) public onlyOwner{
-        require(_energy >= Wh, "Wrong energy input require a minimum offer of 1 Wh (1000mWh)");
+        require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh (1.000.000mWh)");
         uint index = bids[msg.sender][_day][nextNumberOfBid];
 
         index = listOfBids.length;
