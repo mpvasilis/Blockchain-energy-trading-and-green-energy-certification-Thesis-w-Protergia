@@ -126,18 +126,19 @@ contract energyBid is owned, batteryRegistry {
 
     /*
     constructor () public{                            
-        energyOffer(20052020, 130, 1000000, 1618653420);   
+        energyOffer(msg.sender, 20052020, 130, 1000000, 1618653420);   
     } 
      */  
 
-    constructor (uint32 _day, uint32 _price, uint64 _energy, uint64 _timestamp) public{
+    constructor (address _batteryID, uint32 _day, uint32 _price, uint64 _energy, uint64 _timestamp) public{
+        require(batteries[_batteryID].isExist==true, "Battery details are not exist");
         require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh (1.000.000mWh)");
-        uint index = bids[msg.sender][_day][nextNumberOfBid];
+        uint index = bids[_batteryID][_day][nextNumberOfBid];
 
         index = listOfBids.length;
-        bids[msg.sender][_day][nextNumberOfBid] = index;
+        bids[_batteryID][_day][nextNumberOfBid] = index;
         listOfBids.push(bid({
-            batteryID: msg.sender,
+            batteryID: _batteryID,
             numberOfBid: nextNumberOfBid,
             day: _day,
             price: _price,
@@ -149,14 +150,15 @@ contract energyBid is owned, batteryRegistry {
     }                                          
 
     //create energy offer
-    function energyOffer(uint32 _day, uint32 _price, uint64 _energy, uint64 _timestamp) public onlyOwner{
+    function energyOffer(address _batteryID, uint32 _day, uint32 _price, uint64 _energy, uint64 _timestamp) public onlyOwner{
+        require(batteries[_batteryID].isExist==true, "Battery details are not exist");
         require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh (1.000.000mWh)");
-        uint index = bids[msg.sender][_day][nextNumberOfBid];
+        uint index = bids[_batteryID][_day][nextNumberOfBid];
 
         index = listOfBids.length;
-        bids[msg.sender][_day][nextNumberOfBid] = index;
+        bids[_batteryID][_day][nextNumberOfBid] = index;
         listOfBids.push(bid({
-            batteryID: msg.sender,
+            batteryID: _batteryID,
             numberOfBid: nextNumberOfBid,
             day: _day,
             price: _price,

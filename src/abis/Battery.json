@@ -4414,10 +4414,17 @@
       "links": {},
       "address": "0x40fed5cA781fec7C766aCea1cd4301952ba8948D",
       "transactionHash": "0xd1a4d92ea556c6ea3aa254d994904efaabe89b6527bffc4e4df5e45eaa86e9a8"
+    },
+    "5777": {
+      "events": {},
+      "links": {},
+      "address": "0x9D4bCFCe5B38623c9c7bCaaB3A0cE51b1274f646",
+      "transactionHash": "0x6bc042abc4a124b7bed2d7fa13bef47a8f9c9e3efaae4a355f2b9eae1f0e5b85"
     }
   },
   "schemaVersion": "3.3.4",
-  "updatedAt": "2021-04-17T15:09:17.333Z",
+  "updatedAt": "2021-04-27T22:06:09.898Z",
+  "networkType": "ethereum",
   "devdoc": {
     "methods": {}
   },
