@@ -103,6 +103,7 @@ contract batteryRegistry is owned {
 contract energyBid is owned, batteryRegistry {
 
     event bidMade(address indexed batteryID, uint32 indexed day, uint32 indexed price, uint64 energy);
+    event AskMade(uint32 day, uint64 energy);
 
     uint64 constant mWh = 1;
     uint64 constant Wh = 1000 * mWh;
@@ -119,6 +120,18 @@ contract energyBid is owned, batteryRegistry {
         uint64 energy;        //energy to trade
         uint64 timestamp;     //timestamp for when the bid was created
     }
+    
+    struct Ask {
+        address batteryID;
+        uint64 energy;
+        uint64 timestamp;
+        uint32 day;
+        uint numberOfAsk;     
+    }
+    
+    mapping(address => mapping(uint32 => mapping(uint=> uint))) public asks;
+    Ask[] public listOfAsks;
+    uint nextNumberOfAsk;
 
     mapping(address => mapping(uint32 => mapping(uint=> uint))) public bids;
     bid[] public listOfBids;
@@ -182,5 +195,36 @@ contract energyBid is owned, batteryRegistry {
         require(listOfBids[index].batteryID == batteryID, "Wrong Battery ID");
         return (listOfBids[index].numberOfBid, listOfBids[index].day, listOfBids[index].price, listOfBids[index].energy);
         //return (listOfBids[batteryID].day, listOfBids[batteryID].price, listOfBids[batteryID].energy);
+    }
+
+    //Ask energy 
+    function askEnergy(address  _batteryId, uint32 _day, uint64 _energy, uint64 _timestamp)  public   {
+        uint indexA = asks[_batteryId][_day][nextNumberOfAsk];
+        
+        listOfAsks.push(Ask({
+            batteryID: _batteryId,
+            energy: _energy,
+            timestamp: _timestamp,
+            day:_day,
+            numberOfAsk: nextNumberOfAsk
+        }));
+        
+        emit AskMade(listOfAsks[indexA].day, listOfAsks[indexA].energy);
+        nextNumberOfAsk++;
+    }
+
+    //list of all asks
+    function viewAllAsks () public view returns (Ask[] memory){
+        return listOfAsks;
+    }
+
+    //view single ask by batteryID
+    function getAskByBatteryId (address batteryID, uint32 day, uint numberOfAsk) public view returns (uint, uint32, uint64){
+        uint indexA = asks[batteryID][day][numberOfAsk];
+        require(listOfAsks.length > indexA, "Wrong index");
+        require(listOfAsks[indexA].day == day, "There is no demand on this day");
+        require(listOfAsks[indexA].batteryID == batteryID, "Wrong Battery Id");
+        return (listOfAsks[indexA].numberOfAsk, listOfAsks[indexA].day, listOfAsks[indexA].energy);
+        
     }
 }
