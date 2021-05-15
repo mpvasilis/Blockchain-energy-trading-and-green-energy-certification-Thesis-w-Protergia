@@ -1,7 +1,7 @@
 pragma solidity >=0.4.21 <0.7.0;
 pragma experimental ABIEncoderV2;
 
-/*----------------------------------------owned Contract----------------------------------------*/
+/********owned Contract********/
 //Create a contract owner
 contract owned {
     
@@ -17,11 +17,9 @@ contract owned {
     }
 }
 
-/*----------------------------------------batteryRegistry Contract----------------------------------------*/
+/********batteryRegistry Contract********/
 //Contract that allows battery address to be registered
 contract batteryRegistry is owned {
-
-    event batteryAdded(address indexed batteryID);
 
     struct battery {
         address batteryID;            //batteryID is Owner of battery ethereum address
@@ -50,7 +48,6 @@ contract batteryRegistry is owned {
             date: date,
             isExist: true
             }));
-        emit batteryAdded(batteryID);
     }
 
     //add a battery
@@ -64,7 +61,6 @@ contract batteryRegistry is owned {
             date: date,
             isExist: true
             }));
-        emit batteryAdded(batteryID);
         return true;
     }
 
@@ -98,12 +94,9 @@ contract batteryRegistry is owned {
     }
 }
 
-/*----------------------------------------energyBid Contract----------------------------------------*/
+/********energyBid Contract********/
 //Contract for energy offers from current batteries
 contract energyBid is owned, batteryRegistry {
-
-    event bidMade(address indexed batteryID, uint32 indexed day, uint32 indexed price, uint64 energy);
-    event AskMade(uint32 day, uint64 energy);
 
     uint64 constant mWh = 1;
     uint64 constant Wh = 1000 * mWh;
@@ -158,7 +151,6 @@ contract energyBid is owned, batteryRegistry {
             energy: _energy,
             timestamp: _timestamp
         }));
-        emit bidMade(listOfBids[index].batteryID, listOfBids[index].day, listOfBids[index].price, listOfBids[index].energy);
         nextNumberOfBid++;
     }                                          
 
@@ -178,7 +170,6 @@ contract energyBid is owned, batteryRegistry {
             energy: _energy,
             timestamp: _timestamp
         }));
-        emit bidMade(listOfBids[index].batteryID, listOfBids[index].day, listOfBids[index].price, listOfBids[index].energy);
         nextNumberOfBid++;
     }
 
@@ -201,6 +192,7 @@ contract energyBid is owned, batteryRegistry {
     function askEnergy(address  _batteryId, uint32 _day, uint64 _energy, uint64 _timestamp)  public   {
         uint indexA = asks[_batteryId][_day][nextNumberOfAsk];
         
+        indexA = listOfAsks.length;
         listOfAsks.push(Ask({
             batteryID: _batteryId,
             energy: _energy,
@@ -208,8 +200,6 @@ contract energyBid is owned, batteryRegistry {
             day:_day,
             numberOfAsk: nextNumberOfAsk
         }));
-        
-        emit AskMade(listOfAsks[indexA].day, listOfAsks[indexA].energy);
         nextNumberOfAsk++;
     }
 
