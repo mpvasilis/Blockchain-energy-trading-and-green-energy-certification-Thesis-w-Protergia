@@ -34,16 +34,22 @@ contract batteryRegistry is owned {
 
     /*
     constructor () public{
-        addNewBattery(msg.sender, "chris", 123);
+        addNewBattery("chris", 123);
     }
      */
 
-    constructor (address batteryID, string memory nameOfBatteryOwner, uint32 date) public{
-        require(batteries[batteryID].isExist==false, "Battery details already added");
-        batteries[batteryID] = battery(batteryID, nameOfBatteryOwner, date, true);
+    modifier onlyRegisteredBattery{
+         require(batteries[msg.sender].isExist==true);
+         _;
+     }
+
+    constructor (string memory nameOfBatteryOwner, uint32 date) public{
+        //batteryID = msg.sender;
+        require(batteries[msg.sender].isExist==false, "Battery details already added");
+        batteries[msg.sender] = battery(msg.sender, nameOfBatteryOwner, date, true);
 
         listOfBatteries.push(battery({
-            batteryID: batteryID,
+            batteryID: msg.sender,
             nameOfBatteryOwner: nameOfBatteryOwner,
             date: date,
             isExist: true
@@ -51,12 +57,13 @@ contract batteryRegistry is owned {
     }
 
     //add a battery
-    function addNewBattery (address batteryID, string memory nameOfBatteryOwner, uint32 date) public onlyOwner returns(bool) {
-        require(batteries[batteryID].isExist==false, "Battery details already added");
-        batteries[batteryID] = battery(batteryID, nameOfBatteryOwner, date, true);
+    function addNewBattery (string memory nameOfBatteryOwner, uint32 date) public returns(bool) {
+        //batteryID = msg.sender;
+        require(batteries[msg.sender].isExist==false, "Battery details already added");
+        batteries[msg.sender] = battery(msg.sender, nameOfBatteryOwner, date, true);
 
         listOfBatteries.push(battery({
-            batteryID: batteryID,
+            batteryID: msg.sender,
             nameOfBatteryOwner: nameOfBatteryOwner,
             date: date,
             isExist: true
@@ -70,7 +77,7 @@ contract batteryRegistry is owned {
     }
 
     //change details of a battery
-    function updateBattery(address batteryID, string memory nameOfBatteryOwner) public onlyOwner{
+    function updateBattery(address batteryID, string memory nameOfBatteryOwner) public {
         for(uint i = 0; i<listOfBatteries.length; i++){
             if(listOfBatteries[i].batteryID == batteryID){
                 listOfBatteries[i].nameOfBatteryOwner = nameOfBatteryOwner;
@@ -79,7 +86,7 @@ contract batteryRegistry is owned {
     }
 
     //delete a battery by batteryID
-    function removeBattery(address batteryID) public onlyOwner{
+    function removeBattery(address batteryID) public {
         for(uint i = 0; i<listOfBatteries.length; i++){
             if(listOfBatteries[i].batteryID == batteryID){
                 delete listOfBatteries[i];
@@ -132,19 +139,19 @@ contract energyBid is owned, batteryRegistry {
 
     /*
     constructor () public{                            
-        energyOffer(msg.sender, 20052020, 130, 1000000, 1618653420);   
+        energyOffer(20052020, 130, 1000000, 1618653420);   
     } 
      */  
 
-    constructor (address _batteryID, uint32 _day, uint32 _price, uint64 _energy, uint64 _timestamp) public{
-        require(batteries[_batteryID].isExist==true, "Battery details are not exist");
+    constructor (uint32 _day, uint32 _price, uint64 _energy, uint64 _timestamp) public{
+        require(batteries[msg.sender].isExist==true, "Battery details are not exist");
         require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh (1.000.000mWh)");
-        uint index = bids[_batteryID][_day][nextNumberOfBid];
+        uint index = bids[msg.sender][_day][nextNumberOfBid];
 
         index = listOfBids.length;
-        bids[_batteryID][_day][nextNumberOfBid] = index;
+        bids[msg.sender][_day][nextNumberOfBid] = index;
         listOfBids.push(bid({
-            batteryID: _batteryID,
+            batteryID: msg.sender,
             numberOfBid: nextNumberOfBid,
             day: _day,
             price: _price,
@@ -155,15 +162,15 @@ contract energyBid is owned, batteryRegistry {
     }                                          
 
     //create energy offer
-    function energyOffer(address _batteryID, uint32 _day, uint32 _price, uint64 _energy, uint64 _timestamp) public onlyOwner{
-        require(batteries[_batteryID].isExist==true, "Battery details are not exist");
+    function energyOffer(uint32 _day, uint32 _price, uint64 _energy, uint64 _timestamp) public onlyRegisteredBattery{
+        require(batteries[msg.sender].isExist==true, "Battery details are not exist");
         require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh (1.000.000mWh)");
-        uint index = bids[_batteryID][_day][nextNumberOfBid];
+        uint index = bids[msg.sender][_day][nextNumberOfBid];
 
         index = listOfBids.length;
-        bids[_batteryID][_day][nextNumberOfBid] = index;
+        bids[msg.sender][_day][nextNumberOfBid] = index;
         listOfBids.push(bid({
-            batteryID: _batteryID,
+            batteryID: msg.sender,
             numberOfBid: nextNumberOfBid,
             day: _day,
             price: _price,
@@ -189,12 +196,12 @@ contract energyBid is owned, batteryRegistry {
     }
 
     //Ask energy 
-    function askEnergy(address  _batteryId, uint32 _day, uint64 _energy, uint64 _timestamp)  public   {
-        uint indexA = asks[_batteryId][_day][nextNumberOfAsk];
+    function askEnergy(uint32 _day, uint64 _energy, uint64 _timestamp) public onlyRegisteredBattery {
+        uint indexA = asks[msg.sender][_day][nextNumberOfAsk];
         
         indexA = listOfAsks.length;
         listOfAsks.push(Ask({
-            batteryID: _batteryId,
+            batteryID: msg.sender,
             energy: _energy,
             timestamp: _timestamp,
             day:_day,
