@@ -30,7 +30,7 @@ contract batteryRegistry is owned {
 
     //mapping address as key to struct battery with mapping name batteries
     mapping (address => battery) batteries;
-    battery[] public listOfBatteries;
+    battery[] listOfBatteries;
 
     /*
     constructor () public{
@@ -188,6 +188,8 @@ contract energyBid is owned, batteryRegistry {
 
     //Ask energy 
     function askEnergy(uint32 _day, uint64 _energy, uint64 _timestamp) public onlyRegisteredBattery {
+        require(batteries[msg.sender].isExist==true, "Battery details are not exist");
+        require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh (1.000.000mWh)");
         uint indexA = asks[msg.sender][_day][nextNumberOfAsk];
         
         indexA = listOfAsks.length;
