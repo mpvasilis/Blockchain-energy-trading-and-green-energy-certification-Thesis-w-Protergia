@@ -85,16 +85,6 @@ contract batteryRegistry is owned {
         }
     }
 
-    //delete a battery by batteryID
-    function removeBattery(address batteryID) public {
-        for(uint i = 0; i<listOfBatteries.length; i++){
-            if(listOfBatteries[i].batteryID == batteryID){
-                delete listOfBatteries[i];
-                listOfBatteries.length--;
-            }
-        }
-    }
-
     //view single battery by battery id
     function getBatteryByID(address batteryID) public view returns (address, string memory, uint32){
         return (batteries[batteryID].batteryID, batteries[batteryID].nameOfBatteryOwner, batteries[batteryID].date);
