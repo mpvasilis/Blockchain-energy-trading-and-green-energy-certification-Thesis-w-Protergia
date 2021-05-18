@@ -81,6 +81,7 @@ contract batteryRegistry is owned {
         for(uint i = 0; i<listOfBatteries.length; i++){
             if(listOfBatteries[i].batteryID == batteryID){
                 listOfBatteries[i].nameOfBatteryOwner = nameOfBatteryOwner;
+                batteries[batteryID].nameOfBatteryOwner = nameOfBatteryOwner;
             }
         }
     }
