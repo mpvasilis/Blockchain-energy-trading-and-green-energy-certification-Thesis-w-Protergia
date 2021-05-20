@@ -5,7 +5,7 @@ pragma experimental ABIEncoderV2;
 //Create a contract owner
 contract owned {
     
-    address public owner;
+    address owner;
     
     constructor() public {
         owner = msg.sender;
@@ -44,7 +44,6 @@ contract batteryRegistry is owned {
      }
 
     constructor (string memory nameOfBatteryOwner, uint32 date) public{
-        //batteryID = msg.sender;
         require(batteries[msg.sender].isExist==false, "Battery details already added");
         batteries[msg.sender] = battery(msg.sender, nameOfBatteryOwner, date, true);
 
@@ -58,7 +57,6 @@ contract batteryRegistry is owned {
 
     //add a battery
     function addNewBattery (string memory nameOfBatteryOwner, uint32 date) public returns(bool) {
-        //batteryID = msg.sender;
         require(batteries[msg.sender].isExist==false, "Battery details already added");
         batteries[msg.sender] = battery(msg.sender, nameOfBatteryOwner, date, true);
 
@@ -121,11 +119,11 @@ contract energyBid is owned, batteryRegistry {
     }
     
     mapping(address => mapping(uint32 => mapping(uint=> uint))) public asks;
-    Ask[] public listOfAsks;
+    Ask[] listOfAsks;
     uint nextNumberOfAsk;
 
     mapping(address => mapping(uint32 => mapping(uint=> uint))) public bids;
-    bid[] public listOfBids;
+    bid[] listOfBids;
     uint nextNumberOfBid;  
 
     /*
@@ -189,7 +187,7 @@ contract energyBid is owned, batteryRegistry {
     //Ask energy 
     function askEnergy(uint32 _day, uint64 _energy, uint64 _timestamp) public onlyRegisteredBattery {
         require(batteries[msg.sender].isExist==true, "Battery details are not exist");
-        require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh (1.000.000mWh)");
+        require(_energy >= kWh, "Wrong energy input require a minimum ask of 1 kWh (1.000.000mWh)");
         uint indexA = asks[msg.sender][_day][nextNumberOfAsk];
         
         indexA = listOfAsks.length;
