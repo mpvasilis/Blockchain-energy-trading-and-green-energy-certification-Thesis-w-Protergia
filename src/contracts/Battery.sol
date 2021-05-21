@@ -38,7 +38,7 @@ contract batteryRegistry is owned {
      }
 
     //add a battery by eth account address
-    function addNewBattery (string memory nameOfBatteryOwner, uint32 date) public onlyOwner {
+    function addNewBattery (string memory nameOfBatteryOwner, uint32 date) public {
         require(batteries[msg.sender].isExist==false, "Battery details already added");
         batteries[msg.sender] = battery(msg.sender, nameOfBatteryOwner, date, true);
 
