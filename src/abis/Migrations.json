@@ -964,12 +964,13 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x72b72fE84d00E9c15Ee8CE46Ac82c9b863278646",
-      "transactionHash": "0x035e1065b4648d4fa0ee3beac36381137835ac2c158dbbf44f104d82a4ef9d26"
+      "address": "0x22fdb45845b44C84A7F2e89e3e036bf74AA655Bc",
+      "transactionHash": "0x1111ee89c63cd4911763ed0facfb6e3b3653ee47b809d2fc8b8b60cc433b1973"
     }
   },
   "schemaVersion": "3.3.4",
-  "updatedAt": "2021-04-27T22:26:07.786Z",
+  "updatedAt": "2021-05-21T16:40:24.271Z",
+  "networkType": "ethereum",
   "devdoc": {
     "methods": {}
   },

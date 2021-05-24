@@ -33,7 +33,7 @@ contract batteryRegistry is owned {
     battery[] listOfBatteries;
 
     modifier onlyRegisteredBattery{
-         require(batteries[msg.sender].isExist==true, "only registered batteries have access");
+         require(batteries[msg.sender].isExist==true, "Only registered batteries have access");
          _;
      }
 
@@ -149,7 +149,7 @@ contract energyBid is owned, batteryRegistry {
     //Ask and buy energy 
     //There is a minimum energy requirement 
     //Only registered batteries can use this function
-    function askAndBuyEnergy(address _sellerBatteryID, uint32 _day, uint32 _price, uint64 _energy, uint64 _timestamp, address _batteryID) public onlyRegisteredBattery {
+    function askAndBuyEnergy(address _sellerBatteryID, uint32 _day, uint32 _price, uint64 _energy, uint64 _timestamp, address _batteryID) public onlyRegisteredBattery returns(uint){
         require(batteries[msg.sender].isExist==true, "Battery details are not exist");
         require(_energy >= kWh, "Require a minimum ask energy of 1 kWh (1.000.000mWh)");
         uint index = bids[_sellerBatteryID][_day][nextNumberOfBid];
@@ -169,8 +169,14 @@ contract energyBid is owned, batteryRegistry {
                 day:_day,
                 batteryID: _batteryID
             }));
-            
             emit buyEnergyMade(_sellerBatteryID, _day, _price, _energy, _batteryID);
+
+            //Remove energy offer from list of bids
+                for(uint i = index; i<listOfBids.length-1; i++){
+                    listOfBids[i] = listOfBids[i+1];
+                }
+                listOfBids.length--;
+                return listOfBids.length;
         } else {
             //if energy offer does not exist then, revert.
             revert();
