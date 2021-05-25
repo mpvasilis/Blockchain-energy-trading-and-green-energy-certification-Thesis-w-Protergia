@@ -5,7 +5,7 @@ pragma experimental ABIEncoderV2;
 //Create a contract owner
 contract owned {
     
-    address public owner;
+    address owner;
     
     constructor() public {
         owner = msg.sender;
@@ -94,7 +94,7 @@ contract energyBid is owned, batteryRegistry {
     }
     
     struct ask {
-        address producerID;    //battery id from prosumer 
+        address producerID;    //battery id from produser 
         uint64 energy;
         uint64 timestamp;
         uint32 day;
@@ -111,7 +111,7 @@ contract energyBid is owned, batteryRegistry {
     //create energy offer 
     //There is a minimum energy requirement 
     //Only registered batteries can use this function
-    function energyOffer(uint32 _day, uint64 _energy, uint64 _timestamp) public onlyOwner {
+    function energyOffer(uint32 _day, uint64 _energy, uint64 _timestamp) public onlyRegisteredBattery {
         require(batteries[msg.sender].isExist==true, "Battery details are not exist");
         require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh (1.000.000mWh)");
         uint index = bids[msg.sender][_day][nextNumberOfBid];
@@ -145,23 +145,23 @@ contract energyBid is owned, batteryRegistry {
     //Ask and buy energy 
     //There is a minimum energy requirement 
     //Only registered batteries can use this function
-    function askAndBuyEnergy(uint32 _day, uint64 _energy, uint64 _timestamp) public onlyRegisteredBattery {
+    function askAndBuyEnergy(address _producerID, uint32 _day, uint64 _energy, uint64 _timestamp, uint _numberOfBid) public onlyRegisteredBattery {
         require(batteries[msg.sender].isExist==true, "Battery details are not exist");
         require(_energy >= kWh, "Require a minimum ask energy of 1 kWh (1.000.000mWh)");
-        uint index = bids[owner][_day][nextNumberOfBid];
+        uint index = bids[_producerID][_day][_numberOfBid];
         
         //check if required energy exist
-        if((listOfBids.length > index) && (listOfBids[index].energy >= _energy)){
+        if((listOfBids.length > index) && (listOfBids[index].energy >= _energy) && (listOfBids[index].producerID == _producerID) && (listOfBids[index].numberOfBid == _numberOfBid)){
 
             listOfBids[index].energy = listOfBids[index].energy - _energy; 
 
             //record data from consumer' s choice
             asks[msg.sender] = listOfAsks.length;
             listOfAsks.push(ask({
-                producerID: owner,
+                producerID: _producerID,
                 energy: _energy,
                 timestamp: _timestamp,
-                day:_day,
+                day: _day,
                 consumerID: msg.sender
             }));
         } else {
