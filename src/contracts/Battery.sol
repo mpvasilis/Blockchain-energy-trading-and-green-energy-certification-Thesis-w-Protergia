@@ -153,7 +153,7 @@ contract energyBid is owned, batteryRegistry {
         //check if required energy exist
         if((listOfBids.length > index) && (listOfBids[index].energy >= _energy)){
 
-            listOfBids[index].energy == listOfBids[index].energy - _energy; 
+            listOfBids[index].energy = listOfBids[index].energy - _energy; 
 
             //record data from consumer' s choice
             asks[msg.sender] = listOfAsks.length;
