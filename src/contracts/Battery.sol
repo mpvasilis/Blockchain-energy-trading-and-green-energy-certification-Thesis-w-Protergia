@@ -113,10 +113,7 @@ contract energyBid is owned, batteryRegistry {
     //Only registered batteries can use this function
     function energyOffer(uint32 _day, uint64 _energy, uint64 _timestamp) public onlyRegisteredBattery {
         require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh (1.000.000mWh)");
-        uint index = bids[msg.sender][_day][nextNumberOfBid];
 
-        index = listOfBids.length;
-        bids[msg.sender][_day][nextNumberOfBid] = index;
         listOfBids.push(bid({
             prosumerID: msg.sender,
             numberOfBid: nextNumberOfBid,
@@ -144,10 +141,6 @@ contract energyBid is owned, batteryRegistry {
     function askEnergy(uint32 _day, uint64 _energy, uint64 _timestamp) public onlyRegisteredBattery{
         require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh (1.000.000mWh)");
 
-        uint indexA = asks[msg.sender];
-
-        indexA = listOfAsks.length;
-        asks[msg.sender] = indexA;
         listOfAsks.push(ask({
             consumerID: msg.sender,
             energy: _energy,
@@ -172,6 +165,7 @@ contract energyBid is owned, batteryRegistry {
                 }));
                 listOfBids[i] = listOfBids[i+1];
                 listOfBids.length--;
+
             }else if(listOfBids[i].energy == _ask.energy){
                 listOfBids[i].energy = listOfBids[i].energy - _ask.energy;
                 _ask.energy = aEnergy - _ask.energy;
@@ -184,6 +178,7 @@ contract energyBid is owned, batteryRegistry {
                 }));
                 listOfBids[i] = listOfBids[i+1];
                 listOfBids.length--;
+                
             }else{
                 listOfBids[i].energy = listOfBids[i].energy - _ask.energy;
                 _ask.energy = aEnergy - _ask.energy;
