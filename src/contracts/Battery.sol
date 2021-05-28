@@ -98,11 +98,21 @@ contract energyBid is owned, batteryRegistry {
         uint64 energy;
         uint64 timestamp;
         uint32 day;
+        uint64 remainingEnergy;
+    }
+
+    struct buyedEnergy {
+        address consumerID;
+        address prosumerID;
+        uint64 energy;
+        uint32 day;
+        uint64 timestamp;
     }
     
     mapping(address => uint) asks; 
     ask[] listOfAsks;
-    ask[] listOfBuyedEnergy;
+
+    buyedEnergy[] listOfBuyedEnergy;
 
     mapping(address => mapping(uint32 => mapping(uint=> uint))) public bids;
     bid[] public listOfBids;
@@ -145,54 +155,50 @@ contract energyBid is owned, batteryRegistry {
             consumerID: msg.sender,
             energy: _energy,
             timestamp: _timestamp,
-            day: _day
+            day: _day,
+            remainingEnergy: _energy
         }));
-        energyTrading(listOfAsks[listOfAsks.length]);
+        energyTrading(listOfAsks[listOfAsks.length-1]);
     }
 
     function energyTrading(ask memory _ask) public onlyRegisteredBattery {
         for(uint i =0; i<listOfBids.length; i++){
-            uint64 aEnergy = _ask.energy;
-
+            bool isEnergyPurchased = false;
             if(listOfBids[i].energy < _ask.energy){
-                listOfBids[i].energy = listOfBids[i].energy - _ask.energy;
-                _ask.energy = aEnergy - _ask.energy;
+                listOfBids[i].energy = 0;
+                _ask.remainingEnergy = _ask.remainingEnergy - listOfBids[i].energy;
 
-                listOfBuyedEnergy.push(ask({
-                    consumerID: msg.sender,
-                    energy: _ask.energy,
-                    timestamp: _ask.timestamp,
-                    day: _ask.day
-                }));
+                isEnergyPurchased = true;
+
                 listOfBids[i] = listOfBids[i+1];
                 listOfBids.length--;
 
             }else if(listOfBids[i].energy == _ask.energy){
-                listOfBids[i].energy = listOfBids[i].energy - _ask.energy;
-                _ask.energy = aEnergy - _ask.energy;
+                listOfBids[i].energy = listOfBids[i].energy - _ask.remainingEnergy;
+                _ask.remainingEnergy = 0;
 
-                listOfBuyedEnergy.push(ask({
-                    consumerID: msg.sender,
-                    energy: _ask.energy,
-                    timestamp: _ask.timestamp,
-                    day: _ask.day
-                }));
+                isEnergyPurchased = true;
+
                 listOfBids[i] = listOfBids[i+1];
                 listOfBids.length--;
 
             }else{
-                listOfBids[i].energy = listOfBids[i].energy - _ask.energy;
-                _ask.energy = aEnergy - _ask.energy;
+                listOfBids[i].energy = listOfBids[i].energy - _ask.remainingEnergy;
+                _ask.remainingEnergy = 0;
 
-                listOfBuyedEnergy.push(ask({
+                isEnergyPurchased = true;
+            }
+
+            if(isEnergyPurchased){
+                listOfBuyedEnergy.push(buyedEnergy({
                     consumerID: msg.sender,
-                    energy: _ask.energy,
-                    timestamp: _ask.timestamp,
-                    day: _ask.day
+                    prosumerID: listOfBids[i].prosumerID,
+                    energy: _ask.energy - _ask.remainingEnergy,
+                    day: _ask.day,
+                    timestamp: _ask.timestamp
                 }));
             }
-            
-            if(_ask.energy == 0) revert();
+            if(_ask.remainingEnergy == 0) revert();
         }
     }
 
@@ -207,6 +213,9 @@ contract energyBid is owned, batteryRegistry {
         require(listOfAsks.length > indexA, "Wrong index");
         require(listOfAsks[indexA].consumerID == _consumerID, "Wrong Battery Id");
         return (listOfAsks[indexA].consumerID, listOfAsks[indexA].day, listOfAsks[indexA].energy);
-        
+    }
+
+    function viewAllEnergyPurchases () public view returns (buyedEnergy[] memory){
+        return listOfBuyedEnergy;
     }
 }
