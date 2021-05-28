@@ -86,7 +86,7 @@ contract energyBid is owned, batteryRegistry {
     uint64 constant TWh = 1000 * GWh;
 
     struct bid{
-        address producerID;    //battery public key
+        address prosumerID;    //battery public key
         uint numberOfBid;      //A battery can create more than one energy offer
         uint32 day;            //day for which the offer is valid
         uint64 energy;         //energy to trade
@@ -94,32 +94,31 @@ contract energyBid is owned, batteryRegistry {
     }
     
     struct ask {
-        address producerID;    //battery id from produser 
+        address consumerID;
         uint64 energy;
         uint64 timestamp;
         uint32 day;
-        address consumerID;    //battery id from registered battery (consumer)
     }
     
     mapping(address => uint) asks; 
     ask[] listOfAsks;
+    ask[] listOfBuyedEnergy;
 
-    mapping(address => mapping(uint32 => mapping(uint=> uint))) bids;
-    bid[] listOfBids;
-    uint nextNumberOfBid;                                           
+    mapping(address => mapping(uint32 => mapping(uint=> uint))) public bids;
+    bid[] public listOfBids;
+    uint nextNumberOfBid;                                    
 
     //create energy offer 
     //There is a minimum energy requirement 
     //Only registered batteries can use this function
     function energyOffer(uint32 _day, uint64 _energy, uint64 _timestamp) public onlyRegisteredBattery {
-        require(batteries[msg.sender].isExist==true, "Battery details are not exist");
         require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh (1.000.000mWh)");
         uint index = bids[msg.sender][_day][nextNumberOfBid];
 
         index = listOfBids.length;
         bids[msg.sender][_day][nextNumberOfBid] = index;
         listOfBids.push(bid({
-            producerID: msg.sender,
+            prosumerID: msg.sender,
             numberOfBid: nextNumberOfBid,
             day: _day,
             energy: _energy,
@@ -134,39 +133,70 @@ contract energyBid is owned, batteryRegistry {
     }
 
     //view single bid by batteryID
-    function getBidByBatteryID (address producerID, uint32 day, uint numberOfBid) public view returns (uint, uint32, uint64){
-        uint index = bids[producerID][day][numberOfBid];
+    function getBidByBatteryID (address prosumerID, uint32 day, uint numberOfBid) public view returns (uint, uint32, uint64){
+        uint index = bids[prosumerID][day][numberOfBid];
         require(listOfBids.length > index, "Wrong index");
         require(listOfBids[index].day == day, "There is no offer on this day");
-        require(listOfBids[index].producerID == producerID, "Wrong ID");
+        require(listOfBids[index].prosumerID == prosumerID, "Wrong ID");
         return (listOfBids[index].numberOfBid, listOfBids[index].day, listOfBids[index].energy);
     }
 
-    //Ask and buy energy 
-    //There is a minimum energy requirement 
-    //Only registered batteries can use this function
-    function askAndBuyEnergy(address _producerID, uint32 _day, uint64 _energy, uint64 _timestamp, uint _numberOfBid) public onlyRegisteredBattery {
-        require(batteries[msg.sender].isExist==true, "Battery details are not exist");
-        require(_energy >= kWh, "Require a minimum ask energy of 1 kWh (1.000.000mWh)");
-        uint index = bids[_producerID][_day][_numberOfBid];
-        
-        //check if required energy exist
-        if((listOfBids.length > index) && (listOfBids[index].energy >= _energy) && (listOfBids[index].producerID == _producerID) && (listOfBids[index].numberOfBid == _numberOfBid)){
+    function askEnergy(uint32 _day, uint64 _energy, uint64 _timestamp) public onlyRegisteredBattery{
+        require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh (1.000.000mWh)");
 
-            listOfBids[index].energy = listOfBids[index].energy - _energy; 
+        uint indexA = asks[msg.sender];
 
-            //record data from consumer' s choice
-            asks[msg.sender] = listOfAsks.length;
-            listOfAsks.push(ask({
-                producerID: _producerID,
-                energy: _energy,
-                timestamp: _timestamp,
-                day: _day,
-                consumerID: msg.sender
-            }));
-        } else {
-            //if energy offer does not exist then, revert.
-            revert();
+        indexA = listOfAsks.length;
+        asks[msg.sender] = indexA;
+        listOfAsks.push(ask({
+            consumerID: msg.sender,
+            energy: _energy,
+            timestamp: _timestamp,
+            day: _day
+        }));
+    }
+
+    function energyTrading(ask memory _ask) public onlyRegisteredBattery {
+        for(uint i =0; i<listOfBids.length; i++){
+            uint64 aEnergy = _ask.energy;
+
+            if(listOfBids[i].energy < _ask.energy){
+                listOfBids[i].energy = listOfBids[i].energy - _ask.energy;
+                _ask.energy = aEnergy - _ask.energy;
+
+                listOfBuyedEnergy.push(ask({
+                    consumerID: msg.sender,
+                    energy: _ask.energy,
+                    timestamp: _ask.timestamp,
+                    day: _ask.day
+                }));
+                listOfBids[i] = listOfBids[i+1];
+                listOfBids.length--;
+            }else if(listOfBids[i].energy == _ask.energy){
+                listOfBids[i].energy = listOfBids[i].energy - _ask.energy;
+                _ask.energy = aEnergy - _ask.energy;
+
+                listOfBuyedEnergy.push(ask({
+                    consumerID: msg.sender,
+                    energy: _ask.energy,
+                    timestamp: _ask.timestamp,
+                    day: _ask.day
+                }));
+                listOfBids[i] = listOfBids[i+1];
+                listOfBids.length--;
+            }else{
+                listOfBids[i].energy = listOfBids[i].energy - _ask.energy;
+                _ask.energy = aEnergy - _ask.energy;
+
+                listOfBuyedEnergy.push(ask({
+                    consumerID: msg.sender,
+                    energy: _ask.energy,
+                    timestamp: _ask.timestamp,
+                    day: _ask.day
+                }));
+            }
+            
+            if(_ask.energy == 0) revert();
         }
     }
 
@@ -180,7 +210,7 @@ contract energyBid is owned, batteryRegistry {
         uint indexA = asks[_consumerID];
         require(listOfAsks.length > indexA, "Wrong index");
         require(listOfAsks[indexA].consumerID == _consumerID, "Wrong Battery Id");
-        return (listOfAsks[indexA].producerID, listOfAsks[indexA].day, listOfAsks[indexA].energy);
+        return (listOfAsks[indexA].consumerID, listOfAsks[indexA].day, listOfAsks[indexA].energy);
         
     }
 }
