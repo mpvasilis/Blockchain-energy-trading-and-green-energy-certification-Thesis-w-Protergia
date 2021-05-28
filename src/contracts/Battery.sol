@@ -147,6 +147,7 @@ contract energyBid is owned, batteryRegistry {
             timestamp: _timestamp,
             day: _day
         }));
+        energyTrading(listOfAsks[listOfAsks.length]);
     }
 
     function energyTrading(ask memory _ask) public onlyRegisteredBattery {
@@ -178,7 +179,7 @@ contract energyBid is owned, batteryRegistry {
                 }));
                 listOfBids[i] = listOfBids[i+1];
                 listOfBids.length--;
-                
+
             }else{
                 listOfBids[i].energy = listOfBids[i].energy - _ask.energy;
                 _ask.energy = aEnergy - _ask.energy;
