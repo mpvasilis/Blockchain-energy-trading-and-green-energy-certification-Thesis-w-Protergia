@@ -148,24 +148,26 @@ contract energyBid is owned, batteryRegistry {
     function energyTrading(ask memory _ask) public onlyRegisteredBattery {
         require(listOfBids.length > 0, "There is no energy offer");
 
-        for(uint i = 0; i<=listOfBids.length; i++){
+        uint64 remainingEnergy = _ask.remainingEnergy;//---
+
+        for(uint i = 0; i<listOfBids.length; i++){
 
             address _prosumerID;
             bool isEnergyPurchased = false;
             uint64 energyPurchased = 0;
-            uint64 remainingEnergy = _ask.remainingEnergy;//
             bid[] storage _listOfBids = listOfBids;
             ask[] storage _listOfAsks = listOfAsks;
 
             if(listOfBids[i].energy < remainingEnergy){
                 _prosumerID = listOfBids[i].prosumerID;
-                energyPurchased = listOfBids[i].energy; //
+                energyPurchased = listOfBids[i].energy; //---
                 _ask.remainingEnergy = remainingEnergy - listOfBids[i].energy;//---
                 remainingEnergy = remainingEnergy - listOfBids[i].energy;
                 listOfBids[i].energy = 0;
 
                 isEnergyPurchased = true;
 
+                //remove energy offer from the list if energy is zero
                 if (listOfBids.length > 1) {
                     listOfBids[i] = listOfBids[listOfBids.length-1];
                 }
