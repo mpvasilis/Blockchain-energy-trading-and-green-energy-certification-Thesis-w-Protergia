@@ -166,7 +166,7 @@ contract energyBid is owned, batteryRegistry {
             bool isEnergyPurchased = false;
             if(listOfBids[i].energy < _ask.energy){
                 listOfBids[i].energy = 0;
-                _ask.remainingEnergy = _ask.remainingEnergy - listOfBids[i].energy;
+                _ask.remainingEnergy = _ask.remainingEnergy - _ask.energy;
 
                 isEnergyPurchased = true;
 
@@ -198,7 +198,12 @@ contract energyBid is owned, batteryRegistry {
                     timestamp: _ask.timestamp
                 }));
             }
-            if(_ask.remainingEnergy == 0) revert();
+            //remove ask request from list 
+            if(_ask.remainingEnergy == 0){
+                delete listOfAsks[i];
+                listOfAsks.length--;
+                break ;
+            }
         }
     }
 
