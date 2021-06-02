@@ -20,7 +20,7 @@ contract batteryRegistry is owned {
 
     struct battery {
         address batteryID;            //batteryID is Owner of battery ethereum address
-        string nameOfBatteryOwner;    //Name of battery owner 
+        string uuID;                  //id of battery  
         uint32 date;                  //Creation date
         bool isExist;                 //Check if battery exist into addNewBattery function
     }
@@ -35,13 +35,13 @@ contract batteryRegistry is owned {
      }
 
     //add a battery by eth account address
-    function addNewBattery (string memory nameOfBatteryOwner, uint32 date) public {
+    function addNewBattery (string memory uuID, uint32 date) public {
         require(batteries[msg.sender].isExist==false, "Battery details already added");
-        batteries[msg.sender] = battery(msg.sender, nameOfBatteryOwner, date, true);
+        batteries[msg.sender] = battery(msg.sender, uuID, date, true);
 
         listOfBatteries.push(battery({
             batteryID: msg.sender,
-            nameOfBatteryOwner: nameOfBatteryOwner,
+            uuID: uuID,
             date: date,
             isExist: true
             }));
@@ -52,19 +52,23 @@ contract batteryRegistry is owned {
         return listOfBatteries;
     }
 
+    function getCountOfBatteries () public view returns (uint count) {
+        return listOfBatteries.length;
+    }
+
     //change details of a battery
-    function updateBattery(address batteryID, string memory nameOfBatteryOwner) public onlyRegisteredBattery {
+    function updateBattery(address batteryID, string memory uuID) public onlyRegisteredBattery {
         for(uint i = 0; i<listOfBatteries.length; i++){
             if(listOfBatteries[i].batteryID == batteryID){
-                listOfBatteries[i].nameOfBatteryOwner = nameOfBatteryOwner;
-                batteries[batteryID].nameOfBatteryOwner = nameOfBatteryOwner;
+                listOfBatteries[i].uuID = uuID;
+                batteries[batteryID].uuID = uuID;
             }
         }
     }
 
     //view single battery by battery id
     function getBatteryByID(address batteryID) public view returns (address, string memory, uint32){
-        return (batteries[batteryID].batteryID, batteries[batteryID].nameOfBatteryOwner, batteries[batteryID].date);
+        return (batteries[batteryID].batteryID, batteries[batteryID].uuID, batteries[batteryID].date);
     }
 }
 
@@ -73,12 +77,11 @@ contract energyBid is owned, batteryRegistry {
     //event offerEnergyMade(address indexed sellerBatteryID, uint32 indexed day, uint32 indexed price, uint64 energy);
     //event buyEnergyMade(address indexed sellerBatteryID, uint32 indexed day, uint32 price, uint64 energy, address indexed batteryID);
 
-    //uint64 constant mWh = 1;
-    //uint64 constant Wh = 1000 * mWh;
-    //uint64 constant kWh = 1000 * Wh;
-    //uint64 constant MWh = 1000 * kWh;
-    //uint64 constant GWh = 1000 * MWh;
-    //uint64 constant TWh = 1000 * GWh;
+    uint64 constant Wh = 1;
+    uint64 constant kWh = 1000 * Wh;
+    uint64 constant MWh = 1000 * kWh;
+    uint64 constant GWh = 1000 * MWh;
+    uint64 constant TWh = 1000 * GWh;
 
     struct bid{
         address prosumerID;    
@@ -110,15 +113,15 @@ contract energyBid is owned, batteryRegistry {
 
     buyedEnergy[] listOfBuyedEnergy;
 
-    mapping(address => mapping(uint32 => mapping(uint=> uint))) public bids;
-    bid[] public listOfBids;
+    mapping(address => mapping(uint32 => mapping(uint=> uint))) bids;
+    bid[] listOfBids;
     uint nextNumberOfBid;                                    
 
     //create energy offer 
     //There is a minimum energy requirement 
     //Only registered batteries can use this function
     function energyOffer(uint32 _day, uint64 _energy, uint64 _timestamp) public onlyRegisteredBattery {
-        require(_energy >= 1000, "Wrong energy input require a minimum offer of 1 kWh (1000 Wh)");
+        require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh (1000 Wh)");
 
         listOfBids.push(bid({
             prosumerID: msg.sender,
@@ -131,8 +134,8 @@ contract energyBid is owned, batteryRegistry {
     }
 
     //make ask request and buy energy from available bids
-    function askEnergy(uint32 _day, uint64 _energy, uint64 _timestamp) public onlyRegisteredBattery{
-        require(_energy >= 1000, "Wrong energy input require a minimum offer of 1 kWh (1000 Wh)");
+    function askEnergy(uint32 _day, uint64 _energy, uint64 _timestamp) public onlyRegisteredBattery {
+        require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh (1000 Wh)");
 
         listOfAsks.push(ask({
             consumerID: msg.sender,
@@ -155,8 +158,8 @@ contract energyBid is owned, batteryRegistry {
             address _prosumerID;
             bool isEnergyPurchased = false;
             uint64 energyPurchased = 0;
-            bid[] storage _listOfBids = listOfBids;
-            ask[] storage _listOfAsks = listOfAsks;
+            //bid[] storage _listOfBids = listOfBids;
+            //ask[] storage _listOfAsks = listOfAsks;
 
             if(listOfBids[i].energy < remainingEnergy){
                 _prosumerID = listOfBids[i].prosumerID;
@@ -208,8 +211,10 @@ contract energyBid is owned, batteryRegistry {
 
             //remove ask request from list 
             if(remainingEnergy == 0){
-                //delete listOfAsks[i];
-                //listOfAsks.length--;
+                if (listOfAsks.length > 1){
+                    listOfAsks[i] = listOfAsks[listOfAsks.length-1];
+                }
+                listOfAsks.length--;
                 break ;
             }
         }
@@ -220,9 +225,9 @@ contract energyBid is owned, batteryRegistry {
         return listOfAsks;
     }
 
-    /*function View () public view returns (uint){
-        return listOfBids.length;
-    }*/
+    function getCountOfAsks () public view returns (uint count){
+        return listOfAsks.length;
+    }
 
     //view single ask energy request by batteryID
     function getAskByBatteryId (address _consumerID) public view returns (address, uint32, uint64){
@@ -240,6 +245,10 @@ contract energyBid is owned, batteryRegistry {
     //view all bids 
     function viewAllBids () public view returns (bid[] memory){
       return listOfBids;
+    }
+
+    function getCountOfBids () public view returns (uint count){
+        return listOfBids.length;
     }
 
     //view single bid by batteryID
