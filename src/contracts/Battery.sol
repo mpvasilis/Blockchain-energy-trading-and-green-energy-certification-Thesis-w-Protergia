@@ -19,7 +19,7 @@ contract owned {
 contract batteryRegistry is owned {
 
     struct battery {
-        address batteryID;            //batteryID is Owner of battery ethereum address
+        address batteryID;            //battery wallet address
         string uuID;                  //id of battery  
         uint32 date;                  //Creation date
         bool isExist;                 //Check if battery exist into addNewBattery function
@@ -77,11 +77,12 @@ contract energyBid is owned, batteryRegistry {
     //event offerEnergyMade(address indexed sellerBatteryID, uint32 indexed day, uint32 indexed price, uint64 energy);
     //event buyEnergyMade(address indexed sellerBatteryID, uint32 indexed day, uint32 price, uint64 energy, address indexed batteryID);
 
-    uint64 constant Wh = 1;
-    uint64 constant kWh = 1000 * Wh;
+    uint64 constant kWh = 1;
     uint64 constant MWh = 1000 * kWh;
     uint64 constant GWh = 1000 * MWh;
     uint64 constant TWh = 1000 * GWh;
+
+    uint uinversalPrice = 2; //Energy market price per kWh (ex. 2euro/kWh, the price is trial)
 
     struct bid{
         address prosumerID;    
@@ -104,6 +105,7 @@ contract energyBid is owned, batteryRegistry {
         address consumerID;
         address prosumerID;
         uint64 energy;
+        uint price;
         uint32 day;
         uint64 timestamp;
     }
@@ -121,7 +123,7 @@ contract energyBid is owned, batteryRegistry {
     //There is a minimum energy requirement 
     //Only registered batteries can use this function
     function energyOffer(uint32 _day, uint64 _energy, uint64 _timestamp) public onlyRegisteredBattery {
-        require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh (1000 Wh)");
+        require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh");
 
         listOfBids.push(bid({
             prosumerID: msg.sender,
@@ -135,7 +137,7 @@ contract energyBid is owned, batteryRegistry {
 
     //make ask request and buy energy from available bids
     function askEnergy(uint32 _day, uint64 _energy, uint64 _timestamp) public onlyRegisteredBattery {
-        require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh (1000 Wh)");
+        require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh");
 
         listOfAsks.push(ask({
             consumerID: msg.sender,
@@ -151,21 +153,21 @@ contract energyBid is owned, batteryRegistry {
     function energyTrading(ask memory _ask) public onlyRegisteredBattery {
         require(listOfBids.length > 0, "There is no energy offer");
 
-        uint64 remainingEnergy = _ask.remainingEnergy;//---
+        uint64 remainingEnergy = _ask.remainingEnergy;
 
         for(uint i = 0; i<listOfBids.length; i++){
 
             address _prosumerID;
             bool isEnergyPurchased = false;
             uint64 energyPurchased = 0;
-            //bid[] storage _listOfBids = listOfBids;
-            //ask[] storage _listOfAsks = listOfAsks;
+            uint _price = 0;
 
             if(listOfBids[i].energy < remainingEnergy){
                 _prosumerID = listOfBids[i].prosumerID;
-                energyPurchased = listOfBids[i].energy; //---
-                _ask.remainingEnergy = remainingEnergy - listOfBids[i].energy;//---
+                energyPurchased = listOfBids[i].energy; 
+                _ask.remainingEnergy = remainingEnergy - listOfBids[i].energy;
                 remainingEnergy = remainingEnergy - listOfBids[i].energy;
+                _price = uinversalPrice*listOfBids[i].energy; //price per kWh
                 listOfBids[i].energy = 0;
 
                 isEnergyPurchased = true;
@@ -179,6 +181,7 @@ contract energyBid is owned, batteryRegistry {
             }else if(listOfBids[i].energy == remainingEnergy){
                 _prosumerID = listOfBids[i].prosumerID;
                 energyPurchased = remainingEnergy;
+                _price = uinversalPrice*listOfBids[i].energy;
                 listOfBids[i].energy = 0;
                 remainingEnergy = 0;
 
@@ -193,6 +196,7 @@ contract energyBid is owned, batteryRegistry {
                 _prosumerID = listOfBids[i].prosumerID;
                 energyPurchased = remainingEnergy;
                 listOfBids[i].energy = listOfBids[i].energy - remainingEnergy;
+                _price = uinversalPrice*remainingEnergy;
                 remainingEnergy = 0;
 
                 isEnergyPurchased = true;
@@ -204,6 +208,7 @@ contract energyBid is owned, batteryRegistry {
                     consumerID: msg.sender,
                     prosumerID: _prosumerID,
                     energy: energyPurchased,
+                    price: _price,
                     day: _ask.day,
                     timestamp: _ask.timestamp
                 }));
