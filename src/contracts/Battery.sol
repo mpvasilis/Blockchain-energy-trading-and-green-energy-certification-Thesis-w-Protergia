@@ -82,13 +82,14 @@ contract energyBid is owned, batteryRegistry {
     uint64 constant GWh = 1000 * MWh;
     uint64 constant TWh = 1000 * GWh;
 
-    uint uinversalPrice = 2; //Energy market price per kWh (ex. 2euro/kWh, the price is trial)
+    //uint uinversalPrice = 2; //Energy market price per kWh (ex. 2euro/kWh, the price is trial)
 
     struct bid{
         address prosumerID;    
         uint numberOfBid;      //A battery can create more than one energy offer
         uint32 day;            //day for which the offer is valid
         uint64 energy;         //energy to trade
+        uint32 eprice;         //Energy market price per kWh
         uint64 timestamp;      //timestamp for when the bid was created
     }
     
@@ -122,7 +123,7 @@ contract energyBid is owned, batteryRegistry {
     //create energy offer 
     //There is a minimum energy requirement 
     //Only registered batteries can use this function
-    function energyOffer(uint32 _day, uint64 _energy, uint64 _timestamp) public onlyRegisteredBattery {
+    function energyOffer(uint32 _day, uint64 _energy, uint64 _timestamp, uint32 _eprice) public onlyRegisteredBattery {
         require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh");
 
         listOfBids.push(bid({
@@ -130,6 +131,7 @@ contract energyBid is owned, batteryRegistry {
             numberOfBid: nextNumberOfBid,
             day: _day,
             energy: _energy,
+            eprice: _eprice,
             timestamp: _timestamp
         }));
         nextNumberOfBid++;
@@ -167,7 +169,7 @@ contract energyBid is owned, batteryRegistry {
                 energyPurchased = listOfBids[i].energy; 
                 _ask.remainingEnergy = remainingEnergy - listOfBids[i].energy;
                 remainingEnergy = remainingEnergy - listOfBids[i].energy;
-                _price = uinversalPrice*listOfBids[i].energy; //price per kWh
+                _price = listOfBids[i].eprice*listOfBids[i].energy; //price per kWh
                 listOfBids[i].energy = 0;
 
                 isEnergyPurchased = true;
@@ -181,7 +183,7 @@ contract energyBid is owned, batteryRegistry {
             }else if(listOfBids[i].energy == remainingEnergy){
                 _prosumerID = listOfBids[i].prosumerID;
                 energyPurchased = remainingEnergy;
-                _price = uinversalPrice*listOfBids[i].energy;
+                _price = listOfBids[i].eprice*listOfBids[i].energy;
                 listOfBids[i].energy = 0;
                 remainingEnergy = 0;
 
@@ -196,7 +198,7 @@ contract energyBid is owned, batteryRegistry {
                 _prosumerID = listOfBids[i].prosumerID;
                 energyPurchased = remainingEnergy;
                 listOfBids[i].energy = listOfBids[i].energy - remainingEnergy;
-                _price = uinversalPrice*remainingEnergy;
+                _price = listOfBids[i].eprice*remainingEnergy;
                 remainingEnergy = 0;
 
                 isEnergyPurchased = true;
