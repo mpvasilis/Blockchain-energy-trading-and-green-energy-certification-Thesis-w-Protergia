@@ -1,7 +1,8 @@
-const Battery = artifacts.require("Battery");
+const energyBid = artifacts.require("./Battery.sol");
+//const batteryRegistry = artifacts.require("Battery");
 
 module.exports = function (deployer) {
-    var batteryId = "who";
-    var batteryData = 12345;
-  deployer.deploy(batteryId, batteryData, {value: 100, from: accounts[0]})
+    //const battID = msg.sender;
+    //deployer.deploy(batteryRegistry);
+	deployer.deploy(energyBid);
 };
