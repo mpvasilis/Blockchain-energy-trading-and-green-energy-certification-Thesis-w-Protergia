@@ -5,37 +5,24 @@ import "src/contracts/Battery.sol";
 
 contract PPA is batteryRegistry{
 
-    struct wPPA {
+    struct ppa {
         address buyerID;
         address producerID;
-        uint64 energy;
-        uint32 price;
-        uint32 startDay;
-        uint32 endDay;
+        uint energy;
+        uint price;
+        uint startDay;
+        uint endDay;
         string status;
     }
 
-    struct aPPA {
-        address buyerID;
-        address producerID;
-        uint64 energy;
-        uint32 price;
-        uint32 startDay;
-        uint32 endDay;
-        string status;
-    }
+    mapping(string => ppa) ppas;
+    ppa[] listOfPPAs;
 
-    mapping(string => wPPA) wppas;
-    wPPA[] listOfWaitingPPAs;
-
-    mapping(string => aPPA) apps;
-    aPPA[] listOfActivePPAs;
-
-    function createPPA(address _buyerID, uint64 _energy, uint32 _price, uint32 _startDay, uint32 _endDay) public onlyRegisteredBattery {
+    function createPPA(address _buyerID, uint _energy, uint _price, uint _startDay, uint _endDay) public onlyRegisteredBattery {
 
         require(_buyerID != msg.sender, "Wrong");
 
-        listOfWaitingPPAs.push(wPPA({
+        listOfPPAs.push(ppa({
             buyerID: _buyerID,
             producerID: msg.sender,
             energy: _energy,
@@ -50,18 +37,10 @@ contract PPA is batteryRegistry{
 
         address buyerId = msg.sender;
 
-        for(uint i = 0; i<listOfWaitingPPAs.length; i++){
-            require(listOfWaitingPPAs[i].producerID != msg.sender, "Wrong2");
-            if((listOfWaitingPPAs[i].buyerID == buyerId)){
-                listOfActivePPAs.push(aPPA({
-                    buyerID: msg.sender,
-                    producerID: listOfWaitingPPAs[i].producerID,
-                    energy: listOfWaitingPPAs[i].energy,
-                    price: listOfWaitingPPAs[i].price,
-                    startDay: listOfWaitingPPAs[i].startDay,
-                    endDay: listOfWaitingPPAs[i].endDay,
-                    status: _status
-                }));
+        for(uint i = 0; i<listOfPPAs.length; i++){
+            require(listOfPPAs[i].producerID != msg.sender, "Wrong2");
+            if((listOfPPAs[i].buyerID == buyerId)){
+                listOfPPAs[i].status = _status;
             }else{
                 break;
             }
@@ -76,12 +55,8 @@ contract PPA is batteryRegistry{
         }
     }*/
 
-    function viewAllWaitingPPAs () public view returns (wPPA[] memory){
-        return listOfWaitingPPAs;
-    }
-
-    function viewAllActivePPAs () public view returns (aPPA[] memory){
-        return listOfActivePPAs;
+    function viewAllWaitingPPAs () public view returns (ppa[] memory){
+        return listOfPPAs;
     }
 
     /*function getPPA(string memory _status) public view returns(ppa[] memory){
