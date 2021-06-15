@@ -84,7 +84,7 @@ contract energyBid is owned, batteryRegistry {
 
     //uint uinversalPrice = 2; //Energy market price per kWh (ex. 2euro/kWh, the price is trial)
 
-    struct bid{
+    struct bid {
         address prosumerID;    
         uint numberOfBid;      //A battery can create more than one energy offer
         uint32 day;            //day for which the offer is valid
