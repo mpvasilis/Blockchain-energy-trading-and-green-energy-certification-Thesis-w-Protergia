@@ -1,9 +1,7 @@
 pragma solidity >=0.4.21 <0.7.0;
 pragma experimental ABIEncoderV2;
 
-import "src/contracts/Battery.sol";
-
-contract PPA is batteryRegistry{
+contract PPA{
 
     struct ppa {
         address buyerID;
@@ -18,7 +16,7 @@ contract PPA is batteryRegistry{
     mapping(string => ppa) ppas;
     ppa[] listOfPPAs;
 
-    function createPPA(address _buyerID, uint _energy, uint _price, uint _startDay, uint _endDay) public onlyRegisteredBattery {
+    function createPPA(address _buyerID, uint _energy, uint _price, uint _startDay, uint _endDay) public {
 
         require(_buyerID != msg.sender, "Wrong");
 
@@ -33,7 +31,7 @@ contract PPA is batteryRegistry{
         }));
     }
 
-    function acceptPPA(string memory _status) public onlyRegisteredBattery {
+    function acceptPPA(string memory _status) public {
 
         address buyerId = msg.sender;
 
