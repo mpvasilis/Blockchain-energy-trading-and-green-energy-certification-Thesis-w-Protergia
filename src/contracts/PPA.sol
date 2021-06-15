@@ -51,6 +51,7 @@ contract PPA is batteryRegistry{
         address buyerId = msg.sender;
 
         for(uint i = 0; i<listOfWaitingPPAs.length; i++){
+            require(listOfWaitingPPAs[i].producerID != msg.sender, "Wrong2");
             if((listOfWaitingPPAs[i].buyerID == buyerId)){
                 listOfActivePPAs.push(aPPA({
                     buyerID: msg.sender,
