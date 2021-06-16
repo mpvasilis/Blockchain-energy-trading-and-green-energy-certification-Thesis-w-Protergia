@@ -3,7 +3,7 @@ pragma experimental ABIEncoderV2;
 
 contract PPA{
 
-    enum Status {NotExist, Pending, Approved, Rejected}
+    enum Status {Pending, Approved, Rejected}
 
     struct ppa {
         address buyerID;
@@ -17,6 +17,16 @@ contract PPA{
 
     mapping(string => ppa) ppas;
     ppa[] listOfPPAs;
+
+    address[] listOfUsers; //list of users who want to participate in ppa
+
+    function claimPPA() public {
+        listOfUsers.push(msg.sender);
+    }
+
+    function getAllUsers() public view returns(address[] memory){
+        return listOfUsers;
+    }
 
     function createPPA(address _buyerID, uint _energy, uint _price, uint _startDay, uint _endDay) public {
 
@@ -36,10 +46,12 @@ contract PPA{
     function changePPATerms(address _buyerID, uint _energy, uint _price, uint _startDay, uint _endDay) public {
         for(uint i = 0; i<listOfPPAs.length; i++){
             if(listOfPPAs[i].buyerID == _buyerID){
+                require(listOfPPAs[i].status != Status.Approved, "You can not change an approved PPA");
                 listOfPPAs[i].energy = _energy;
                 listOfPPAs[i].price = _price;
                 listOfPPAs[i].startDay = _startDay;
                 listOfPPAs[i].endDay = _endDay;
+                listOfPPAs[i].status = Status.Pending;
             }
         }
     }
@@ -49,9 +61,8 @@ contract PPA{
         for(uint i = 0; i<listOfPPAs.length; i++){
             require(listOfPPAs[i].producerID != msg.sender, "Wrong2");
             if((listOfPPAs[i].buyerID == buyerId)){
+                require(listOfPPAs[i].status != Status.Rejected, "You can not accept a rejected PPA");
                 listOfPPAs[i].status = Status.Approved;
-            }else{
-                break;
             }
         }
     }
@@ -62,8 +73,6 @@ contract PPA{
             require(listOfPPAs[i].producerID != msg.sender, "Wrong3");
             if((listOfPPAs[i].buyerID == buyerId)){
                 listOfPPAs[i].status = Status.Rejected;
-            }else{
-                break;
             }
         }
     }
