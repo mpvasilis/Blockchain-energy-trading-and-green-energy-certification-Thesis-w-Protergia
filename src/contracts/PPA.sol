@@ -3,6 +3,8 @@ pragma experimental ABIEncoderV2;
 
 contract PPA{
 
+    enum Status {NotExist, Pending, Approved, Rejected}
+
     struct ppa {
         address buyerID;
         address producerID;
@@ -10,7 +12,7 @@ contract PPA{
         uint price;
         uint startDay;
         uint endDay;
-        string status;
+        Status status;
     }
 
     mapping(string => ppa) ppas;
@@ -27,18 +29,39 @@ contract PPA{
             price: _price,
             startDay: _startDay,
             endDay: _endDay,
-            status: "Waiting"
+            status: Status.Pending
         }));
     }
 
-    function acceptPPA(string memory _status) public {
+    function changePPATerms(address _buyerID, uint _energy, uint _price, uint _startDay, uint _endDay) public {
+        for(uint i = 0; i<listOfPPAs.length; i++){
+            if(listOfPPAs[i].buyerID == _buyerID){
+                listOfPPAs[i].energy = _energy;
+                listOfPPAs[i].price = _price;
+                listOfPPAs[i].startDay = _startDay;
+                listOfPPAs[i].endDay = _endDay;
+            }
+        }
+    }
 
+    function acceptPPA() public {
         address buyerId = msg.sender;
-
         for(uint i = 0; i<listOfPPAs.length; i++){
             require(listOfPPAs[i].producerID != msg.sender, "Wrong2");
             if((listOfPPAs[i].buyerID == buyerId)){
-                listOfPPAs[i].status = _status;
+                listOfPPAs[i].status = Status.Approved;
+            }else{
+                break;
+            }
+        }
+    }
+
+    function denyPPA() public {
+        address buyerId = msg.sender;
+        for(uint i = 0; i<listOfPPAs.length; i++){
+            require(listOfPPAs[i].producerID != msg.sender, "Wrong3");
+            if((listOfPPAs[i].buyerID == buyerId)){
+                listOfPPAs[i].status = Status.Rejected;
             }else{
                 break;
             }
