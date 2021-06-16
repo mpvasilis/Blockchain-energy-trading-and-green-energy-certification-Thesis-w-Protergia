@@ -179,6 +179,7 @@ contract energyBid is owned, batteryRegistry {
                     listOfBids[i] = listOfBids[listOfBids.length-1];
                 }
                 listOfBids.length--;
+                i--;
 
             }else if(listOfBids[i].energy == remainingEnergy){
                 _prosumerID = listOfBids[i].prosumerID;
