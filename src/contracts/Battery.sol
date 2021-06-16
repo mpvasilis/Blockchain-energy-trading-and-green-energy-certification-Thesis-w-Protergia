@@ -135,6 +135,7 @@ contract energyBid is owned, batteryRegistry {
             timestamp: _timestamp
         }));
         nextNumberOfBid++;
+        bidEnergyTrading(listOfBids[listOfBids.length-1]);
     }
 
     //make ask request and buy energy from available bids
@@ -148,12 +149,12 @@ contract energyBid is owned, batteryRegistry {
             day: _day,
             remainingEnergy: _energy
         }));
-        energyTrading(listOfAsks[listOfAsks.length-1]);
+        askEnergyTrading(listOfAsks[listOfAsks.length-1]);
     }
 
-    //core function for energy trading 
-    function energyTrading(ask memory _ask) public onlyRegisteredBattery {
-        require(listOfBids.length > 0, "There is no energy offer");
+    //core function for energy trading (ask case)
+    function askEnergyTrading(ask memory _ask) public onlyRegisteredBattery {
+        //require(listOfBids.length > 0, "There is no energy offer");
 
         uint64 remainingEnergy = _ask.remainingEnergy;
 
@@ -167,9 +168,9 @@ contract energyBid is owned, batteryRegistry {
             if(listOfBids[i].energy < remainingEnergy){
                 _prosumerID = listOfBids[i].prosumerID;
                 energyPurchased = listOfBids[i].energy; 
-                _ask.remainingEnergy = remainingEnergy - listOfBids[i].energy;
                 remainingEnergy = remainingEnergy - listOfBids[i].energy;
-                _price = listOfBids[i].eprice*listOfBids[i].energy; //price per kWh
+                listOfAsks[i].remainingEnergy = remainingEnergy;//-----
+                _price = listOfBids[i].eprice*energyPurchased; //price per kWh
                 listOfBids[i].energy = 0;
 
                 isEnergyPurchased = true;
@@ -179,12 +180,12 @@ contract energyBid is owned, batteryRegistry {
                     listOfBids[i] = listOfBids[listOfBids.length-1];
                 }
                 listOfBids.length--;
-                i--;
+                i--;//-----
 
             }else if(listOfBids[i].energy == remainingEnergy){
                 _prosumerID = listOfBids[i].prosumerID;
                 energyPurchased = remainingEnergy;
-                _price = listOfBids[i].eprice*listOfBids[i].energy;
+                _price = listOfBids[i].eprice*energyPurchased;
                 listOfBids[i].energy = 0;
                 remainingEnergy = 0;
 
@@ -199,7 +200,7 @@ contract energyBid is owned, batteryRegistry {
                 _prosumerID = listOfBids[i].prosumerID;
                 energyPurchased = remainingEnergy;
                 listOfBids[i].energy = listOfBids[i].energy - remainingEnergy;
-                _price = listOfBids[i].eprice*remainingEnergy;
+                _price = listOfBids[i].eprice*energyPurchased;
                 remainingEnergy = 0;
 
                 isEnergyPurchased = true;
@@ -224,6 +225,80 @@ contract energyBid is owned, batteryRegistry {
                 }
                 listOfAsks.length--;
                 break ;
+            }
+        }
+    }
+
+    /////Energy trading for bid case 
+    function bidEnergyTrading(bid memory _bid) public onlyRegisteredBattery {
+
+        //require();
+
+        uint64 _remainingBidEnergy = _bid.energy;
+
+        for(uint i = 0; i<listOfAsks.length; i++){
+            
+            address _consumerID;
+            bool isEnergyPurchased = false;
+            uint64 energyPurchased = 0;
+            uint _price = 0;
+            if(listOfAsks[i].remainingEnergy < _remainingBidEnergy){
+                _consumerID = listOfAsks[i].consumerID;
+                energyPurchased = listOfAsks[i].remainingEnergy;
+                _remainingBidEnergy = _remainingBidEnergy - energyPurchased;
+                listOfBids[i].energy = _remainingBidEnergy;
+                _price = _bid.eprice*energyPurchased;
+                listOfAsks[i].remainingEnergy = 0;
+
+                isEnergyPurchased = true;
+
+                if(listOfAsks.length > 1){
+                    listOfAsks[i] = listOfAsks[listOfAsks.length-1];
+                }
+                listOfAsks.length--;
+                i--;
+
+            }else if(listOfAsks[i].remainingEnergy == _remainingBidEnergy){
+                _consumerID = listOfAsks[i].consumerID;
+                energyPurchased = _remainingBidEnergy;
+                _price = _bid.eprice*energyPurchased;
+                _remainingBidEnergy = 0;
+                listOfAsks[i].remainingEnergy = 0;
+
+                isEnergyPurchased = true;
+
+                if(listOfAsks.length > 1){
+                    listOfAsks[i] = listOfAsks[listOfAsks.length-1];
+                }
+                listOfAsks.length--;
+
+            }else{
+                _consumerID = listOfAsks[i].consumerID;
+                energyPurchased = _remainingBidEnergy;
+                listOfAsks[i].remainingEnergy = listOfAsks[i].remainingEnergy - energyPurchased;
+                _price = _bid.eprice*energyPurchased;
+                _remainingBidEnergy = 0;
+
+                isEnergyPurchased = true;
+            }
+
+            if(isEnergyPurchased){
+                listOfBuyedEnergy.push(buyedEnergy({
+                    consumerID: _consumerID,
+                    prosumerID: msg.sender,
+                    energy: energyPurchased,
+                    price: _price,
+                    day: _bid.day,
+                    timestamp: _bid.timestamp
+                }));
+            }
+
+            if(_remainingBidEnergy == 0){
+                if(listOfBids.length > 1){
+                    listOfBids[i] = listOfBids[listOfBids.length-1];
+                }
+                listOfBids.length--;
+                break;
             }
         }
     }
