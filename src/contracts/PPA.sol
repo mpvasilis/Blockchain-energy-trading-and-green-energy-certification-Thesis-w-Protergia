@@ -50,7 +50,7 @@ contract PPAToken {
 
 contract PPA is PPAToken{
 
-    //PPAToken public tokenContract;
+    PPAToken public tokenContract;
 
     enum Status {Pending, Approved, Rejected}
 
@@ -64,15 +64,13 @@ contract PPA is PPAToken{
         Status status;
     }
 
-    mapping(string => ppa) ppas;
+    mapping(uint => ppa) ppas;
     ppa[] listOfPPAs;
 
-    function createPPA(address _buyerID, uint _energy, uint _price, uint _startDay, uint _endDay) public {
-
+    function createPPA(address _buyerID, uint _energy, uint _price, uint _startDay, uint _endDay, PPAToken _tokenContract) public {
+        tokenContract = _tokenContract;
         uint256 _tokenSupply = 1;
-
         require(_buyerID != msg.sender, "Wrong");
-
         balanceOf[msg.sender] = _tokenSupply;
         totalSupply = _tokenSupply;
 
@@ -110,12 +108,12 @@ contract PPA is PPAToken{
             msg.value == _numberOfPPA * tokenPrice,
             "Number of tokens does not match with the value"
         );
-        /*require(
-            PPAToken.balanceOf(address(this)) >= _numberOfPPA,
-            "Contact does not have enough tokens"
-        );*/
         require(
-            PPAToken.transfer(msg.sender, _numberOfPPA),
+            tokenContract.balanceOf(address(this)) >= _numberOfPPA,
+            "Contact does not have enough tokens"
+        );
+        require(
+            tokenContract.transfer(msg.sender, _numberOfPPA),
             "Some problem with token transfer"
         );
 
@@ -139,7 +137,7 @@ contract PPA is PPAToken{
         }
     }
 
-    function viewAllWaitingPPAs () public view returns (ppa[] memory){
+    function viewAllPPAs () public view returns (ppa[] memory){
         return listOfPPAs;
     }
 }

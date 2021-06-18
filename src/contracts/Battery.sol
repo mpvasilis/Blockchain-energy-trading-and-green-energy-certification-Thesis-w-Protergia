@@ -22,6 +22,7 @@ contract batteryRegistry is owned {
         address batteryID;            //battery wallet address
         string uuID;                  //id of battery  
         uint32 date;                  //Creation date
+        uint timestamp;
         bool isExist;                 //Check if battery exist into addNewBattery function
     }
 
@@ -37,12 +38,13 @@ contract batteryRegistry is owned {
     //add a battery by eth account address
     function addNewBattery (string memory uuID, uint32 date) public {
         require(batteries[msg.sender].isExist==false, "Battery details already added");
-        batteries[msg.sender] = battery(msg.sender, uuID, date, true);
+        batteries[msg.sender] = battery(msg.sender, uuID, date, block.timestamp, true);
 
         listOfBatteries.push(battery({
             batteryID: msg.sender,
             uuID: uuID,
             date: date,
+            timestamp: block.timestamp,
             isExist: true
             }));
     }
@@ -67,8 +69,8 @@ contract batteryRegistry is owned {
     }
 
     //view single battery by battery id
-    function getBatteryByID(address batteryID) public view returns (address, string memory, uint32){
-        return (batteries[batteryID].batteryID, batteries[batteryID].uuID, batteries[batteryID].date);
+    function getBatteryByID(address batteryID) public view returns (address, string memory, uint, uint32){
+        return (batteries[batteryID].batteryID, batteries[batteryID].uuID, batteries[batteryID].timestamp, batteries[batteryID].date);
     }
 }
 
@@ -90,13 +92,13 @@ contract energyBid is owned, batteryRegistry {
         uint32 day;            //day for which the offer is valid
         uint64 energy;         //energy to trade
         uint32 eprice;         //Energy market price per kWh
-        uint64 timestamp;      //timestamp for when the bid was created
+        uint timestamp;      //timestamp for when the bid was created
     }
     
     struct ask {
         address consumerID;    
         uint64 energy;
-        uint64 timestamp;
+        uint timestamp;
         uint32 day;
         uint64 remainingEnergy;
     }
@@ -108,7 +110,7 @@ contract energyBid is owned, batteryRegistry {
         uint64 energy;
         uint price;
         uint32 day;
-        uint64 timestamp;
+        uint timestamp;
     }
     
     mapping(address => uint) asks; 
@@ -123,7 +125,7 @@ contract energyBid is owned, batteryRegistry {
     //create energy offer 
     //There is a minimum energy requirement 
     //Only registered batteries can use this function
-    function energyOffer(uint32 _day, uint64 _energy, uint64 _timestamp, uint32 _eprice) public onlyRegisteredBattery {
+    function energyOffer(uint32 _day, uint64 _energy, uint32 _eprice) public onlyRegisteredBattery {
         require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh");
 
         listOfBids.push(bid({
@@ -132,20 +134,20 @@ contract energyBid is owned, batteryRegistry {
             day: _day,
             energy: _energy,
             eprice: _eprice,
-            timestamp: _timestamp
+            timestamp: block.timestamp
         }));
         nextNumberOfBid++;
         bidEnergyTrading(listOfBids[listOfBids.length-1]);
     }
 
     //make ask request and buy energy from available bids
-    function askEnergy(uint32 _day, uint64 _energy, uint64 _timestamp) public onlyRegisteredBattery {
+    function askEnergy(uint32 _day, uint64 _energy) public onlyRegisteredBattery {
         require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh");
 
         listOfAsks.push(ask({
             consumerID: msg.sender,
             energy: _energy,
-            timestamp: _timestamp,
+            timestamp: block.timestamp,
             day: _day,
             remainingEnergy: _energy
         }));
