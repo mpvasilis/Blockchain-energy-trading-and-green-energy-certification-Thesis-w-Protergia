@@ -155,7 +155,7 @@ contract energyBid is owned, batteryRegistry {
     }
 
     //core function for energy trading (ask case)
-    function askEnergyTrading(ask memory _ask) public onlyRegisteredBattery {
+    function askEnergyTrading(ask memory _ask) private onlyRegisteredBattery {
         //require(listOfBids.length > 0, "There is no energy offer");
 
         uint64 remainingEnergy = _ask.remainingEnergy;
@@ -232,7 +232,7 @@ contract energyBid is owned, batteryRegistry {
     }
 
     /////Energy trading for bid case 
-    function bidEnergyTrading(bid memory _bid) public onlyRegisteredBattery {
+    function bidEnergyTrading(bid memory _bid) private onlyRegisteredBattery {
 
         //require();
 

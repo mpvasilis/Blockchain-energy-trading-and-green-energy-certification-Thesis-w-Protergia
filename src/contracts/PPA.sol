@@ -1,58 +1,23 @@
 pragma solidity >=0.4.21 <0.7.0;
 pragma experimental ABIEncoderV2;
 
-contract PPAToken {
+import "src/contracts/token/ERC1155.sol";
+import "src/contracts/token/ERC1155Mintable.sol";
+import "src/contracts/token/IERC1155.sol";
 
-    string public name = "PPA Token"; 
-    string public symbol = "PPA";
-    string public standard = "PPA v1.0";
-    uint256 public totalSupply;
-    uint256 public tokenPrice;
-    uint256 public tokensSold;
-
-    event Transfer(address indexed _from, address indexed _to, uint256 _value);
-    event Approval(address indexed _owner, address indexed _spender, uint256 _value);
-    event Claim(address _buyer, uint256 _amount);
-
-    mapping(address => uint256) public balanceOf;
-    mapping(address => mapping(address => uint256)) public allowance;
-
-    function transfer(address _to, uint256 _value) public returns (bool success) {
-        require(balanceOf[msg.sender] >= _value, "Not enough balance");
-        balanceOf[msg.sender] -= _value;
-        balanceOf[_to] += _value;
-        emit Transfer(msg.sender, _to, _value);
-        return true;
-    }
-
-    function approve(address _spender, uint256 _value) public returns (bool success) {
-        allowance[msg.sender][_spender] = _value;
-        emit Approval(msg.sender, _spender, _value);
-        return true;
-    }
-
-    function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
-        require(
-            balanceOf[_from] >= _value,
-            "_from does not have enough tokens"
-        );
-        require(
-            allowance[_from][msg.sender] >= _value,
-            "Spender limit exceeded"
-        );
-        balanceOf[_from] -= _value;
-        balanceOf[_to] += _value;
-        allowance[_from][msg.sender] -= _value;
-        emit Transfer(_from, _to, _value);
-        return true;
-    }
+contract PPAToken is ERC1155, ERC1155Mintable {
+  constructor() public {
+  }
 }
 
-contract PPA is PPAToken{
+contract PPA {
 
-    PPAToken public tokenContract;
+    IERC1155 private _token;
+
+    mapping (uint => uint) price;
 
     enum Status {Pending, Approved, Rejected}
+    event Claim(address _buyer, uint256 _amount);
 
     struct ppa {
         address buyerID;
@@ -64,19 +29,16 @@ contract PPA is PPAToken{
         Status status;
     }
 
+    /////////////////////////////////////Implematation of ERC1155 Token Tomorrow/////////////////////////////////////
     mapping(uint => ppa) ppas;
     ppa[] listOfPPAs;
 
-    function createPPA(address _buyerID, uint _energy, uint _price, uint _startDay, uint _endDay, PPAToken _tokenContract) public {
-        tokenContract = _tokenContract;
-        uint256 _tokenSupply = 1;
-        require(_buyerID != msg.sender, "Wrong");
-        balanceOf[msg.sender] = _tokenSupply;
-        totalSupply = _tokenSupply;
+    function createPPA(address _buyerID, uint _energy, uint _price, uint _startDay, uint _endDay) public payable {
+        address payable _producerID = msg.sender;
 
         listOfPPAs.push(ppa({
             buyerID: _buyerID,
-            producerID: msg.sender,
+            producerID: _producerID,
             energy: _energy,
             price: _price,
             startDay: _startDay,
@@ -99,32 +61,15 @@ contract PPA is PPAToken{
     }
 
     function claimPPA() public payable {
-
-        //uint256 numberOfToken
-        uint256 _numberOfPPA = 1;
         address buyerId = msg.sender;
 
-        require(
-            msg.value == _numberOfPPA * tokenPrice,
-            "Number of tokens does not match with the value"
-        );
-        require(
-            tokenContract.balanceOf(address(this)) >= _numberOfPPA,
-            "Contact does not have enough tokens"
-        );
-        require(
-            tokenContract.transfer(msg.sender, _numberOfPPA),
-            "Some problem with token transfer"
-        );
-
         for(uint i = 0; i<listOfPPAs.length; i++){
-            require(listOfPPAs[i].producerID != msg.sender, "Wrong2");
+            require(listOfPPAs[i].producerID != buyerId, "Wrong2");
             if((listOfPPAs[i].buyerID == buyerId)){
                 require(listOfPPAs[i].status != Status.Rejected, "You can not accept a rejected PPA");
                 listOfPPAs[i].status = Status.Approved;
             }
         }
-        emit Claim(buyerId, _numberOfPPA);
     }
 
     function denyPPA() public {
@@ -135,6 +80,10 @@ contract PPA is PPAToken{
                 listOfPPAs[i].status = Status.Rejected;
             }
         }
+    }
+
+    function buyEnergy() public{
+
     }
 
     function viewAllPPAs () public view returns (ppa[] memory){
