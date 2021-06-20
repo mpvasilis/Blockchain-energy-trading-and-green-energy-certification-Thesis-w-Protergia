@@ -1,6 +1,6 @@
 pragma solidity >=0.4.21 <0.7.0;
 
-import "./ERC1155.sol";
+import "src/contracts/token/ERC1155.sol";
 
 /**
     @dev Mintable form of ERC1155

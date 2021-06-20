@@ -1,6 +1,6 @@
 pragma solidity >=0.4.21 <0.7.0;
 
-import "./ERC1155MixedFungible.sol";
+import "src/contracts/token/ERC1155MixedFungible.sol";
 
 /**
     @dev Mintable form of ERC1155

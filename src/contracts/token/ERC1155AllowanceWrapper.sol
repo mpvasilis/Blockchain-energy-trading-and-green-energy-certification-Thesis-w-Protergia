@@ -1,8 +1,8 @@
 pragma solidity >=0.4.21 <0.7.0;
 
-import "./IERC1155.sol";
-import "./ERC165.sol";
-import "./SafeMath.sol";
+import "src/contracts/token/IERC1155.sol";
+import "src/contracts/token/ERC165.sol";
+import "src/contracts/token/SafeMath.sol";
 
 // Shows how you could wrap some allowance on top of ERC1155
 // A user would setApprovalForAll(true) for this wrapper in the target contract,

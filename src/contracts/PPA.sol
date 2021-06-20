@@ -33,7 +33,7 @@ contract PPA {
     /////////////////////////////////////Implematation of ERC1155 Token Tomorrow/////////////////////////////////////
     mapping(uint => ppa) ppas;
     ppa[] listOfPPAs;
-    uint collectID = 0;
+    uint nextCollectID = 0;
 
     function createPPA(address _buyerID, uint _energy, uint _price, uint _startDay, uint _endDay, IERC1155 token) public payable {
         
@@ -94,7 +94,7 @@ contract PPA {
 
     function claimToken(uint tokenID) public payable{
         uint256 weiAmount = msg.value;
-        require(weiAmount >= price[tokenID] && price[tokenID] != 0);
+        require(weiAmount >= price[tokenID] && price[tokenID] != 0, "error");
 
         _token.safeTransferFrom(address(this), msg.sender, tokenID, 1, "PPA");
     }

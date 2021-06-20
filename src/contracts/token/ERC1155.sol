@@ -1,10 +1,10 @@
 pragma solidity >=0.4.21 <0.7.0;
 
-import "./ERC165.sol";
-import "./SafeMath.sol";
-import "./Address.sol";
-import "./IERC1155TokenReceiver.sol";
-import "./IERC1155.sol";
+import "src/contracts/token/ERC165.sol";
+import "src/contracts/token/SafeMath.sol";
+import "src/contracts/token/Address.sol";
+import "src/contracts/token/IERC1155TokenReceiver.sol";
+import "src/contracts/token/IERC1155.sol";
 
 // A sample implementation of core ERC1155 function.
 contract ERC1155 is IERC1155, ERC165{
