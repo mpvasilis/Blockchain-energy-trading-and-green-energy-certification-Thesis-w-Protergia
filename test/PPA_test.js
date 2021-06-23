@@ -1,1 +1,15 @@
-const PPA = artifacts.require('PPA')
+const PPA = artifacts.require('src/contracts/PPA.sol')
+const PPAToken = artifacts.require("src/contracts/PPA.sol");
+const { default: Web3 } = require("web3");
+const { assert } = require("chai");
+
+contract("PPA", async(accounts)=>{
+    let token, ppa;
+
+    before(async () => {
+		token = await PPAToken.new();
+		ppa = await PPA.new();
+		await token.transfer(ppa.address, tokensAvailable);
+	});
+})
+

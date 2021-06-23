@@ -1,8 +1,8 @@
 const energyBid = artifacts.require("./Battery.sol");
-//const batteryRegistry = artifacts.require("Battery");
+const PPA = artifacts.require("./PPA.sol");
 
 module.exports = function (deployer) {
     //const battID = msg.sender;
-    //deployer.deploy(batteryRegistry);
-	deployer.deploy(energyBid);
+    await deployer.deploy(PPA);
+	await deployer.deploy(energyBid);
 };
