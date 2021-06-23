@@ -4,13 +4,14 @@ pragma experimental ABIEncoderV2;
 import "src/contracts/token/ERC1155.sol";
 import "src/contracts/token/ERC1155Mintable.sol";
 import "src/contracts/token/IERC1155.sol";
+import "src/contracts/Battery.sol";
 
 contract PPAToken is ERC1155, ERC1155Mintable {
   constructor() public {
   }
 }
 
-contract PPA {
+contract PPA is owned{
 
     IERC1155 private _token;
 
@@ -21,7 +22,7 @@ contract PPA {
 
     struct ppa {
         address buyerID;
-        address payable producerID;
+        address producerID;
         uint energy;
         uint price;
         uint startDay;
@@ -30,24 +31,23 @@ contract PPA {
         Status status;
     }
 
-    /////////////////////////////////////Implematation of ERC1155 Token Tomorrow/////////////////////////////////////
     mapping(uint => ppa) ppas;
     ppa[] listOfPPAs;
     uint nextCollectID = 0;
 
-    function createPPA(address _buyerID, uint _energy, uint _price, uint _startDay, uint _endDay, IERC1155 token) public payable {
+    function createPPA(uint _energy, uint _price, uint _endDay, IERC1155 token) public payable {
         
-        require(address(token) != address(0));
+        require(address(token) != address(0x0));
         _token = token;
-        price[nextCollectID] = 1;
-        address payable _producerID = msg.sender;
+        price[nextCollectID] = 1 wei;
+        address _producerID = msg.sender;
 
         listOfPPAs.push(ppa({
-            buyerID: _buyerID,
+            buyerID: address(0x0),
             producerID: _producerID,
             energy: _energy,
             price: _price,
-            startDay: _startDay,
+            startDay: block.timestamp,
             endDay: _endDay,
             collectID: nextCollectID,
             status: Status.Pending
@@ -55,15 +55,11 @@ contract PPA {
         nextCollectID++;
     }
 
-    function changePPATerms(address _buyerID, uint _energy, uint _price, uint _startDay, uint _endDay) public {
+    function changePPATerms(address _buyerID, uint _endDay) public{
         for(uint i = 0; i<listOfPPAs.length; i++){
             if(listOfPPAs[i].buyerID == _buyerID){
                 require(listOfPPAs[i].status != Status.Approved, "You can not change an approved PPA");
-                listOfPPAs[i].energy = _energy;
-                listOfPPAs[i].price = _price;
-                listOfPPAs[i].startDay = _startDay;
                 listOfPPAs[i].endDay = _endDay;
-                listOfPPAs[i].status = Status.Pending;
             }
         }
     }
@@ -71,14 +67,12 @@ contract PPA {
     function claimPPA() external payable {
         address buyerId = msg.sender;
         //uint tokenId = 1;
-
         for(uint i = 0; i<listOfPPAs.length; i++){
-            require(listOfPPAs[i].producerID != buyerId, "Wrong2");
-            if((listOfPPAs[i].buyerID == buyerId)){
-                require(listOfPPAs[i].status != Status.Rejected, "You can not accept a rejected PPA");
-                listOfPPAs[i].status = Status.Approved;
-                claimToken(listOfPPAs[i].collectID);
-            }
+            require(listOfPPAs[i].producerID != buyerId, "Wrong address buyer");
+            require(listOfPPAs[i].status != Status.Rejected, "You can not accept a rejected PPA");
+            listOfPPAs[i].status = Status.Approved;
+            listOfPPAs[i].buyerID = buyerId;
+            claimToken(listOfPPAs[i].producerID, listOfPPAs[i].buyerID, listOfPPAs[i].collectID);
         }
     }
 
@@ -92,19 +86,15 @@ contract PPA {
         }
     }
 
-    function claimToken(uint tokenID) public payable{
+    function claimToken(address _from, address _to, uint tokenID) public payable{
         uint256 weiAmount = msg.value;
         require(weiAmount >= price[tokenID] && price[tokenID] != 0, "error");
 
-        _token.safeTransferFrom(address(this), msg.sender, tokenID, 1, "PPA");
+        _token.safeTransferFrom(_from, _to, tokenID, 1 wei, "PPA");
     }
 
     function onERC1155Received(address _operator, address _from, uint256 _id, uint256 _value, bytes calldata _data) external returns(bytes4){
         return bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"));
-    }
-
-    function buyEnergy() public{
-
     }
 
     function viewAllPPAs () public view returns (ppa[] memory){

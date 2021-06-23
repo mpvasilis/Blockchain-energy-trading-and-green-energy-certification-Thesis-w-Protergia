@@ -5,9 +5,10 @@ import "src/contracts/token/SafeMath.sol";
 import "src/contracts/token/Address.sol";
 import "src/contracts/token/IERC1155TokenReceiver.sol";
 import "src/contracts/token/IERC1155.sol";
+import "src/contracts/token/IERC1888.sol";
 
 // A sample implementation of core ERC1155 function.
-contract ERC1155 is IERC1155, ERC165{
+contract ERC1155 is IERC1155, ERC1888, ERC165{
     using SafeMath for uint256;
     using Address for address;
 
@@ -176,4 +177,6 @@ contract ERC1155 is IERC1155, ERC165{
     function isApprovedForAll(address _owner, address _operator) external view returns (bool) {
         return operatorApproval[_owner][_operator];
     }
+
+    /////////////////////////////////////////// ERC1888 //////////////////////////////////////////////
 }
