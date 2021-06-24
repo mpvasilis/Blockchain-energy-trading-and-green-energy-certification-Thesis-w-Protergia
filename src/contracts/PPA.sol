@@ -1,24 +1,31 @@
-pragma solidity >=0.4.21 <0.7.0;
+pragma solidity >=0.4.21 <0.9.0;
 pragma experimental ABIEncoderV2;
 
 import "src/contracts/token/ERC1155.sol";
 import "src/contracts/token/ERC1155Mintable.sol";
 import "src/contracts/token/IERC1155.sol";
-import "src/contracts/Battery.sol";
 
+//import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
+/*
+*Installed open zeppelin version 3.1.0
+*https://github.com/OpenZeppelin/openzeppelin-contracts/tree/v3.1.0
+*with "npm i @openzeppelin/contracts@3.1.0"
+*/
 contract PPAToken is ERC1155, ERC1155Mintable {
-  constructor() public {
-  }
-}
+    constructor() public {
 
-contract PPA is owned{
+    }
+}
+contract PPA is IERC1155{
 
     IERC1155 private _token;
 
     mapping (uint => uint) price;
 
     enum Status {Pending, Approved, Rejected}
-    event Claim(address _buyer, uint256 _amount);
+    event createdPPA(address indexed producer, uint energy, uint price);
+    event purchasedPPA(uint itemID, address indexed buyer, address indexed producer);
+    event changedPPA(address indexed producer, address indexed buyer, uint energy, uint endDay);
 
     struct ppa {
         address buyerID;
@@ -31,17 +38,15 @@ contract PPA is owned{
         Status status;
     }
 
-    mapping(uint => ppa) ppas;
+    mapping(address => uint) ppas;
     ppa[] listOfPPAs;
     uint nextCollectID = 0;
 
-    function createPPA(uint _energy, uint _price, uint _endDay, IERC1155 token) public payable {
-        
+    function createPPA(uint _energy, uint _price, uint _endDay, IERC1155 token) public {
         require(address(token) != address(0x0));
-        _token = token;
-        price[nextCollectID] = 1 wei;
+        price[nextCollectID] = 1;
+        token = _token;
         address _producerID = msg.sender;
-
         listOfPPAs.push(ppa({
             buyerID: address(0x0),
             producerID: _producerID,
@@ -52,7 +57,10 @@ contract PPA is owned{
             collectID: nextCollectID,
             status: Status.Pending
         }));
+        //ERC1155Mintable.create(price[nextCollectID], "PPA");
+        //mint(_producerID, nextCollectID, 1, "");
         nextCollectID++;
+        emit createdPPA(_producerID, _energy, _price);
     }
 
     function changePPATerms(address _buyerID, uint _endDay) public{
@@ -60,6 +68,7 @@ contract PPA is owned{
             if(listOfPPAs[i].buyerID == _buyerID){
                 require(listOfPPAs[i].status != Status.Approved, "You can not change an approved PPA");
                 listOfPPAs[i].endDay = _endDay;
+                emit changedPPA(listOfPPAs[i].producerID, listOfPPAs[i].buyerID, listOfPPAs[i].energy, listOfPPAs[i].endDay);
             }
         }
     }
@@ -73,6 +82,7 @@ contract PPA is owned{
             listOfPPAs[i].status = Status.Approved;
             listOfPPAs[i].buyerID = buyerId;
             claimToken(listOfPPAs[i].producerID, listOfPPAs[i].buyerID, listOfPPAs[i].collectID);
+            emit purchasedPPA(listOfPPAs[i].collectID, listOfPPAs[i].buyerID, listOfPPAs[i].producerID);
         }
     }
 
@@ -97,7 +107,16 @@ contract PPA is owned{
         return bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"));
     }
 
+    function buyEnergyByPPA() public{
+
+    }
+
     function viewAllPPAs () public view returns (ppa[] memory){
         return listOfPPAs;
+    }
+
+    function getPPAbyID(uint _id) public view returns (address, address, uint, uint, uint, uint){
+        ppa storage _ppa = listOfPPAs[_id];
+        return (_ppa.producerID, _ppa.buyerID, _ppa.energy, _ppa.price, _ppa.startDay, _ppa.endDay);
     }
 }

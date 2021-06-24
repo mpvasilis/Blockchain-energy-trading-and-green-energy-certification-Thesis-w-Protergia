@@ -34,17 +34,17 @@
     "absolutePath": "/C/Users/Lenovo/projects/ethereum/protergia/blockchain-energy-trading-and-green-energy-certification-thesis-w-protergia/src/contracts/token/IERC1155Metadata.sol",
     "exportedSymbols": {
       "IERC1155Metadata_Name": [
-        5042
+        3429
       ],
       "IERC1155Metadata_URI": [
-        5034
+        3421
       ]
     },
-    "id": 5043,
+    "id": 3430,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 5026,
+        "id": 3413,
         "literals": [
           "solidity",
           ">=",
@@ -55,7 +55,7 @@
           ".0"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:32:16"
+        "src": "0:32:11"
       },
       {
         "baseContracts": [],
@@ -63,9 +63,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 5034,
+        "id": 3421,
         "linearizedBaseContracts": [
-          5034
+          3421
         ],
         "name": "IERC1155Metadata_URI",
         "nodeType": "ContractDefinition",
@@ -73,23 +73,23 @@
           {
             "body": null,
             "documentation": "@notice A distinct Uniform Resource Identifier (URI) for a given token\n@dev URIs are defined in RFC 3986\n@return  URI string",
-            "id": 5033,
+            "id": 3420,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "uri",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5029,
+              "id": 3416,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5028,
+                  "id": 3415,
                   "name": "_id",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5033,
-                  "src": "256:11:16",
+                  "scope": 3420,
+                  "src": "256:11:11",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -97,10 +97,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 5027,
+                    "id": 3414,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "256:7:16",
+                    "src": "256:7:11",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -110,19 +110,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "255:13:16"
+              "src": "255:13:11"
             },
             "returnParameters": {
-              "id": 5032,
+              "id": 3419,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5031,
+                  "id": 3418,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5033,
-                  "src": "292:13:16",
+                  "scope": 3420,
+                  "src": "292:13:11",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -130,10 +130,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 5030,
+                    "id": 3417,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "292:6:16",
+                    "src": "292:6:11",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -143,17 +143,17 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "291:15:16"
+              "src": "291:15:11"
             },
-            "scope": 5034,
-            "src": "243:64:16",
+            "scope": 3421,
+            "src": "243:64:11",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
           }
         ],
-        "scope": 5043,
-        "src": "36:274:16"
+        "scope": 3430,
+        "src": "36:274:11"
       },
       {
         "baseContracts": [],
@@ -161,9 +161,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 5042,
+        "id": 3429,
         "linearizedBaseContracts": [
-          5042
+          3429
         ],
         "name": "IERC1155Metadata_Name",
         "nodeType": "ContractDefinition",
@@ -171,23 +171,23 @@
           {
             "body": null,
             "documentation": "@notice A distinct Uniform Resource Identifier (URI) for a given token\n@dev URIs are defined in RFC 3986\n@return  URI string",
-            "id": 5041,
+            "id": 3428,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "name",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5037,
+              "id": 3424,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5036,
+                  "id": 3423,
                   "name": "_id",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5041,
-                  "src": "536:11:16",
+                  "scope": 3428,
+                  "src": "536:11:11",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -195,10 +195,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 5035,
+                    "id": 3422,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "536:7:16",
+                    "src": "536:7:11",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -208,19 +208,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "535:13:16"
+              "src": "535:13:11"
             },
             "returnParameters": {
-              "id": 5040,
+              "id": 3427,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5039,
+                  "id": 3426,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5041,
-                  "src": "572:13:16",
+                  "scope": 3428,
+                  "src": "572:13:11",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -228,10 +228,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 5038,
+                    "id": 3425,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "572:6:16",
+                    "src": "572:6:11",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -241,30 +241,30 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "571:15:16"
+              "src": "571:15:11"
             },
-            "scope": 5042,
-            "src": "522:65:16",
+            "scope": 3429,
+            "src": "522:65:11",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
           }
         ],
-        "scope": 5043,
-        "src": "314:276:16"
+        "scope": 3430,
+        "src": "314:276:11"
       }
     ],
-    "src": "0:590:16"
+    "src": "0:590:11"
   },
   "legacyAST": {
     "attributes": {
       "absolutePath": "/C/Users/Lenovo/projects/ethereum/protergia/blockchain-energy-trading-and-green-energy-certification-thesis-w-protergia/src/contracts/token/IERC1155Metadata.sol",
       "exportedSymbols": {
         "IERC1155Metadata_Name": [
-          5042
+          3429
         ],
         "IERC1155Metadata_URI": [
-          5034
+          3421
         ]
       }
     },
@@ -281,9 +281,9 @@
             ".0"
           ]
         },
-        "id": 5026,
+        "id": 3413,
         "name": "PragmaDirective",
-        "src": "0:32:16"
+        "src": "0:32:11"
       },
       {
         "attributes": {
@@ -297,10 +297,10 @@
           "documentation": null,
           "fullyImplemented": false,
           "linearizedBaseContracts": [
-            5034
+            3421
           ],
           "name": "IERC1155Metadata_URI",
-          "scope": 5043
+          "scope": 3430
         },
         "children": [
           {
@@ -314,7 +314,7 @@
                 null
               ],
               "name": "uri",
-              "scope": 5034,
+              "scope": 3421,
               "stateMutability": "view",
               "superFunction": null,
               "visibility": "external"
@@ -326,7 +326,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "_id",
-                      "scope": 5033,
+                      "scope": 3420,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -339,19 +339,19 @@
                           "name": "uint256",
                           "type": "uint256"
                         },
-                        "id": 5027,
+                        "id": 3414,
                         "name": "ElementaryTypeName",
-                        "src": "256:7:16"
+                        "src": "256:7:11"
                       }
                     ],
-                    "id": 5028,
+                    "id": 3415,
                     "name": "VariableDeclaration",
-                    "src": "256:11:16"
+                    "src": "256:11:11"
                   }
                 ],
-                "id": 5029,
+                "id": 3416,
                 "name": "ParameterList",
-                "src": "255:13:16"
+                "src": "255:13:11"
               },
               {
                 "children": [
@@ -359,7 +359,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "",
-                      "scope": 5033,
+                      "scope": 3420,
                       "stateVariable": false,
                       "storageLocation": "memory",
                       "type": "string",
@@ -372,29 +372,29 @@
                           "name": "string",
                           "type": "string"
                         },
-                        "id": 5030,
+                        "id": 3417,
                         "name": "ElementaryTypeName",
-                        "src": "292:6:16"
+                        "src": "292:6:11"
                       }
                     ],
-                    "id": 5031,
+                    "id": 3418,
                     "name": "VariableDeclaration",
-                    "src": "292:13:16"
+                    "src": "292:13:11"
                   }
                 ],
-                "id": 5032,
+                "id": 3419,
                 "name": "ParameterList",
-                "src": "291:15:16"
+                "src": "291:15:11"
               }
             ],
-            "id": 5033,
+            "id": 3420,
             "name": "FunctionDefinition",
-            "src": "243:64:16"
+            "src": "243:64:11"
           }
         ],
-        "id": 5034,
+        "id": 3421,
         "name": "ContractDefinition",
-        "src": "36:274:16"
+        "src": "36:274:11"
       },
       {
         "attributes": {
@@ -408,10 +408,10 @@
           "documentation": null,
           "fullyImplemented": false,
           "linearizedBaseContracts": [
-            5042
+            3429
           ],
           "name": "IERC1155Metadata_Name",
-          "scope": 5043
+          "scope": 3430
         },
         "children": [
           {
@@ -425,7 +425,7 @@
                 null
               ],
               "name": "name",
-              "scope": 5042,
+              "scope": 3429,
               "stateMutability": "view",
               "superFunction": null,
               "visibility": "external"
@@ -437,7 +437,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "_id",
-                      "scope": 5041,
+                      "scope": 3428,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -450,19 +450,19 @@
                           "name": "uint256",
                           "type": "uint256"
                         },
-                        "id": 5035,
+                        "id": 3422,
                         "name": "ElementaryTypeName",
-                        "src": "536:7:16"
+                        "src": "536:7:11"
                       }
                     ],
-                    "id": 5036,
+                    "id": 3423,
                     "name": "VariableDeclaration",
-                    "src": "536:11:16"
+                    "src": "536:11:11"
                   }
                 ],
-                "id": 5037,
+                "id": 3424,
                 "name": "ParameterList",
-                "src": "535:13:16"
+                "src": "535:13:11"
               },
               {
                 "children": [
@@ -470,7 +470,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "",
-                      "scope": 5041,
+                      "scope": 3428,
                       "stateVariable": false,
                       "storageLocation": "memory",
                       "type": "string",
@@ -483,34 +483,34 @@
                           "name": "string",
                           "type": "string"
                         },
-                        "id": 5038,
+                        "id": 3425,
                         "name": "ElementaryTypeName",
-                        "src": "572:6:16"
+                        "src": "572:6:11"
                       }
                     ],
-                    "id": 5039,
+                    "id": 3426,
                     "name": "VariableDeclaration",
-                    "src": "572:13:16"
+                    "src": "572:13:11"
                   }
                 ],
-                "id": 5040,
+                "id": 3427,
                 "name": "ParameterList",
-                "src": "571:15:16"
+                "src": "571:15:11"
               }
             ],
-            "id": 5041,
+            "id": 3428,
             "name": "FunctionDefinition",
-            "src": "522:65:16"
+            "src": "522:65:11"
           }
         ],
-        "id": 5042,
+        "id": 3429,
         "name": "ContractDefinition",
-        "src": "314:276:16"
+        "src": "314:276:11"
       }
     ],
-    "id": 5043,
+    "id": 3430,
     "name": "SourceUnit",
-    "src": "0:590:16"
+    "src": "0:590:11"
   },
   "compiler": {
     "name": "solc",
@@ -518,7 +518,7 @@
   },
   "networks": {},
   "schemaVersion": "3.3.4",
-  "updatedAt": "2021-06-20T15:12:05.109Z",
+  "updatedAt": "2021-06-24T13:56:30.272Z",
   "devdoc": {
     "methods": {
       "name(uint256)": {

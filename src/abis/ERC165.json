@@ -23,25 +23,25 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.5.16+commit.9c3226ce\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":true,\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"_interfaceId\",\"type\":\"bytes4\"}],\"name\":\"supportsInterface\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"https://github.com/ethereum/EIPs/blob/master/EIPS/eip-165.md\",\"methods\":{\"supportsInterface(bytes4)\":{\"details\":\"Interface identification is specified in ERC-165. This function uses less than 30,000 gas.\",\"params\":{\"_interfaceId\":\"The interface identifier, as specified in ERC-165\"}}},\"title\":\"ERC165\"},\"userdoc\":{\"methods\":{\"supportsInterface(bytes4)\":{\"notice\":\"Query if a contract implements an interface\"}}}},\"settings\":{\"compilationTarget\":{\"src/contracts/token/ERC165.sol\":\"ERC165\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"src/contracts/token/ERC165.sol\":{\"keccak256\":\"0x779f05b95de34c6f0251b9bd412ff5354aa61770564b1ab1043ff7f44c4aa1e6\",\"urls\":[\"bzz-raw://55e7522e64142c65ff9a774aed72558774a8bd2c3119a90658ebaf60e1586fab\",\"dweb:/ipfs/QmXLfUVYMVLtWRHm3owfSKrrSbvikZEVnHBM7rvbKVbUhy\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.5.16+commit.9c3226ce\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":true,\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"_interfaceId\",\"type\":\"bytes4\"}],\"name\":\"supportsInterface\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"https://github.com/ethereum/EIPs/blob/master/EIPS/eip-165.md\",\"methods\":{\"supportsInterface(bytes4)\":{\"details\":\"Interface identification is specified in ERC-165. This function uses less than 30,000 gas.\",\"params\":{\"_interfaceId\":\"The interface identifier, as specified in ERC-165\"}}},\"title\":\"ERC165\"},\"userdoc\":{\"methods\":{\"supportsInterface(bytes4)\":{\"notice\":\"Query if a contract implements an interface\"}}}},\"settings\":{\"compilationTarget\":{\"/C/Users/Lenovo/projects/ethereum/protergia/blockchain-energy-trading-and-green-energy-certification-thesis-w-protergia/src/contracts/token/ERC165.sol\":\"ERC165\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/C/Users/Lenovo/projects/ethereum/protergia/blockchain-energy-trading-and-green-energy-certification-thesis-w-protergia/src/contracts/token/ERC165.sol\":{\"keccak256\":\"0x779f05b95de34c6f0251b9bd412ff5354aa61770564b1ab1043ff7f44c4aa1e6\",\"urls\":[\"bzz-raw://55e7522e64142c65ff9a774aed72558774a8bd2c3119a90658ebaf60e1586fab\",\"dweb:/ipfs/QmXLfUVYMVLtWRHm3owfSKrrSbvikZEVnHBM7rvbKVbUhy\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "pragma solidity >=0.4.21 <0.7.0;\r\n\r\n/**\r\n * @title ERC165\r\n * @dev https://github.com/ethereum/EIPs/blob/master/EIPS/eip-165.md\r\n */\r\ninterface ERC165 {\r\n\r\n    /**\r\n     * @notice Query if a contract implements an interface\r\n     * @param _interfaceId The interface identifier, as specified in ERC-165\r\n     * @dev Interface identification is specified in ERC-165. This function\r\n     * uses less than 30,000 gas.\r\n     */\r\n    function supportsInterface(bytes4 _interfaceId)\r\n    external\r\n    view\r\n    returns (bool);\r\n}",
-  "sourcePath": "src/contracts/token/ERC165.sol",
+  "sourcePath": "C:/Users/Lenovo/projects/ethereum/protergia/blockchain-energy-trading-and-green-energy-certification-thesis-w-protergia/src/contracts/token/ERC165.sol",
   "ast": {
-    "absolutePath": "src/contracts/token/ERC165.sol",
+    "absolutePath": "/C/Users/Lenovo/projects/ethereum/protergia/blockchain-energy-trading-and-green-energy-certification-thesis-w-protergia/src/contracts/token/ERC165.sol",
     "exportedSymbols": {
       "ERC165": [
-        6490
+        1626
       ]
     },
-    "id": 6491,
+    "id": 1627,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6482,
+        "id": 1618,
         "literals": [
           "solidity",
           ">=",
@@ -52,7 +52,7 @@
           ".0"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:32:24"
+        "src": "0:32:5"
       },
       {
         "baseContracts": [],
@@ -60,9 +60,9 @@
         "contractKind": "interface",
         "documentation": "@title ERC165\n@dev https://github.com/ethereum/EIPs/blob/master/EIPS/eip-165.md",
         "fullyImplemented": false,
-        "id": 6490,
+        "id": 1626,
         "linearizedBaseContracts": [
-          6490
+          1626
         ],
         "name": "ERC165",
         "nodeType": "ContractDefinition",
@@ -70,23 +70,23 @@
           {
             "body": null,
             "documentation": "@notice Query if a contract implements an interface\n@param _interfaceId The interface identifier, as specified in ERC-165\n@dev Interface identification is specified in ERC-165. This function\nuses less than 30,000 gas.",
-            "id": 6489,
+            "id": 1625,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "supportsInterface",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 6485,
+              "id": 1621,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6484,
+                  "id": 1620,
                   "name": "_interfaceId",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6489,
-                  "src": "455:19:24",
+                  "scope": 1625,
+                  "src": "455:19:5",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -94,10 +94,10 @@
                     "typeString": "bytes4"
                   },
                   "typeName": {
-                    "id": 6483,
+                    "id": 1619,
                     "name": "bytes4",
                     "nodeType": "ElementaryTypeName",
-                    "src": "455:6:24",
+                    "src": "455:6:5",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes4",
                       "typeString": "bytes4"
@@ -107,19 +107,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "454:21:24"
+              "src": "454:21:5"
             },
             "returnParameters": {
-              "id": 6488,
+              "id": 1624,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6487,
+                  "id": 1623,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 6489,
-                  "src": "514:4:24",
+                  "scope": 1625,
+                  "src": "514:4:5",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -127,10 +127,10 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 6486,
+                    "id": 1622,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "514:4:24",
+                    "src": "514:4:5",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -140,27 +140,27 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "513:6:24"
+              "src": "513:6:5"
             },
-            "scope": 6490,
-            "src": "428:92:24",
+            "scope": 1626,
+            "src": "428:92:5",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
           }
         ],
-        "scope": 6491,
-        "src": "134:389:24"
+        "scope": 1627,
+        "src": "134:389:5"
       }
     ],
-    "src": "0:523:24"
+    "src": "0:523:5"
   },
   "legacyAST": {
     "attributes": {
-      "absolutePath": "src/contracts/token/ERC165.sol",
+      "absolutePath": "/C/Users/Lenovo/projects/ethereum/protergia/blockchain-energy-trading-and-green-energy-certification-thesis-w-protergia/src/contracts/token/ERC165.sol",
       "exportedSymbols": {
         "ERC165": [
-          6490
+          1626
         ]
       }
     },
@@ -177,9 +177,9 @@
             ".0"
           ]
         },
-        "id": 6482,
+        "id": 1618,
         "name": "PragmaDirective",
-        "src": "0:32:24"
+        "src": "0:32:5"
       },
       {
         "attributes": {
@@ -193,10 +193,10 @@
           "documentation": "@title ERC165\n@dev https://github.com/ethereum/EIPs/blob/master/EIPS/eip-165.md",
           "fullyImplemented": false,
           "linearizedBaseContracts": [
-            6490
+            1626
           ],
           "name": "ERC165",
-          "scope": 6491
+          "scope": 1627
         },
         "children": [
           {
@@ -210,7 +210,7 @@
                 null
               ],
               "name": "supportsInterface",
-              "scope": 6490,
+              "scope": 1626,
               "stateMutability": "view",
               "superFunction": null,
               "visibility": "external"
@@ -222,7 +222,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "_interfaceId",
-                      "scope": 6489,
+                      "scope": 1625,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "bytes4",
@@ -235,19 +235,19 @@
                           "name": "bytes4",
                           "type": "bytes4"
                         },
-                        "id": 6483,
+                        "id": 1619,
                         "name": "ElementaryTypeName",
-                        "src": "455:6:24"
+                        "src": "455:6:5"
                       }
                     ],
-                    "id": 6484,
+                    "id": 1620,
                     "name": "VariableDeclaration",
-                    "src": "455:19:24"
+                    "src": "455:19:5"
                   }
                 ],
-                "id": 6485,
+                "id": 1621,
                 "name": "ParameterList",
-                "src": "454:21:24"
+                "src": "454:21:5"
               },
               {
                 "children": [
@@ -255,7 +255,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "",
-                      "scope": 6489,
+                      "scope": 1625,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "bool",
@@ -268,34 +268,34 @@
                           "name": "bool",
                           "type": "bool"
                         },
-                        "id": 6486,
+                        "id": 1622,
                         "name": "ElementaryTypeName",
-                        "src": "514:4:24"
+                        "src": "514:4:5"
                       }
                     ],
-                    "id": 6487,
+                    "id": 1623,
                     "name": "VariableDeclaration",
-                    "src": "514:4:24"
+                    "src": "514:4:5"
                   }
                 ],
-                "id": 6488,
+                "id": 1624,
                 "name": "ParameterList",
-                "src": "513:6:24"
+                "src": "513:6:5"
               }
             ],
-            "id": 6489,
+            "id": 1625,
             "name": "FunctionDefinition",
-            "src": "428:92:24"
+            "src": "428:92:5"
           }
         ],
-        "id": 6490,
+        "id": 1626,
         "name": "ContractDefinition",
-        "src": "134:389:24"
+        "src": "134:389:5"
       }
     ],
-    "id": 6491,
+    "id": 1627,
     "name": "SourceUnit",
-    "src": "0:523:24"
+    "src": "0:523:5"
   },
   "compiler": {
     "name": "solc",
@@ -303,7 +303,7 @@
   },
   "networks": {},
   "schemaVersion": "3.3.4",
-  "updatedAt": "2021-06-20T15:12:04.925Z",
+  "updatedAt": "2021-06-24T13:58:40.568Z",
   "devdoc": {
     "details": "https://github.com/ethereum/EIPs/blob/master/EIPS/eip-165.md",
     "methods": {

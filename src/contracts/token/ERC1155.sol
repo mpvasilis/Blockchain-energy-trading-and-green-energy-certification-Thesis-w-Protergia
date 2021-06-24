@@ -1,4 +1,4 @@
-pragma solidity >=0.4.21 <0.7.0;
+pragma solidity >=0.4.21 <0.9.0;
 
 import "src/contracts/token/ERC165.sol";
 import "src/contracts/token/SafeMath.sol";

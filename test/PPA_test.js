@@ -6,6 +6,10 @@ const { assert } = require("chai");
 contract("PPA", async(accounts)=>{
     let token, ppa;
 
+    it("Should add a new PPA", async() => {
+
+    })
+
     before(async () => {
 		token = await PPAToken.new();
 		ppa = await PPA.new();
