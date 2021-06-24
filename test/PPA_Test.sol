@@ -5,13 +5,17 @@ import "truffle/DeployedAddresses.sol"; //This code uses the DeployedAddresses l
 import "src/contracts/PPA.sol";
 
 contract testPPA {
-    //PPAToken ppaToken;
+    PPAToken ppaToken;
     PPA ppa;
 
-    function testInitializePPA() public returns (bool success) {
-        ppa = new PPA(DeployedAddresses.PPA());
+    function beforeEach() public {
+        ppaToken = new PPAToken(DeployedAddresses.PPAToken());
+    }
 
-        address payable adrr = DeployedAddresses.PPA();
+    function testInitializePPA() public returns (bool success) {
+        ppa = new PPA();
+
+        address payable adrr = DeployedAddresses.PPAToken();
 
         uint energyExpected = 1000;
         uint priceExpected = 10;
