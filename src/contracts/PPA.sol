@@ -115,8 +115,8 @@ contract PPA is IERC1155{
         return listOfPPAs;
     }
 
-    function getPPAbyID(uint _id) public view returns (address, address, uint, uint, uint, uint){
+    function getPPAbyID(uint _id) public view returns (address, address, uint, uint, uint, uint, uint){
         ppa storage _ppa = listOfPPAs[_id];
-        return (_ppa.producerID, _ppa.buyerID, _ppa.energy, _ppa.price, _ppa.startDay, _ppa.endDay);
+        return (_ppa.producerID, _ppa.buyerID, _ppa.energy, _ppa.price, _ppa.startDay, _ppa.endDay, uint(_ppa.status));
     }
 }

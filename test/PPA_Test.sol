@@ -9,7 +9,7 @@ contract testPPA {
     PPA ppa;
 
     function testInitializePPA() public returns (bool success) {
-        ppa = new PPA();
+        ppa = new PPA(DeployedAddresses.PPA());
 
         address payable adrr = DeployedAddresses.PPA();
 
@@ -17,6 +17,19 @@ contract testPPA {
         uint priceExpected = 10;
         uint dayExpected = 21102030;
 
-        ppa.createPPA(energyExpected, priceExpected, dayExpected, adrr);
+        address producer = address(0x0);
+        address buyer;
+        uint energy;
+        uint price;
+        uint startDay;
+        uint endDay;
+        uint status;
+
+        uint _id = ppa.createPPA(energyExpected, priceExpected, dayExpected, adrr);
+        (producer, buyer, energy, price, startDay, endDay, status) = ppa.getPPAbyID(_id);
+        Assert.equal(buyer, this, "Wrong 1");
+        Assert.equal(energy, energyExpected, "Wrong 2");
+        Assert.equal(price, priceExpected, "Wrong 3");
+        Assert.equal(endDay, dayExpected, "wrong 4");
     }
 }
