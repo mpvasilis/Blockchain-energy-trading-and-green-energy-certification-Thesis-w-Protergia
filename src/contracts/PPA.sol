@@ -18,7 +18,7 @@ contract PPA {
     enum Status {Pending, Approved, Rejected, Expired}
     event createdPPA(address indexed producer, uint energy, uint price);
     event purchasedPPA(uint itemID, address indexed buyer, address indexed producer);
-    //event deniedPPA(address);
+    event expiredPPA(address indexed producer, address indexed buyer, uint startDay, uint endDay, Status status);
     //event changedPPA(address indexed producer, address indexed buyer, uint energy, uint endDay);
 
     struct ppa {
@@ -31,6 +31,12 @@ contract PPA {
         uint id;              //id number of each ppa contract
         uint totalKwh;        //total amount of purchased kwh
         Status status;
+    }
+
+    struct producerEnergy{
+        address producerID;
+        uint timestamp;
+        uint energy;
     }
 
     struct purchasesPPA{
@@ -107,9 +113,14 @@ contract PPA {
         uint indexID = 0;
         for(uint i = 0; i<listOfPPAs.length; i++){
             require(listOfPPAs[i].startDay < listOfPPAs[i].endDay, "End day error");
-            require(listOfPPAs[i].endDay >= now, "PPA has closed");
+            require(listOfPPAs[i].endDay >= block.timestamp, "PPA has closed");
             require(listOfPPAs[i].status == Status.Approved, "It must be approved");
             if((listOfPPAs[i].buyerID == msg.sender) && (listOfPPAs[i].id == indexID)){
+                if(listOfPPAs[i].endDay >= block.timestamp){
+                    listOfPPAs[i].status = Status.Expired;
+                    emit expiredPPA(listOfPPAs[i].producerID, listOfPPAs[i].buyerID, listOfPPAs[i].startDay, listOfPPAs[i].endDay, listOfPPAs[i].status);
+                    break;
+                }
                 listOfPPAs[i].totalKwh = listOfPPAs[i].totalKwh + _energy;
                 listOfprchs.push(purchasesPPA({
                     buyerID: listOfPPAs[i].buyerID,
