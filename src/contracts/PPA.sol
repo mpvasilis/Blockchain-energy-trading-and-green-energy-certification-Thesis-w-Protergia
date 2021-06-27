@@ -189,7 +189,6 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         address aBuyerId = msg.sender;
         for(uint i = 0; (i<listOfPPAs.length) && (listOfPPAs[i].status == Status.Approved); i++){
             require(listOfPPAs[i].startDay < listOfPPAs[i].endDay, "End day error");
-            //require(listOfPPAs[i].endDay <= block.timestamp, "PPA has closed");
             require(listOfPPAs[i].status == Status.Approved, "It must be approved");
             if(listOfPPAs[i].buyerID == aBuyerId){
                 if(listOfPPAs[i].endDay < block.timestamp){
