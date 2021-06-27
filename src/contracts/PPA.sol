@@ -63,10 +63,6 @@ contract ppaBuyerRegistry {
     }
     ppaBuyers[abuyer] = abuyerID;
   }
-
-  function getAllBuyers() public view returns(address[] memory){
-      return listOfPPABuyers;
-  }
 }
 
 contract PPA is producerRegistry, ppaBuyerRegistry {
@@ -158,7 +154,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         }
     }
 
-    //this is a trial function 
+    //this is a trial function just for PPA_energy_trading part
     function energyForSale(uint _energy) public onlyRegisteredProducers{
         address _producer = msg.sender;
         listOfkwhs.push(producerEnergy({
@@ -185,7 +181,6 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
     }*/
 
     function buy_Energy_PPA(uint _energy) public onlyPPABuyers{
-        //uint indexID = 0;
         address aBuyerId = msg.sender;
         for(uint i = 0; (i<listOfPPAs.length) && (listOfPPAs[i].status == Status.Approved); i++){
             require(listOfPPAs[i].startDay < listOfPPAs[i].endDay, "End day error");
@@ -225,7 +220,6 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
 
                         }else{
                             require(listOfkwhs[j].energy > 0, "There is no available Kwhs");
-                            //require(listOfPPAs[i].producerID == listOfkwhs[j].producerID, "Wrong PPA");
                             break;
                         } 
                         
