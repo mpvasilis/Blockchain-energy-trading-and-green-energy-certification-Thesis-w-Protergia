@@ -1,6 +1,6 @@
 pragma solidity >=0.4.21 <0.7.0;
 
-import "truffle/Assert.sol";
+import "./Assert.sol";
 import "truffle/DeployedAddresses.sol"; //This code uses the DeployedAddresses library to create a new instance of the contract for testing.
 import "src/contracts/PPA.sol";
 
