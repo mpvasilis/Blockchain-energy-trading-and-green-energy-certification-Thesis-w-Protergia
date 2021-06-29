@@ -183,18 +183,18 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
 
     function buy_PPA_Kwhs(uint _idOfPPA) public onlyPPABuyers{
         uint currentTime = block.timestamp;
-        address aBuyerId = msg.sender;
+        address aBuyerId = msg.sender; 
         for(uint i = 0; i<listOfkwhs.length; i++){
             uint totalEnergyPurchased = 0;
-            bool isEnergyPurchased = false;
+            //find the correct available kwhs based on id of ppa
             if((listOfkwhs[i].producerID == Appas[_idOfPPA].producerID) && (Appas[_idOfPPA].buyerID == aBuyerId)){
+                //It removes the expired ppa contract
                 if(Appas[_idOfPPA].endDay < currentTime){
                     killPPA(_idOfPPA);
                 }
                 totalEnergyPurchased = listOfkwhs[i].energy;
                 Appas[_idOfPPA].totalKwh = Appas[_idOfPPA].totalKwh + totalEnergyPurchased;
                 listOfkwhs[i].energy = 0;
-                isEnergyPurchased = true;
                 listOfprchs.push(purchasesPPA({
                     buyerID: aBuyerId,
                     producerID: listOfkwhs[i].producerID,
