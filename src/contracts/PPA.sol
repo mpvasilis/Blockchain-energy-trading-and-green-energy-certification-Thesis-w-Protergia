@@ -105,11 +105,11 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
     mapping(address => mapping(uint => approvedPPA)) approvedPPAs;
     approvedPPA[] Appas;
 
-    struct producerEnergy{    //Trial struct for available producer' s energy in order to sale 
+    struct producerEnergy{      //Trial struct for available producer' s energy in order to sale 
         address producerID;
         uint timestamp;
         uint energy;
-        uint idOfmatchContract;
+        uint idOfmatchContract; //id oc ppa contract that refers to
     }
 
     mapping(address => mapping(uint => uint)) pEnergy;
@@ -188,9 +188,9 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
     function buy_PPA_Kwhs(uint _idOfPPA) public onlyPPABuyers{
         uint currentTime = block.timestamp;
         address aBuyerId = msg.sender; 
-        for(uint i = 0; i<listOfkwhs.length; i++){
+        for(uint j = 0; j<Appas.length; j++){ //uint j = 0; j<Appas.length; j++
             //search on Approved PPAs to match the id - producer with kwhs
-            for(uint j = 0; j<Appas.length; j++){
+            for(uint i = 0; i<listOfkwhs.length; i++){ //uint i = 0; i<listOfkwhs.length; i++
                 uint totalEnergyPurchased = 0;
                 //find the correct available kwhs based on id of ppa
                 if((Appas[j].producerID == listOfkwhs[i].producerID) && (Appas[j].id == _idOfPPA) && (Appas[j].id == listOfkwhs[i].idOfmatchContract)){
