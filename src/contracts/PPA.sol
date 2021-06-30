@@ -185,7 +185,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         }));
     }
 
-    function buy_PPA_Kwhs(uint _idOfPPA) public onlyPPABuyers{
+    function buyPPAKwhs(uint _idOfPPA) public onlyPPABuyers{
         uint currentTime = block.timestamp;
         address aBuyerId = msg.sender; 
         for(uint j = 0; j<Appas.length; j++){ //uint j = 0; j<Appas.length; j++
