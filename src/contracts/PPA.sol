@@ -71,15 +71,14 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
     mapping (uint => uint) price;
 
     enum Status {Pending, Approved, Rejected, Expired}
-    event createdPPA(address indexed producer, uint energy, uint price);
+    event createdPPA(address indexed producer, uint price);
     event purchasedPPA(uint itemID, address indexed buyer, address indexed producer);
     event expiredPPA(address indexed producer, address indexed buyer, uint startDay, uint endDay, Status status);
 
     struct ppa {              //Struct with all PPA contracts
         address buyerID;
         address producerID;
-        uint energy;
-        uint price;           //price per energy(kwh)
+        uint kwhPrice;           //price per energy(kwh)
         uint startDay;
         uint endDay;          //It must be timestamp (ex. uint endDay = 1518220800; // 2018-02-10 00:00:00)
         uint id;              //id number of each ppa contract
@@ -93,8 +92,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
     struct approvedPPA{       //Struct only for approved PPAs
         address buyerID;
         address producerID;
-        uint energy;
-        uint price;           //price per energy(kwh)
+        uint kwhPrice;           //price per energy(kwh)
         uint startDay;
         uint endDay;          //It must be timestamp (ex. uint endDay = 1518220800; // 2018-02-10 00:00:00)
         uint id;              //id number of each ppa contract
@@ -125,23 +123,22 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
 
     purchasesPPA[] listOfprchs;
 
-    function createPPA(uint _energy, uint _price,uint _startDay, uint _endDay) public onlyRegisteredProducers {
+    function createPPA(uint _kwhPrice,uint _startDay, uint _endDay) public onlyRegisteredProducers {
         address _producerID = msg.sender;
         uint currentTime = block.timestamp;
-        uint idOfContract = _endDay - currentTime;
+        uint idOfContract = _endDay-currentTime;
         require(_endDay > _startDay, "It's impossible endDay < startDay");
         listOfPPAs.push(ppa({
             buyerID: address(0x0),
             producerID: _producerID,
-            energy: _energy,
-            price: _price,
+            kwhPrice: _kwhPrice,
             startDay: _startDay,
             endDay: _endDay,
             id: idOfContract,
             status: Status.Pending
         }));
         //nextID++;
-        emit createdPPA(_producerID, _energy, _price);
+        emit createdPPA(_producerID, _kwhPrice);
     }
 
     function claimPPA() public {
@@ -154,8 +151,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
                 Appas.push(approvedPPA({
                     buyerID: buyerId,
                     producerID: listOfPPAs[i].producerID,
-                    energy: listOfPPAs[i].energy,
-                    price: listOfPPAs[i].price,
+                    kwhPrice: listOfPPAs[i].kwhPrice,
                     startDay: listOfPPAs[i].startDay,
                     endDay: listOfPPAs[i].endDay,
                     id: listOfPPAs[i].id,
@@ -228,8 +224,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
                 listOfPPAs.push(ppa({
                     buyerID: Appas[i].buyerID,
                     producerID: Appas[i].producerID,
-                    energy: Appas[i].energy,
-                    price: Appas[i].price,
+                    kwhPrice: Appas[i].kwhPrice,
                     startDay: Appas[i].startDay,
                     endDay: Appas[i].endDay,
                     id: Appas[i].id,
@@ -258,9 +253,9 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         return Appas;
     }
 
-    function getPPAbyID(uint _id) public view returns (address, address, uint, uint, uint, uint, uint, uint){
+    function getPPAbyID(uint _id) public view returns (address, address, uint, uint, uint, uint, uint){
         ppa storage _ppa = listOfPPAs[_id];
-        return (_ppa.producerID, _ppa.buyerID, _ppa.energy, _ppa.price, _ppa.startDay, _ppa.endDay, uint(_ppa.status), _ppa.id);
+        return (_ppa.producerID, _ppa.buyerID, _ppa.kwhPrice, _ppa.startDay, _ppa.endDay, uint(_ppa.status), _ppa.id);
     }
 
     function viewAvailableKwhs() public view returns(producerEnergy[] memory){

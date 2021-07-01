@@ -1,0 +1,82 @@
+{
+	"compiler": {
+		"version": "0.5.16+commit.9c3226ce"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "producer",
+						"type": "address"
+					}
+				],
+				"name": "producerDeregistered",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "producer",
+						"type": "address"
+					}
+				],
+				"name": "producerRegistered",
+				"type": "event"
+			},
+			{
+				"constant": false,
+				"inputs": [],
+				"name": "deregisterProducer",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [],
+				"name": "registerProducer",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"methods": {}
+		},
+		"userdoc": {
+			"methods": {}
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"src/contracts/PPA.sol": "producerRegistry"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"src/contracts/PPA.sol": {
+			"keccak256": "0xdbbc22d3add37cedd56a55d11555a779a49b56afb13913cb415970860ff59486",
+			"urls": [
+				"bzz-raw://8b269f82d30372bc5a81f4977f229e330e5dcfdcd4e8d16e8a69fdd8c06752cb",
+				"dweb:/ipfs/QmQKnhNUw752kUKHkcomQ1XWUQyRGeSEPKZJ1T5tTS3guV"
+			]
+		}
+	},
+	"version": 1
+}
