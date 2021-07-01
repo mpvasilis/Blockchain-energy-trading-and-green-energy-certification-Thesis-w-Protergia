@@ -125,17 +125,17 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
 
     purchasesPPA[] listOfprchs;
 
-    function createPPA(uint _energy, uint _price, uint _endDay) public onlyRegisteredProducers {
+    function createPPA(uint _energy, uint _price,uint _startDay, uint _endDay) public onlyRegisteredProducers {
         address _producerID = msg.sender;
         uint currentTime = block.timestamp;
         uint idOfContract = _endDay - currentTime;
-        require(_endDay > block.timestamp, "It's impossible endDay < startDay");
+        require(_endDay > _startDay, "It's impossible endDay < startDay");
         listOfPPAs.push(ppa({
             buyerID: address(0x0),
             producerID: _producerID,
             energy: _energy,
             price: _price,
-            startDay: block.timestamp,
+            startDay: _startDay,
             endDay: _endDay,
             id: idOfContract,
             status: Status.Pending
@@ -151,13 +151,12 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
             require(listOfPPAs[i].producerID != buyerId, "Wrong address buyer");
             require(listOfPPAs[i].status != Status.Rejected, "error");
             if(listOfPPAs[i].status == Status.Pending){
-                //listOfPPAs[i].status = Status.Approved;
                 Appas.push(approvedPPA({
                     buyerID: buyerId,
                     producerID: listOfPPAs[i].producerID,
                     energy: listOfPPAs[i].energy,
                     price: listOfPPAs[i].price,
-                    startDay: block.timestamp,
+                    startDay: listOfPPAs[i].startDay,
                     endDay: listOfPPAs[i].endDay,
                     id: listOfPPAs[i].id,
                     totalKwh: _totalKwh,
@@ -194,6 +193,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
                 uint totalEnergyPurchased = 0;
                 //find the correct available kwhs based on id of ppa
                 if((Appas[j].producerID == listOfkwhs[i].producerID) && (Appas[j].id == _idOfPPA) && (Appas[j].id == listOfkwhs[i].idOfmatchContract)){
+                    require(Appas[j].startDay <= currentTime, "PPA is not active yet");
                     //if endDay < now then PPA has expired 
                     if(Appas[j].endDay < currentTime){
                         revert("PPA has expired");
