@@ -5,35 +5,35 @@ import "truffle/DeployedAddresses.sol"; //This code uses the DeployedAddresses l
 import "src/contracts/PPA.sol";
 
 contract testPPA {
-    PPAToken ppaToken;
+    producerRegistry cp;
     PPA ppa;
 
-    function beforeEach() public {
-        ppaToken = new PPAToken(DeployedAddresses.PPAToken());
+    function beforeAll() public{
+        cp = new producerRegistry();
+        ppa = new PPA();
     }
 
     function testInitializePPA() public returns (bool success) {
-        ppa = new PPA();
-
-        address payable adrr = DeployedAddresses.PPAToken();
-
-        uint energyExpected = 1000;
+        address buyerExpected = address(0x0);
         uint priceExpected = 10;
-        uint dayExpected = 21102030;
+        uint startDayExpected = 1625928641;
+        uint dayExpected = 1657453721;
+        //note: in order to pass this test, should remove the current producer requirement "onlyRegisteredProducers" from function createPPA
 
-        address producer = address(0x0);
+        address producer;
         address buyer;
-        uint energy;
-        uint price;
+        uint enPrice;
         uint startDay;
         uint endDay;
         uint status;
+        uint id;
 
-        uint _id = ppa.createPPA(energyExpected, priceExpected, dayExpected, adrr);
-        (producer, buyer, energy, price, startDay, endDay, status) = ppa.getPPAbyID(_id);
-        Assert.equal(buyer, this, "Wrong 1");
-        Assert.equal(energy, energyExpected, "Wrong 2");
-        Assert.equal(price, priceExpected, "Wrong 3");
+        uint _id = 0;
+        ppa.createPPA(priceExpected, startDayExpected, dayExpected);
+        (producer, buyer, enPrice, startDay, endDay, status, id) = ppa.getPPAbyID(_id);
+        Assert.equal(buyer, buyerExpected, "Wrong 1");
+        Assert.equal(startDay, startDayExpected, "Wrong 2");
+        Assert.equal(enPrice, priceExpected, "Wrong 3");
         Assert.equal(endDay, dayExpected, "wrong 4");
     }
 }
