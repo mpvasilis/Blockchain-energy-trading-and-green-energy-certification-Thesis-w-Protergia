@@ -30,14 +30,31 @@ contract testPPA {
 
         uint _id = 0;
         ppa.createPPA(priceExpected, startDayExpected, dayExpected);
-        (producer, buyer, enPrice, startDay, endDay, status, id) = ppa.getPPAbyID(_id);
+        (producer, buyer, enPrice, startDay, endDay, status, id) = ppa.getPPAByID(_id);
         Assert.equal(buyer, buyerExpected, "Wrong 1");
         Assert.equal(startDay, startDayExpected, "Wrong 2");
         Assert.equal(enPrice, priceExpected, "Wrong 3");
         Assert.equal(endDay, dayExpected, "wrong 4");
     }
 
-    function getThisPPA() public view returns(bool succeed){
-        
+    function testBuyPPA() public returns (bool success) {
+        //address buyerExpected = address(1);
+        uint priceExpected = 10;
+        uint startDayExpected = 1625928641;
+        uint dayExpected = 1657453721;
+        //note: in order to pass this test, should remove the require "require(listOfPPAs[i].producerID != buyerId, "Wrong address buyer");" from claimPPA function 
+
+        address producer;
+        address buyer;
+        uint enPrice;
+        uint startDay;
+        uint endDay;
+
+        uint idx = 0;
+        ppa.claimPPA();
+        (producer, buyer, enPrice, startDay, endDay) = ppa.getApprovedPPAByID(idx);
+        Assert.equal(startDay, startDayExpected, "Wrong 5");
+        Assert.equal(enPrice, priceExpected, "Wrong 6");
+        Assert.equal(endDay, dayExpected, "wrong 7");
     }
 }

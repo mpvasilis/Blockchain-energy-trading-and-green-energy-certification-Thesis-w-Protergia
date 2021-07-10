@@ -123,7 +123,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
 
     purchasesPPA[] listOfprchs;
 
-    function createPPA(uint _kwhPrice,uint _startDay, uint _endDay) public onlyRegisteredProducers {
+    function createPPA(uint _kwhPrice,uint _startDay, uint _endDay) public { //onlyRegisteredProducers
         address _producerID = msg.sender;
         uint currentTime = block.timestamp;
         uint idOfContract = _endDay-currentTime;
@@ -145,7 +145,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         uint _totalKwh = 0;
         address buyerId = msg.sender;
         for(uint i = 0; i<listOfPPAs.length; i++){
-            require(listOfPPAs[i].producerID != buyerId, "Wrong address buyer");
+            //require(listOfPPAs[i].producerID != buyerId, "Wrong address buyer");
             require(listOfPPAs[i].status != Status.Rejected, "error");
             if(listOfPPAs[i].status == Status.Pending){
                 Appas.push(approvedPPA({
@@ -253,9 +253,14 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         return Appas;
     }
 
-    function getPPAbyID(uint _id) public view returns (address, address, uint, uint, uint, uint, uint){
+    function getApprovedPPAByID(uint _id) public view returns (address, address, uint, uint, uint){
+        approvedPPA storage _Appa = Appas[_id];
+        return(_Appa.producerID, _Appa.buyerID, _Appa.kwhPrice, _Appa.startDay, _Appa.endDay);
+    }
+
+    function getPPAByID(uint _id) public view returns (address, address, uint, uint, uint, uint, uint){
         ppa storage _ppa = listOfPPAs[_id];
-        return (_ppa.producerID, _ppa.buyerID, _ppa.kwhPrice, _ppa.startDay, _ppa.endDay, uint(_ppa.status), _ppa.id);
+        return(_ppa.producerID, _ppa.buyerID, _ppa.kwhPrice, _ppa.startDay, _ppa.endDay, uint(_ppa.status), _ppa.id);
     }
 
     function viewAvailableKwhs() public view returns(producerEnergy[] memory){
