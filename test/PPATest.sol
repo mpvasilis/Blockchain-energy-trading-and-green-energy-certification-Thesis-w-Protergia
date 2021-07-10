@@ -1,15 +1,15 @@
 pragma solidity >=0.4.21 <0.9.0;
 
 import "./Assert.sol";
-import "truffle/DeployedAddresses.sol"; //This code uses the DeployedAddresses library to create a new instance of the contract for testing.
+//import "truffle/DeployedAddresses.sol"; //This code uses the DeployedAddresses library to create a new instance of the contract for testing.
 import "src/contracts/PPA.sol";
 
 contract testPPA {
-    producerRegistry cp;
+    //producerRegistry cp;
     PPA ppa;
 
     function beforeAll() public{
-        cp = new producerRegistry();
+        //cp = new producerRegistry();
         ppa = new PPA();
     }
 
