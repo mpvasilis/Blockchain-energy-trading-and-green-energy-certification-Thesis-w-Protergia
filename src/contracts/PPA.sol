@@ -123,7 +123,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
 
     purchasesPPA[] listOfprchs;
 
-    function createPPA(uint _kwhPrice,uint _startDay, uint _endDay) public { //onlyRegisteredProducers
+    function createPPA(uint _kwhPrice,uint _startDay, uint _endDay) public onlyRegisteredProducers { //onlyRegisteredProducers
         address _producerID = msg.sender;
         uint currentTime = block.timestamp;
         uint idOfContract = _endDay-currentTime;
@@ -145,7 +145,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         uint _totalKwh = 0;
         address buyerId = msg.sender;
         for(uint i = 0; i<listOfPPAs.length; i++){
-            //require(listOfPPAs[i].producerID != buyerId, "Wrong address buyer");
+            require(listOfPPAs[i].producerID != buyerId, "Wrong address buyer");
             require(listOfPPAs[i].status != Status.Rejected, "error");
             if(listOfPPAs[i].status == Status.Pending){
                 Appas.push(approvedPPA({
