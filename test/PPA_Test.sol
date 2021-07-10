@@ -36,4 +36,8 @@ contract testPPA {
         Assert.equal(enPrice, priceExpected, "Wrong 3");
         Assert.equal(endDay, dayExpected, "wrong 4");
     }
+
+    function getThisPPA() public view returns(bool succeed){
+        
+    }
 }
