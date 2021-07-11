@@ -1,5 +1,6 @@
-//const energyBid = artifacts.require("src/contracts/Battery.sol");
-const PPA = artifacts.require("src/contracts/PPA.sol");
+const batteryRegistry = artifacts.require("EnergyTrading");
+const energyBid = artifacts.require("EnergyTrading");
+const PPA = artifacts.require("PPA");
 
 module.exports = function (deployer) {
     /*deployer.deploy(energyBid).then(
@@ -7,6 +8,7 @@ module.exports = function (deployer) {
             deployer.deploy(PPA);
         }
     )*/
+    deployer.deploy(batteryRegistry);
+    deployer.deploy(energyBid);
     deployer.deploy(PPA);
-	//deployer.deploy(energyBid);
 };

@@ -21,7 +21,7 @@ contract batteryRegistry is owned {
     struct battery {
         address batteryID;            //battery wallet address
         string uuID;                  //id of battery  
-        uint32 date;                  //Creation date
+        uint date;                  //Creation date
         uint timestamp;
         bool isExist;                 //Check if battery exist into addNewBattery function
     }
@@ -36,7 +36,7 @@ contract batteryRegistry is owned {
      }
 
     //add a battery by eth account address
-    function addNewBattery (string memory uuID, uint32 date) public {
+    function addNewBattery (string memory uuID, uint date) public {
         require(batteries[msg.sender].isExist==false, "Battery details already added");
         batteries[msg.sender] = battery(msg.sender, uuID, date, block.timestamp, true);
 
@@ -69,8 +69,14 @@ contract batteryRegistry is owned {
     }
 
     //view single battery by battery id
-    function getBatteryByID(address batteryID) public view returns (address, string memory, uint, uint32){
+    function getBatteryByID(address batteryID) public view returns (address, string memory, uint, uint){
         return (batteries[batteryID].batteryID, batteries[batteryID].uuID, batteries[batteryID].timestamp, batteries[batteryID].date);
+    }
+
+    //This function created in order to help us in unit test
+    function getBatteryByLength(uint _idbat) public view returns(address, string memory, uint){
+        battery storage _bat = listOfBatteries[_idbat];
+        return(_bat.batteryID, _bat.uuID, _bat.date);
     }
 }
 
@@ -92,7 +98,7 @@ contract energyBid is owned, batteryRegistry {
         uint32 day;            //day for which the offer is valid
         uint64 energy;         //energy to trade
         uint32 eprice;         //Energy market price per kWh
-        uint timestamp;      //timestamp for when the bid was created
+        uint timestamp;        //timestamp for when the bid was created
     }
     
     struct ask {
@@ -343,5 +349,16 @@ contract energyBid is owned, batteryRegistry {
         require(listOfBids[index].day == day, "There is no offer on this day");
         require(listOfBids[index].prosumerID == prosumerID, "Wrong ID");
         return (listOfBids[index].numberOfBid, listOfBids[index].day, listOfBids[index].energy);
+    }
+
+    //Functions "getBidsByLength" and "getAsksByLength" are only for unit test
+    function getBidsByLength (uint _idbid) public view returns (address, uint32, uint64){
+        bid storage _bid = listOfBids[_idbid];
+        return(_bid.prosumerID, _bid.day, _bid.energy);
+    }
+
+    function getAsksByLength (uint _idask) public view returns (address, uint32, uint64){
+        ask storage _ask = listOfAsks[_idask];
+        return(_ask.consumerID, _ask.day, _ask.energy);
     }
 }

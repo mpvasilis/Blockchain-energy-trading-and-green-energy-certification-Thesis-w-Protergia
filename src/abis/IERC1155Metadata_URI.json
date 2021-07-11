@@ -34,17 +34,17 @@
     "absolutePath": "/C/Users/Lenovo/projects/ethereum/protergia/blockchain-energy-trading-and-green-energy-certification-thesis-w-protergia/src/contracts/token/IERC1155Metadata.sol",
     "exportedSymbols": {
       "IERC1155Metadata_Name": [
-        3429
+        4012
       ],
       "IERC1155Metadata_URI": [
-        3421
+        4004
       ]
     },
-    "id": 3430,
+    "id": 4013,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 3413,
+        "id": 3996,
         "literals": [
           "solidity",
           ">=",
@@ -63,9 +63,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 3421,
+        "id": 4004,
         "linearizedBaseContracts": [
-          3421
+          4004
         ],
         "name": "IERC1155Metadata_URI",
         "nodeType": "ContractDefinition",
@@ -73,22 +73,22 @@
           {
             "body": null,
             "documentation": "@notice A distinct Uniform Resource Identifier (URI) for a given token\n@dev URIs are defined in RFC 3986\n@return  URI string",
-            "id": 3420,
+            "id": 4003,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "uri",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 3416,
+              "id": 3999,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3415,
+                  "id": 3998,
                   "name": "_id",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3420,
+                  "scope": 4003,
                   "src": "256:11:11",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -97,7 +97,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 3414,
+                    "id": 3997,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "256:7:11",
@@ -113,15 +113,15 @@
               "src": "255:13:11"
             },
             "returnParameters": {
-              "id": 3419,
+              "id": 4002,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3418,
+                  "id": 4001,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3420,
+                  "scope": 4003,
                   "src": "292:13:11",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -130,7 +130,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 3417,
+                    "id": 4000,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "292:6:11",
@@ -145,14 +145,14 @@
               ],
               "src": "291:15:11"
             },
-            "scope": 3421,
+            "scope": 4004,
             "src": "243:64:11",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
           }
         ],
-        "scope": 3430,
+        "scope": 4013,
         "src": "36:274:11"
       },
       {
@@ -161,9 +161,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 3429,
+        "id": 4012,
         "linearizedBaseContracts": [
-          3429
+          4012
         ],
         "name": "IERC1155Metadata_Name",
         "nodeType": "ContractDefinition",
@@ -171,22 +171,22 @@
           {
             "body": null,
             "documentation": "@notice A distinct Uniform Resource Identifier (URI) for a given token\n@dev URIs are defined in RFC 3986\n@return  URI string",
-            "id": 3428,
+            "id": 4011,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "name",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 3424,
+              "id": 4007,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3423,
+                  "id": 4006,
                   "name": "_id",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3428,
+                  "scope": 4011,
                   "src": "536:11:11",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -195,7 +195,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 3422,
+                    "id": 4005,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "536:7:11",
@@ -211,15 +211,15 @@
               "src": "535:13:11"
             },
             "returnParameters": {
-              "id": 3427,
+              "id": 4010,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3426,
+                  "id": 4009,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3428,
+                  "scope": 4011,
                   "src": "572:13:11",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -228,7 +228,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 3425,
+                    "id": 4008,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "572:6:11",
@@ -243,14 +243,14 @@
               ],
               "src": "571:15:11"
             },
-            "scope": 3429,
+            "scope": 4012,
             "src": "522:65:11",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "external"
           }
         ],
-        "scope": 3430,
+        "scope": 4013,
         "src": "314:276:11"
       }
     ],
@@ -261,10 +261,10 @@
       "absolutePath": "/C/Users/Lenovo/projects/ethereum/protergia/blockchain-energy-trading-and-green-energy-certification-thesis-w-protergia/src/contracts/token/IERC1155Metadata.sol",
       "exportedSymbols": {
         "IERC1155Metadata_Name": [
-          3429
+          4012
         ],
         "IERC1155Metadata_URI": [
-          3421
+          4004
         ]
       }
     },
@@ -281,7 +281,7 @@
             ".0"
           ]
         },
-        "id": 3413,
+        "id": 3996,
         "name": "PragmaDirective",
         "src": "0:32:11"
       },
@@ -297,10 +297,10 @@
           "documentation": null,
           "fullyImplemented": false,
           "linearizedBaseContracts": [
-            3421
+            4004
           ],
           "name": "IERC1155Metadata_URI",
-          "scope": 3430
+          "scope": 4013
         },
         "children": [
           {
@@ -314,7 +314,7 @@
                 null
               ],
               "name": "uri",
-              "scope": 3421,
+              "scope": 4004,
               "stateMutability": "view",
               "superFunction": null,
               "visibility": "external"
@@ -326,7 +326,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "_id",
-                      "scope": 3420,
+                      "scope": 4003,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -339,17 +339,17 @@
                           "name": "uint256",
                           "type": "uint256"
                         },
-                        "id": 3414,
+                        "id": 3997,
                         "name": "ElementaryTypeName",
                         "src": "256:7:11"
                       }
                     ],
-                    "id": 3415,
+                    "id": 3998,
                     "name": "VariableDeclaration",
                     "src": "256:11:11"
                   }
                 ],
-                "id": 3416,
+                "id": 3999,
                 "name": "ParameterList",
                 "src": "255:13:11"
               },
@@ -359,7 +359,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "",
-                      "scope": 3420,
+                      "scope": 4003,
                       "stateVariable": false,
                       "storageLocation": "memory",
                       "type": "string",
@@ -372,27 +372,27 @@
                           "name": "string",
                           "type": "string"
                         },
-                        "id": 3417,
+                        "id": 4000,
                         "name": "ElementaryTypeName",
                         "src": "292:6:11"
                       }
                     ],
-                    "id": 3418,
+                    "id": 4001,
                     "name": "VariableDeclaration",
                     "src": "292:13:11"
                   }
                 ],
-                "id": 3419,
+                "id": 4002,
                 "name": "ParameterList",
                 "src": "291:15:11"
               }
             ],
-            "id": 3420,
+            "id": 4003,
             "name": "FunctionDefinition",
             "src": "243:64:11"
           }
         ],
-        "id": 3421,
+        "id": 4004,
         "name": "ContractDefinition",
         "src": "36:274:11"
       },
@@ -408,10 +408,10 @@
           "documentation": null,
           "fullyImplemented": false,
           "linearizedBaseContracts": [
-            3429
+            4012
           ],
           "name": "IERC1155Metadata_Name",
-          "scope": 3430
+          "scope": 4013
         },
         "children": [
           {
@@ -425,7 +425,7 @@
                 null
               ],
               "name": "name",
-              "scope": 3429,
+              "scope": 4012,
               "stateMutability": "view",
               "superFunction": null,
               "visibility": "external"
@@ -437,7 +437,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "_id",
-                      "scope": 3428,
+                      "scope": 4011,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "uint256",
@@ -450,17 +450,17 @@
                           "name": "uint256",
                           "type": "uint256"
                         },
-                        "id": 3422,
+                        "id": 4005,
                         "name": "ElementaryTypeName",
                         "src": "536:7:11"
                       }
                     ],
-                    "id": 3423,
+                    "id": 4006,
                     "name": "VariableDeclaration",
                     "src": "536:11:11"
                   }
                 ],
-                "id": 3424,
+                "id": 4007,
                 "name": "ParameterList",
                 "src": "535:13:11"
               },
@@ -470,7 +470,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "",
-                      "scope": 3428,
+                      "scope": 4011,
                       "stateVariable": false,
                       "storageLocation": "memory",
                       "type": "string",
@@ -483,32 +483,32 @@
                           "name": "string",
                           "type": "string"
                         },
-                        "id": 3425,
+                        "id": 4008,
                         "name": "ElementaryTypeName",
                         "src": "572:6:11"
                       }
                     ],
-                    "id": 3426,
+                    "id": 4009,
                     "name": "VariableDeclaration",
                     "src": "572:13:11"
                   }
                 ],
-                "id": 3427,
+                "id": 4010,
                 "name": "ParameterList",
                 "src": "571:15:11"
               }
             ],
-            "id": 3428,
+            "id": 4011,
             "name": "FunctionDefinition",
             "src": "522:65:11"
           }
         ],
-        "id": 3429,
+        "id": 4012,
         "name": "ContractDefinition",
         "src": "314:276:11"
       }
     ],
-    "id": 3430,
+    "id": 4013,
     "name": "SourceUnit",
     "src": "0:590:11"
   },
@@ -517,8 +517,8 @@
     "version": "0.5.16+commit.9c3226ce.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.3.4",
-  "updatedAt": "2021-06-24T13:56:30.276Z",
+  "schemaVersion": "3.4.1",
+  "updatedAt": "2021-07-11T13:08:32.401Z",
   "devdoc": {
     "methods": {
       "uri(uint256)": {
