@@ -1,16 +1,9 @@
 pragma solidity >=0.4.21 <0.9.0;
 pragma experimental ABIEncoderV2;
 
-//import "src/contracts/token/ERC1155.sol";
-//import "src/contracts/token/ERC1155Mintable.sol";
-//import "src/contracts/token/IERC1155.sol";
+import "src/contracts/SafeMath.sol";
+import "src/contracts/Counters.sol";
 
-//import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
-/*
-*Installed open zeppelin version 3.1.0
-*https://github.com/OpenZeppelin/openzeppelin-contracts/tree/v3.1.0
-*with "npm i @openzeppelin/contracts@3.1.0"
-*/
 contract producerRegistry {
     event producerRegistered(address indexed producer);
     event producerDeregistered(address indexed producer);
@@ -68,6 +61,10 @@ contract ppaBuyerRegistry {
 
 contract PPA is producerRegistry, ppaBuyerRegistry {
 
+    //using SafeMath for uint256;
+    using Counters for Counters.Counter;
+    Counters.Counter private contractID;
+
     mapping (uint => uint) price;
 
     enum Status {Pending, Approved, Rejected, Expired}
@@ -75,24 +72,24 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
     event purchasedPPA(uint itemID, address indexed buyer, address indexed producer);
     event expiredPPA(address indexed producer, address indexed buyer, uint startDay, uint endDay, Status status);
 
-    struct ppa {              //Struct with all PPA contracts
+    struct ppa {               //Struct with all PPA contracts
         address buyerID;
         address producerID;
-        uint kwhPrice;           //price per energy(kwh)
+        uint kwhPrice;         //price per energy(kwh)
         uint startDay;
-        uint endDay;          //It must be timestamp (ex. uint endDay = 1518220800; // 2018-02-10 00:00:00)
-        uint id;              //id number of each ppa contract
+        uint endDay;           //It must be timestamp (ex. uint endDay = 1518220800; // 2018-02-10 00:00:00)
+        uint id;               //id number of each ppa contract
         Status status;
     }
 
     mapping(address => ppa) ppas;
     ppa[] listOfPPAs;
-    //uint nextID = 0;
+    //uint contractID = 0;
 
     struct approvedPPA{       //Struct only for approved PPAs
         address buyerID;
         address producerID;
-        uint kwhPrice;           //price per energy(kwh)
+        uint kwhPrice;        //price per energy(kwh)
         uint startDay;
         uint endDay;          //It must be timestamp (ex. uint endDay = 1518220800; // 2018-02-10 00:00:00)
         uint id;              //id number of each ppa contract
@@ -125,8 +122,10 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
 
     function createPPA(uint _kwhPrice,uint _startDay, uint _endDay) public onlyRegisteredProducers { //onlyRegisteredProducers
         address _producerID = msg.sender;
-        uint currentTime = block.timestamp;
-        uint idOfContract = _endDay-currentTime;
+        //uint currentTime = block.timestamp;
+        //uint idOfContract = _endDay-currentTime;
+        contractID.increment();
+        uint currentID = contractID.current();
         require(_endDay > _startDay, "It's impossible endDay < startDay");
         listOfPPAs.push(ppa({
             buyerID: address(0x0),
@@ -134,7 +133,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
             kwhPrice: _kwhPrice,
             startDay: _startDay,
             endDay: _endDay,
-            id: idOfContract,
+            id: currentID,
             status: Status.Pending
         }));
         //nextID++;
