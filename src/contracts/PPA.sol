@@ -77,7 +77,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         address producerID;
         uint kwhPrice;         //price per energy(kwh)
         uint startDay;
-        uint endDay;           //It must be timestamp (ex. uint endDay = 1518220800; // 2018-02-10 00:00:00)
+        uint endDay;           //It must be timestamp (ex. uint endDay = 1833746400; // 2028-02-10 00:00:00)
         uint id;               //id number of each ppa contract
         Status status;
     }
@@ -91,7 +91,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         address producerID;
         uint kwhPrice;        //price per energy(kwh)
         uint startDay;
-        uint endDay;          //It must be timestamp (ex. uint endDay = 1518220800; // 2018-02-10 00:00:00)
+        uint endDay;          //It must be timestamp (ex. uint endDay = 1833746400; // 2028-02-10 00:00:00)
         uint id;              //id number of each ppa contract
         uint totalKwh;        //total amount of purchased kwh
         Status status;
