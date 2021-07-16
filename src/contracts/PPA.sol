@@ -59,6 +59,7 @@ contract ppaBuyerRegistry {
     }
 }
 
+//Corporate PPAs
 contract PPA is producerRegistry, ppaBuyerRegistry {
 
     //using SafeMath for uint256;
