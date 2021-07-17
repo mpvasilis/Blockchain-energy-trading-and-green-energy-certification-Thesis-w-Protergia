@@ -63,6 +63,7 @@ contract auctionPPA is producerRegistry, ppaBuyerRegistry{
         }));
     }
 
+    //Claim an Auction type PPA with the lowest price
     function claimAuctionPPA() public {
         uint _totalkwh = 0;
         address buyerAddr = msg.sender;
@@ -117,36 +118,6 @@ contract auctionPPA is producerRegistry, ppaBuyerRegistry{
                     pendingPPAs.length--;
                     break;
                 }
-            }
-        }
-    }
-
-    //Claim an Auction type PPA with the lowest price
-    function getPPAWithLowestPrice() public {
-        uint x = 0;
-        uint _totalKwh = 0;
-        address buyerAddr = msg.sender;
-        for(uint i = 0; i < pendingPPAs.length; i++){
-            if(pendingPPAs[i].kwhPrice < pendingPPAs[x].kwhPrice){
-                x = i;
-                require(pendingPPAs[x].status == Status.Pending, "PPA does not exists");
-                require(pendingPPAs[x].producer != buyerAddr, "Wrong address buyer");
-                listOfAppas.push(activeppa({
-                    buyer: buyerAddr,
-                    producer: pendingPPAs[x].producer,
-                    kwhPrice: pendingPPAs[x].kwhPrice,
-                    startDay: pendingPPAs[x].startDay,
-                    endDay: pendingPPAs[x].endDay,
-                    id: pendingPPAs[x].id,
-                    totalKwh: _totalKwh,
-                    status: Status.Activated
-                }));
-                ppaBuyerRegistry.registerPPABuyer(buyerAddr);
-                if(pendingPPAs.length > 1){
-                    pendingPPAs[x] = pendingPPAs[pendingPPAs.length-1];
-                }
-                pendingPPAs.length--;
-                break;
             }
         }
     }
