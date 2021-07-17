@@ -105,7 +105,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         address producerID;
         uint timestamp;
         uint energy;
-        uint idOfmatchContract; //id oc ppa contract that refers to
+        uint idOfmatchContract; //id of ppa contract that refers to
     }
 
     mapping(address => mapping(uint => uint)) pEnergy;
