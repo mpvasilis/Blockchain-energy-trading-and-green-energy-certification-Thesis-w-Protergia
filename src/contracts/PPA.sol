@@ -172,9 +172,9 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
     //Claim an Auction type PPA with the lowest price
     function claimAuctionPPA() public {
         uint _totalkwh = 0;
+        bool isClaimed = false;
         address buyerAddr = msg.sender;
         for(uint i = 0; i < listOfPPAs.length; i++){
-            bool isClaimed = false;
             for(uint j = 0; j < listOfPPAs.length; j++){
                 if(listOfPPAs[j].kwhPrice < listOfPPAs[i].kwhPrice){
                     require(listOfPPAs[j].status == Status.Pending, "PPA does not exists");
