@@ -105,7 +105,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
 
     struct producerEnergy{      //Trial struct for available producer' s energy in order to sale 
         address producer;
-        address buyer;
+        address buyer;          //Address of owner of each PPA conract
         uint timestamp;
         uint energy;
         uint idOfmatchContract; //id of ppa contract that refers to
@@ -139,6 +139,8 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         emit createdCorpPPA(_producer, _buyer, _agreedKwhPrice);
     }
 
+    //Corporate PPAs are based on an agreed price
+    //Both parties benefit from long-term price guarantees that protect them from market price volatility
     function claimCorporatePPA() public {
         address _buyer = msg.sender;
         uint _totalKwh = 0;
