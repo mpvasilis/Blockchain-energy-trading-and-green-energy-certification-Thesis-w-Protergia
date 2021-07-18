@@ -70,6 +70,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
 
     enum Status {Pending, Approved, Rejected, Expired}
     event createdPPA(address indexed producer, uint price);
+    event createdCorpPPA(address indexed producer, address indexed buyer, uint price);
     event purchasedPPA(uint itemID, address indexed buyer, address indexed producer);
     event expiredPPA(address indexed producer, address indexed buyer, uint startDay, uint endDay, Status status);
 
@@ -85,6 +86,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
 
     mapping(address => ppa) ppas;
     ppa[] listOfPPAs;
+    ppa[] corporatePPAList;
     //uint contractID = 0;
 
     struct approvedPPA{       //Struct only for approved PPAs
@@ -121,6 +123,47 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
     }
 
     purchasesPPA[] listOfprchs;
+
+    function corporatePPA(address _buyer, uint _agreedKwhPrice,uint _startDay, uint _endDay, uint _id) public onlyRegisteredProducers {
+        address _producer = msg.sender;
+        require(_endDay > _startDay, "It's impossible endDay < startDay");
+        corporatePPAList.push(ppa({
+            buyer: _buyer,
+            producer: _producer,
+            kwhPrice: _agreedKwhPrice,
+            startDay: _startDay,
+            endDay: _endDay,
+            id: _id,
+            status: Status.Pending
+        }));
+        emit createdCorpPPA(_producer, _buyer, _agreedKwhPrice);
+    }
+
+    function claimCorporatePPA() public {
+        address _buyer = msg.sender;
+        uint _totalKwh = 0;
+        for(uint i = 0; i < corporatePPAList.length; i++){
+            if((corporatePPAList[i].buyer == _buyer) && (corporatePPAList[i].status == Status.Pending)){
+                Appas.push(approvedPPA({
+                    buyer: _buyer,
+                    producer: corporatePPAList[i].producer,
+                    kwhPrice: corporatePPAList[i].kwhPrice,
+                    startDay: corporatePPAList[i].startDay,
+                    endDay: corporatePPAList[i].endDay,
+                    id: corporatePPAList[i].id,
+                    totalKwh: _totalKwh,
+                    status: Status.Approved
+                }));
+                ppaBuyerRegistry.registerPPABuyer(_buyer);
+                emit purchasedPPA(corporatePPAList[i].id, corporatePPAList[i].buyer, corporatePPAList[i].producer);
+                if(corporatePPAList.length > 1){
+                    corporatePPAList[i] = corporatePPAList[corporatePPAList.length-1];
+                }
+                corporatePPAList.length--;
+                break;
+            }
+        }
+    }
 
     function createPPA(uint _kwhPrice,uint _startDay, uint _endDay) public onlyRegisteredProducers { //onlyRegisteredProducers
         address _producer = msg.sender;
@@ -159,13 +202,13 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
                     totalKwh: _totalKwh,
                     status: Status.Approved
                 }));
-            ppaBuyerRegistry.registerPPABuyer(buyer);
-            emit purchasedPPA(listOfPPAs[i].id, listOfPPAs[i].buyer, listOfPPAs[i].producer);
-            if(listOfPPAs.length > 1){
-                listOfPPAs[i] = listOfPPAs[listOfPPAs.length-1];
-            }
-            listOfPPAs.length--;
-            break;
+                ppaBuyerRegistry.registerPPABuyer(buyer);
+                emit purchasedPPA(listOfPPAs[i].id, listOfPPAs[i].buyer, listOfPPAs[i].producer);
+                if(listOfPPAs.length > 1){
+                    listOfPPAs[i] = listOfPPAs[listOfPPAs.length-1];
+                }
+                listOfPPAs.length--;
+                break;
             }
         }
     }
