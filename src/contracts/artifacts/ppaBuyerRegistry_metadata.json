@@ -76,7 +76,7 @@
 		"evmVersion": "istanbul",
 		"libraries": {},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
@@ -90,10 +90,10 @@
 			]
 		},
 		"src/contracts/PPA.sol": {
-			"keccak256": "0x8b02f1fe7ceb9dd32a314d9c000a5aab1043ec8e3392d44c8d43524701766dc3",
+			"keccak256": "0x01626ed020d713bf48e4a6072e7c0919a2e174fd50ca91d0fe73bc43fb0d299c",
 			"urls": [
-				"bzz-raw://fb3d1f68d64b3bfeeb0f9ef3cff197f017742e1d1d9695a01a0c9d5667f2c3f0",
-				"dweb:/ipfs/Qma4JXp7ALixBzTBHpHKmHCBs8vwYS9WQbepx9TVCpMZ37"
+				"bzz-raw://49b5924a3948911c33f24f3d90c7a16d674e5d9b6bf97a032ce7492703ba555c",
+				"dweb:/ipfs/QmXi2CVwQypV9V9MpPcPgPvuskxd43hQRw6cRo16kac6mG"
 			]
 		},
 		"src/contracts/SafeMath.sol": {
