@@ -21,7 +21,7 @@ contract batteryRegistry is owned {
     struct battery {
         address batteryID;            //battery wallet address
         string uuID;                  //id of battery  
-        uint date;                  //Creation date
+        uint date;                    //Creation date
         uint timestamp;
         bool isExist;                 //Check if battery exist into addNewBattery function
     }
