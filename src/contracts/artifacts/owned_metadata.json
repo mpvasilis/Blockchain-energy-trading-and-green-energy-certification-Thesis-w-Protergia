@@ -1,0 +1,44 @@
+{
+	"compiler": {
+		"version": "0.5.16+commit.9c3226ce"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			}
+		],
+		"devdoc": {
+			"methods": {}
+		},
+		"userdoc": {
+			"methods": {}
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"src/contracts/EnergyTrading.sol": "owned"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"src/contracts/EnergyTrading.sol": {
+			"keccak256": "0x7de1450892537afafdb8afc1812f446548f1bca55337c0e322213d5acafcf350",
+			"urls": [
+				"bzz-raw://977ea40d091ee589deeaa49bf4db26b53cbb2cd38a76b3abaf4773609b630b10",
+				"dweb:/ipfs/Qmcs5c54kRrvprjUu7PBnGhfViU8LikVUV4CafqG42sjRs"
+			]
+		}
+	},
+	"version": 1
+}
