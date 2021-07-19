@@ -327,6 +327,80 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         }
     }
 
+    function buyEnergyP(uint _idOfContract, uint _buyEnergy) public onlyPPABuyers{
+        uint currentTime = block.timestamp;
+        uint buyEnergy = _buyEnergy;
+        address aBuyer = msg.sender; 
+        address _producer;
+        bool isEnergyPurchased = false;
+        for(uint j = 0; j < Appas.length; j++){
+            if((Appas[j].id == _idOfContract) && (Appas[j].buyer == aBuyer)){
+                require(Appas[j].startDay <= currentTime, "PPA is not active yet");
+                require(Appas[j].endDay > currentTime, "PPA has expired");
+                for(uint i = 0; i < listOfkwhs.length; i++){
+                    uint totalEnergyPurchased = 0;
+                    //if((Appas[j].producer == listOfkwhs[i].producer) && (listOfkwhs[i].buyer == aBuyer) && (Appas[j].id == listOfkwhs[i].idOfmatchContract)){
+                        if((Appas[j].id == listOfkwhs[i].idOfmatchContract) && (listOfkwhs[i].energy < buyEnergy)){
+                            _producer = listOfkwhs[i].producer;
+                            totalEnergyPurchased = listOfkwhs[i].energy;
+                            buyEnergy = buyEnergy - totalEnergyPurchased;
+                            Appas[j].totalKwh = Appas[j].totalKwh + totalEnergyPurchased;
+                            listOfkwhs[i].energy = 0;
+
+                            isEnergyPurchased = true;
+
+                            if(listOfkwhs.length > 1){
+                                listOfkwhs[i] = listOfkwhs[listOfkwhs.length-1];
+                            }
+                            listOfkwhs.length--;
+                            //i--;
+
+                        }else if((Appas[j].id == listOfkwhs[i].idOfmatchContract) && (listOfkwhs[i].energy == buyEnergy)){
+                            _producer = listOfkwhs[i].producer;
+                            totalEnergyPurchased = buyEnergy;
+                            Appas[j].totalKwh = Appas[j].totalKwh + totalEnergyPurchased;
+                            buyEnergy = 0;
+                            listOfkwhs[i].energy = 0;
+
+                            isEnergyPurchased = true;
+
+                            if(listOfkwhs.length > 1){
+                                listOfkwhs[i] = listOfkwhs[listOfkwhs.length-1];
+                            }
+                            listOfkwhs.length--;
+
+                        }else{
+                            _producer = listOfkwhs[i].producer;
+                            totalEnergyPurchased = buyEnergy;
+                            Appas[j].totalKwh = Appas[j].totalKwh + totalEnergyPurchased;
+                            listOfkwhs[i].energy = listOfkwhs[i].energy - buyEnergy;
+                            buyEnergy = 0;
+
+                            isEnergyPurchased = true;
+                        }
+
+                        if(isEnergyPurchased){
+                            listOfprchs.push(purchasesPPA({
+                                buyer: aBuyer,
+                                producer: _producer,
+                                timestamp: currentTime,
+                                idOfPPA: _idOfContract,
+                                purchasedEnergy: totalEnergyPurchased
+                            }));
+                        }
+
+                        /*if(buyEnergy == 0){
+                            break;
+                        }*/
+                    //}
+                    if(buyEnergy == 0){
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
     function buyEnergyByPPA(uint _idOfContract, uint _buyEnergy) public onlyPPABuyers{
         uint currentTime = block.timestamp;
         uint buyEnergy = _buyEnergy;
