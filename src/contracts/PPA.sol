@@ -71,7 +71,8 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
     enum Status {Pending, Approved, Rejected, Expired}
     event createdPPA(address indexed producer, uint price);
     event createdCorpPPA(address indexed producer, address indexed buyer, uint price);
-    event purchasedPPA(uint itemID, address indexed buyer, address indexed producer);
+    event acceptedCorpPPA(address indexed producer, address indexed buyer, uint id, uint agreedPrice);
+    event purchasedPPA(uint id, address indexed buyer, address indexed producer);
     event expiredPPA(address indexed producer, address indexed buyer, uint startDay, uint endDay, Status status);
 
     struct ppa {               //Struct with all PPA contracts
@@ -141,7 +142,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
 
     //Corporate PPAs are based on an agreed price
     //Both parties benefit from long-term price guarantees that protect them from market price volatility
-    function claimCorporatePPA() public {
+    function acceptCorporatePPA() public {
         address _buyer = msg.sender;
         uint _totalKwh = 0;
         for(uint i = 0; i < corporatePPAList.length; i++){
@@ -157,7 +158,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
                     status: Status.Approved
                 }));
                 ppaBuyerRegistry.registerPPABuyer(_buyer);
-                emit purchasedPPA(corporatePPAList[i].id, corporatePPAList[i].buyer, corporatePPAList[i].producer);
+                emit acceptedCorpPPA(corporatePPAList[i].producer, _buyer, corporatePPAList[i].id, corporatePPAList[i].kwhPrice);
                 if(corporatePPAList.length > 1){
                     corporatePPAList[i] = corporatePPAList[corporatePPAList.length-1];
                 }
@@ -326,7 +327,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         }
     }
 
-    function buyEnergyByPPA(uint _buyEnergy) public onlyPPABuyers{
+    function buyEnergyByPPA(uint _idOfContract, uint _buyEnergy) public onlyPPABuyers{
         uint currentTime = block.timestamp;
         uint buyEnergy = _buyEnergy;
         address aBuyer = msg.sender; 
@@ -335,7 +336,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         for(uint j = 0; j<Appas.length; j++){
             for(uint i = 0; i<listOfkwhs.length; i++){
                 uint totalEnergyPurchased = 0;
-                if((Appas[j].producer == listOfkwhs[i].producer) && (listOfkwhs[i].buyer == aBuyer) && (Appas[j].id == listOfkwhs[i].idOfmatchContract)){
+                if((Appas[j].producer == listOfkwhs[i].producer) && (Appas[j].id == _idOfContract) && (listOfkwhs[i].buyer == aBuyer) && (Appas[j].id == listOfkwhs[i].idOfmatchContract)){
                     require(Appas[j].startDay <= currentTime, "PPA is not active yet");
                     if(Appas[j].endDay < currentTime){
                         revert("PPA has expired");
@@ -377,7 +378,6 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
                         buyEnergy = 0;
 
                         isEnergyPurchased = true;
-
                     }
 
                     if(isEnergyPurchased){
@@ -389,10 +389,15 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
                             purchasedEnergy: totalEnergyPurchased
                         }));
                     }
+                    
+                    if(buyEnergy == 0){
+                        break;
+                    }
                 }
-                if(buyEnergy == 0){
+                /*if(buyEnergy == 0){
+                    //i--;
                     break;
-                }
+                }*/
             }
         }
     }
@@ -432,6 +437,10 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
 
     function viewAllApprovedPPAs() public view returns(approvedPPA[] memory){
         return Appas;
+    }
+
+    function viewCorporatePPAlist() public view returns(ppa[] memory){
+        return corporatePPAList;
     }
 
     function getApprovedPPAByID(uint _id) public view returns (address, address, uint, uint, uint){
