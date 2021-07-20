@@ -253,26 +253,6 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "_idOfContract",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_buyEnergy",
-						"type": "uint256"
-					}
-				],
-				"name": "buyEnergyP",
-				"outputs": [],
-				"payable": false,
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"constant": false,
-				"inputs": [
-					{
-						"internalType": "uint256",
 						"name": "_idOfPPA",
 						"type": "uint256"
 					}
@@ -380,6 +360,26 @@
 				"constant": false,
 				"inputs": [],
 				"name": "deregisterProducer",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_idOfContract",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_buyEnergy",
+						"type": "uint256"
+					}
+				],
+				"name": "energyTradingPPA",
 				"outputs": [],
 				"payable": false,
 				"stateMutability": "nonpayable",
@@ -791,7 +791,7 @@
 		"evmVersion": "istanbul",
 		"libraries": {},
 		"optimizer": {
-			"enabled": true,
+			"enabled": false,
 			"runs": 200
 		},
 		"remappings": []
@@ -805,10 +805,10 @@
 			]
 		},
 		"src/contracts/PPA.sol": {
-			"keccak256": "0x85c9cb9aafc0193fe18512ee5caad3f398fd959838163c5baa4ae6b333a01ea0",
+			"keccak256": "0xc4b613242171d7d7d248e8b865476ee6fb2a8c866629ac32fab428ed2065183d",
 			"urls": [
-				"bzz-raw://c6d8b6eacd55437ed1fb75d95dd9cc4e76332df65131952be0ab3ef942796577",
-				"dweb:/ipfs/Qma4LS58WwXR3LQCJkkYcJL9AXkVxEqxds1PMYjJYpMPKV"
+				"bzz-raw://76e475690ca087afee821ae7b7370f0f683a572264c4697ab939e496085ec827",
+				"dweb:/ipfs/QmYPPx3u29ETENufSPTVRT3jCPFhkACiAXSk2bb18HSuy5"
 			]
 		},
 		"src/contracts/SafeMath.sol": {

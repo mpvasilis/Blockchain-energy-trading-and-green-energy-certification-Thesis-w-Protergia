@@ -4,6 +4,7 @@ require("babel-polyfill");
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 
 const MNEMONIC = 'aspect lamp jacket pet vehicle essence child salad uphold fold nurse judge';
+//get test ether for ropsten from https://moonborrow.com/
 
 module.exports = {
     networks: {

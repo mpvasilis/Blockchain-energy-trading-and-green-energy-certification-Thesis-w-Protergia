@@ -327,7 +327,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         }
     }
 
-    function buyEnergyByPPA(uint _idOfContract, uint _buyEnergy) public onlyPPABuyers{
+    function energyTradingPPA(uint _idOfContract, uint _buyEnergy) public onlyPPABuyers{
         uint currentTime = block.timestamp;
         uint buyEnergy = _buyEnergy;
         address aBuyer = msg.sender; 
@@ -339,36 +339,40 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
                 require(Appas[j].endDay > currentTime, "PPA has expired");
                 for(uint i = 0; i < listOfkwhs.length; i++){
                     uint totalEnergyPurchased = 0;
-                    //if((Appas[j].producer == listOfkwhs[i].producer) && (listOfkwhs[i].buyer == aBuyer) && (Appas[j].id == listOfkwhs[i].idOfmatchContract)){
-                        if((Appas[j].id == listOfkwhs[i].idOfmatchContract) && (listOfkwhs[i].energy < buyEnergy)){
+                    if((Appas[j].producer == listOfkwhs[i].producer) && (listOfkwhs[i].buyer == aBuyer) && (Appas[j].id == listOfkwhs[i].idOfmatchContract)){
+                        if(listOfkwhs[i].energy < buyEnergy){//(listOfkwhs[i].idOfmatchContract == Appas[j].id) && (
                             _producer = listOfkwhs[i].producer;
                             totalEnergyPurchased = listOfkwhs[i].energy;
-                            buyEnergy = buyEnergy - totalEnergyPurchased;
-                            Appas[j].totalKwh = Appas[j].totalKwh + totalEnergyPurchased;
+                            buyEnergy = buyEnergy-totalEnergyPurchased;
+                            Appas[j].totalKwh = Appas[j].totalKwh+totalEnergyPurchased;
                             listOfkwhs[i].energy = 0;
 
                             isEnergyPurchased = true;
 
-                        }else if((Appas[j].id == listOfkwhs[i].idOfmatchContract) && (listOfkwhs[i].energy == buyEnergy)){
+                            if(listOfkwhs.length > 1){
+                                listOfkwhs[i] = listOfkwhs[listOfkwhs.length-1];
+                            }
+                            listOfkwhs.length--;
+
+                        }else if(listOfkwhs[i].energy == buyEnergy){//(Appas[j].producer == listOfkwhs[i].producer) && (Appas[j].id == listOfkwhs[i].idOfmatchContract) && 
                             _producer = listOfkwhs[i].producer;
                             totalEnergyPurchased = buyEnergy;
-                            Appas[j].totalKwh = Appas[j].totalKwh + totalEnergyPurchased;
+                            Appas[j].totalKwh = Appas[j].totalKwh+totalEnergyPurchased;
                             buyEnergy = 0;
                             listOfkwhs[i].energy = 0;
 
                             isEnergyPurchased = true;
 
-                            /*if(listOfkwhs.length > 1){
+                            if(listOfkwhs.length > 1){
                                 listOfkwhs[i] = listOfkwhs[listOfkwhs.length-1];
                             }
-                            listOfkwhs.length--;*/
+                            listOfkwhs.length--;
 
                         }else{
                             _producer = listOfkwhs[i].producer;
                             totalEnergyPurchased = buyEnergy;
-                            Appas[j].totalKwh = Appas[j].totalKwh + totalEnergyPurchased;
-                            uint en = listOfkwhs[i].energy - totalEnergyPurchased;
-                            en = listOfkwhs[i].energy;
+                            Appas[j].totalKwh = Appas[j].totalKwh+totalEnergyPurchased;
+                            listOfkwhs[i].energy = listOfkwhs[i].energy-totalEnergyPurchased;
                             buyEnergy = 0;
 
                             isEnergyPurchased = true;
@@ -383,18 +387,12 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
                                 purchasedEnergy: totalEnergyPurchased
                             }));
                         }
-                    //}
-                    if(listOfkwhs[i].energy == 0){
-                        if(listOfkwhs.length > 1){
-                            listOfkwhs[i] = listOfkwhs[listOfkwhs.length-1];
+                        
+                        if(buyEnergy == 0){
+                            break;
+                        }else{
+                            i--;
                         }
-                        listOfkwhs.length--;
-                    }
-                    
-                    if(buyEnergy != 0){
-                        i--;
-                    }else{
-                        break;
                     }
                 }
             }
