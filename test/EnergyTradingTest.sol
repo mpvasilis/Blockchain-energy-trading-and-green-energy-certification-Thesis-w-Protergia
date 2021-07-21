@@ -18,18 +18,16 @@ contract testEnergyTrading {
 
     function testAddNewBattery() public {
         string memory uuIDExpected = "ead234dfdh";
-        uint dateExpected = 21102021;
 
         address batteryID;
         string memory uuID;
-        uint date;
+        uint timestamp;
 
         uint _idbat = 0;
-        br.addNewBattery(uuIDExpected, dateExpected);
-        (batteryID, uuID, date) = br.getBatteryByLength(_idbat);
+        br.addNewBattery(uuIDExpected);
+        (batteryID, uuID, timestamp) = br.getBatteryByLength(_idbat);
         Assert.equal(batteryID, address(this), "Wrong result 0");
         Assert.equal(uuID, uuIDExpected, "Wrong result 1");
-        Assert.equal(date, dateExpected, "Wrong result 2");
     }
 
     function testCreateEnergyBid() public {
