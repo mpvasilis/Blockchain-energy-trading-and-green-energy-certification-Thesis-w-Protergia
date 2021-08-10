@@ -216,6 +216,42 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         }
     }
 
+    //this function uses a different way to claim a PPA than the other one
+    function TestClaimAuctioningPPA() public{
+        uint _totalkwh = 0;
+        uint comparePPA = 0;
+        bool isClaimed = false;
+        address buyerAddr = msg.sender;
+
+        for(uint i = 0; i < listOfPPAs.length; i++){
+            if(listOfPPAs[i].kwhPrice < comparePPA){
+                require(listOfPPAs[i].status == Status.Pending, "PPA does not exists");
+                require(listOfPPAs[i].producer != buyerAddr, "Wrong address buyer");
+                Appas.push(approvedPPA({
+                    buyer: buyerAddr,
+                    producer: listOfPPAs[i].producer,
+                    kwhPrice: listOfPPAs[i].kwhPrice,
+                    startDay: listOfPPAs[i].startDay,
+                    endDay: listOfPPAs[i].endDay,
+                    id: listOfPPAs[i].id,
+                    totalKwh: _totalkwh,
+                    status: Status.Approved
+                }));
+                ppaBuyerRegistry.registerPPABuyer(buyerAddr);
+                isClaimed = true;
+                emit purchasedPPA(listOfPPAs[i].id, listOfPPAs[i].buyer, listOfPPAs[i].producer);
+                if(isClaimed){
+                    if(listOfPPAs.length > 1){
+                        listOfPPAs[i] = listOfPPAs[listOfPPAs.length-1];
+                    }
+                    listOfPPAs.length--;
+                    break;
+                }
+            }
+            comparePPA = listOfPPAs[i].kwhPrice;
+        }
+    }
+
     //Claim an Auction type PPA with the lowest price
     function claimAuctionPPA() public {
         uint _totalkwh = 0;
