@@ -1,5 +1,4 @@
 pragma solidity >=0.4.21 <0.9.0;
-pragma experimental ABIEncoderV2;
 
 contract owned {
     
@@ -48,8 +47,14 @@ contract batteryRegistry is owned {
     }
 
     //to view all batteries
-    function viewAllBatteries () public view returns (battery[] memory) {
-        return listOfBatteries;
+    function viewAllBatteries (uint n) public view returns (address[] memory, uint[] memory) {
+        address[] memory _batteries = new address[](listOfBatteries.length);
+        uint[] memory _registryDay = new uint[](listOfBatteries.length);
+        for(uint i = 0; i < n; i++){
+            _batteries[i] = listOfBatteries[i].batteryID;
+            _registryDay[i] = listOfBatteries[i].timestamp;
+        }
+        return(_batteries, _registryDay);
     }
 
     function getCountOfBatteries () public view returns (uint count) {
@@ -302,51 +307,79 @@ contract energyBid is owned, batteryRegistry {
     }
 
     //list of all ask energy requests
-    function viewAllAsks () public view returns (ask[] memory){
-        return listOfAsks;
+    function viewAllAsks (uint n) public view returns (address[] memory, uint[] memory, uint[] memory){
+        address[] memory _consumers = new address[](listOfAsks.length);
+        uint[] memory _dates = new uint[](listOfAsks.length);
+        uint[] memory _energyList = new uint[](listOfAsks.length);
+        for(uint i = 0; i < n; i++){
+            _consumers[i] = listOfAsks[i].consumerID;
+            _dates[i] = listOfAsks[i].timestamp;
+            _energyList[i] = listOfAsks[i].remainingEnergy;
+        }
+        return(_consumers, _dates, _energyList);
     }
 
     function getCountOfAsks () public view returns (uint count){
         return listOfAsks.length;
     }
 
-    //view single ask energy request by batteryID
+    /*//view single ask energy request by batteryID
     function getAskByBatteryId (address _consumerID) public view returns (address, uint, uint){
         uint indexA = asks[_consumerID];
         require(listOfAsks.length > indexA, "Wrong index");
         require(listOfAsks[indexA].consumerID == _consumerID, "Wrong Battery Id");
         return (listOfAsks[indexA].consumerID, listOfAsks[indexA].timestamp, listOfAsks[indexA].energy);
-    }
+    }*/
 
     //list of all energy purchases
-    function viewAllEnergyPurchases () public view returns (buyedEnergy[] memory){
-        return listOfBuyedEnergy;
+    function viewAllEnergyPurchases (uint n) public view returns (address[] memory, address[] memory, uint[] memory, uint[] memory, uint[] memory){
+        address[] memory _prosumers = new address[](listOfBuyedEnergy.length);
+        address[] memory _consumersList= new address[](listOfBuyedEnergy.length);
+        uint[] memory _prchsEnergy = new uint[](listOfBuyedEnergy.length);
+        uint[] memory _prices = new uint[](listOfBuyedEnergy.length);
+        uint[] memory _time = new uint[](listOfBuyedEnergy.length);
+        for(uint i = 0; i < n; i++){
+            _prosumers[i] = listOfBuyedEnergy[i].prosumerID;
+            _consumersList[i] = listOfBuyedEnergy[i].consumerID;
+            _prchsEnergy[i] = listOfBuyedEnergy[i].energy;
+            _prices[i] = listOfBuyedEnergy[i].price;
+            _time[i] = listOfBuyedEnergy[i].timestamp;
+        }
+        return(_prosumers, _consumersList, _prchsEnergy, _prices, _time);
     }
 
     //view all bids 
-    function viewAllBids () public view returns (bid[] memory){
-      return listOfBids;
+    function viewAllBids (uint n) public view returns (address[] memory, uint[] memory, uint[] memory){
+        address[] memory prosumers = new address[](listOfBids.length);
+        uint[] memory dates = new uint[](listOfBids.length);
+        uint[] memory energyList = new uint[](listOfBids.length);
+        for(uint i = 0; i < n; i++){
+            prosumers[i] = listOfBids[i].prosumerID;
+            dates[i] = listOfBids[i].timestamp;
+            energyList[i] = listOfBids[i].energy;
+        }
+        return(prosumers, dates, energyList);
     }
 
     function getCountOfBids () public view returns (uint count){
         return listOfBids.length;
     }
 
-    //view single bid by batteryID
+    /*//view single bid by batteryID
     function getBidByBatteryID (address prosumerID, uint numberOfBid) public view returns (uint, uint, uint){
         uint index = bids[prosumerID][numberOfBid];
         require(listOfBids.length > index, "Wrong index");
         require(listOfBids[index].prosumerID == prosumerID, "Wrong ID");
         return (listOfBids[index].numberOfBid, listOfBids[index].timestamp, listOfBids[index].energy);
-    }
+    }*/
 
     //Functions "getBidsByLength" and "getAsksByLength" are only for unit test
-    function getBidsByLength (uint _idbid) public view returns (address, uint, uint){
+    function getBidsByID (uint _idbid) public view returns (address, uint, uint){
         bid storage _bid = listOfBids[_idbid];
         return(_bid.prosumerID, _bid.timestamp, _bid.energy);
     }
 
-    function getAsksByLength (uint _idask) public view returns (address, uint, uint){
+    function getAsksByID (uint _idask) public view returns (address, uint, uint){
         ask storage _ask = listOfAsks[_idask];
         return(_ask.consumerID, _ask.timestamp, _ask.energy);
     }
