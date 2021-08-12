@@ -22,7 +22,7 @@ contract batteryRegistry is owned {
         address batteryID;            //battery wallet address
         string uuID;                  //id of battery
         uint timestamp;
-        bool isExist;                 //Check if battery exist into addNewBattery function
+        bool isExist;                 //Check if battery exists
     }
 
     //mapping address as key to struct battery with mapping name batteries
@@ -83,10 +83,12 @@ contract energyBid is owned, batteryRegistry {
     //event offerEnergyMade(address indexed sellerBatteryID, uint32 indexed day, uint32 indexed price, uint64 energy);
     //event buyEnergyMade(address indexed sellerBatteryID, uint32 indexed day, uint32 price, uint64 energy, address indexed batteryID);
 
-    uint64 constant kWh = 1;
-    uint64 constant MWh = 1000 * kWh;
-    uint64 constant GWh = 1000 * MWh;
-    uint64 constant TWh = 1000 * GWh;
+    uint constant mWh = 1;
+    uint constant  Wh = 1000 * mWh;
+    uint constant kWh = 1000 * Wh;
+    uint constant MWh = 1000 * kWh;
+    uint constant GWh = 1000 * MWh;
+    uint constant TWh = 1000 * GWh;
 
     //uint uinversalPrice = 2; //Energy market price per kWh (ex. 2euro/kWh, the price is trial)
 
@@ -127,7 +129,7 @@ contract energyBid is owned, batteryRegistry {
     //There is a minimum energy requirement 
     //Only registered batteries can use this function
     function energyOffer(uint _energy, uint _eprice) public onlyRegisteredBattery {
-        require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh");
+        require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh(in whs), for instance 5.6kwhs = 5600whs");
 
         listOfBids.push(bid({
             prosumerID: msg.sender,
@@ -142,7 +144,7 @@ contract energyBid is owned, batteryRegistry {
 
     //make ask request and buy energy from available bids
     function askEnergy(uint _energy) public onlyRegisteredBattery {
-        require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh");
+        require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh (in whs), for instance 5.6kwhs = 5600whs");
 
         listOfAsks.push(ask({
             consumerID: msg.sender,

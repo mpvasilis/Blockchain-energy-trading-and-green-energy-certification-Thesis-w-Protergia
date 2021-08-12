@@ -1,5 +1,4 @@
 pragma solidity >=0.4.21 <0.9.0;
-pragma experimental ABIEncoderV2;
 
 import "src/contracts/SafeMath.sol";
 import "src/contracts/Counters.sol";
@@ -65,6 +64,13 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
     //using SafeMath for uint256;
     using Counters for Counters.Counter;
     Counters.Counter private contractID;
+
+    uint constant mWh = 1;
+    uint constant  Wh = 1000 * mWh;
+    uint constant kWh = 1000 * Wh;
+    uint constant MWh = 1000 * kWh;
+    uint constant GWh = 1000 * MWh;
+    uint constant TWh = 1000 * GWh;
 
     mapping (uint => uint) price;
 
@@ -194,6 +200,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         for(uint i = 0; i<listOfPPAs.length; i++){
             require(listOfPPAs[i].producer != buyer, "Wrong address buyer");
             require(listOfPPAs[i].status != Status.Rejected, "error");
+            require(listOfPPAs[i].endDay > block.timestamp, "PPA has expired");
             if(listOfPPAs[i].status == Status.Pending){
                 Appas.push(approvedPPA({
                     buyer: buyer,
@@ -264,6 +271,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
                 if(listOfPPAs[j].kwhPrice < listOfPPAs[i].kwhPrice){
                     require(listOfPPAs[j].status == Status.Pending, "PPA does not exists");
                     require(listOfPPAs[j].producer != buyerAddr, "Wrong address buyer");
+                    require(listOfPPAs[j].endDay > block.timestamp, "PPA has expire, you can not buy it");
                     Appas.push(approvedPPA({
                         buyer: buyerAddr,
                         producer: listOfPPAs[j].producer,
@@ -317,6 +325,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
 
     //this is a trial function just for PPA_energy_trading part
     function availableKwhs(address _buyer, uint _energy, uint _idOfMatchPPA) public onlyRegisteredProducers{
+        require(_energy >= kWh, "You have to put at least 1Kwh (in whs for example 1.5kwhs -> 1500 (wh))");
         address _producer = msg.sender;
         listOfkwhs.push(producerEnergy({
             producer: _producer,
@@ -460,20 +469,34 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         }
     }
 
-    function viewAllPPAs () public view returns (ppa[] memory){
-        return listOfPPAs;
+    function viewAllpurchases(uint n) public view returns (address[] memory, address[] memory, uint[] memory, uint[] memory){
+        address[] memory _producerList1 = new address[](listOfprchs.length);
+        address[] memory _buyerList1 = new address[](listOfprchs.length);
+        uint[] memory _priceList1 = new uint[](listOfprchs.length);
+        uint[] memory _idPPAlist1 = new uint[](listOfprchs.length);
+        for(uint i = 0; i < n; i++){
+            _producerList1[i] = listOfprchs[i].producer;
+            _buyerList1[i] = listOfprchs[i].buyer;
+            _priceList1[i] = listOfprchs[i].purchasedEnergy;
+            _idPPAlist1[i] = listOfprchs[i].idOfPPA;
+        }
+        return(_producerList1, _buyerList1, _priceList1, _idPPAlist1);
     }
 
-    function viewAllpurchases() public view returns (purchasesPPA[] memory){
-        return listOfprchs;
-    }
-
-    function viewAllApprovedPPAs() public view returns(approvedPPA[] memory){
-        return Appas;
-    }
-
-    function viewCorporatePPAlist() public view returns(ppa[] memory){
-        return corporatePPAList;
+    function viewCorporatePPAlist(uint n) public view returns(address[] memory, address[] memory, uint[] memory, uint[] memory, uint[] memory){
+        address[] memory _producerList = new address[](corporatePPAList.length);
+        address[] memory _buyerList = new address[](corporatePPAList.length);
+        uint[] memory _priceList = new uint[](corporatePPAList.length);
+        uint[] memory _idPPAlist = new uint[](corporatePPAList.length);
+        uint[] memory _statusList = new uint[](corporatePPAList.length);
+        for(uint i = 0; i < n; i++){
+            _producerList[i] = corporatePPAList[i].producer;
+            _buyerList[i] = corporatePPAList[i].buyer;
+            _priceList[i] = corporatePPAList[i].kwhPrice;
+            _idPPAlist[i] = corporatePPAList[i].id;
+            _statusList[i] = uint(corporatePPAList[i].status);
+        }
+        return(_producerList, _buyerList, _priceList, _idPPAlist, _statusList);
     }
 
     function getApprovedPPAByID(uint _id) public view returns (address, address, uint, uint, uint){
@@ -481,16 +504,41 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         return(_Appa.producer, _Appa.buyer, _Appa.kwhPrice, _Appa.startDay, _Appa.endDay);
     }
 
-    function getPPAByID(uint _id) public view returns (address, address, uint, uint, uint, uint, uint){
-        ppa storage _ppa = listOfPPAs[_id];
-        return(_ppa.producer, _ppa.buyer, _ppa.kwhPrice, _ppa.startDay, _ppa.endDay, uint(_ppa.status), _ppa.id);
-    }
+    function viewAllPPAs (uint n) public view returns (address[] memory, address[] memory, uint[] memory, uint[] memory, uint[] memory){
+        address[] memory producerList = new address[](listOfPPAs.length);
+        address[] memory buyerList = new address[](listOfPPAs.length);
+        uint[] memory priceList = new uint[](listOfPPAs.length);
+        uint[] memory idPPAlist = new uint[](listOfPPAs.length);
+        uint[] memory statusList = new uint[](listOfPPAs.length);
+        for(uint i = 0; i < n; i++){
+            producerList[i] = listOfPPAs[i].producer;
+            buyerList[i] = listOfPPAs[i].buyer;
+            priceList[i] = listOfPPAs[i].kwhPrice;
+            idPPAlist[i] = listOfPPAs[i].id;
+            statusList[i] = uint(listOfPPAs[i].status);
+        }
+        return(producerList, buyerList, priceList, idPPAlist, statusList);
+     }
 
-    function viewAvailableKwhs() public view returns(producerEnergy[] memory){
-        return listOfkwhs;
+    function viewAvailableKwhs(uint n) public view returns(address[] memory, address[] memory, uint[] memory, uint[] memory){
+        address[] memory producerList_ = new address[](listOfkwhs.length);
+        address[] memory buyerList_ = new address[](listOfkwhs.length);
+        uint[] memory energyList_ = new uint[](listOfkwhs.length);
+        uint[] memory idOfPPAlist_ = new uint[](listOfkwhs.length);
+        for(uint i = 0; i < n; i++){
+            producerList_[i] = listOfPPAs[i].producer;
+            buyerList_[i] = listOfPPAs[i].buyer;
+            energyList_[i] = listOfPPAs[i].kwhPrice;
+            idOfPPAlist_[i] = listOfPPAs[i].id;
+        }
+        return(producerList_, buyerList_, energyList_, idOfPPAlist_);
     }
 
     function getAvKwhs() public view returns(uint count){
         return listOfkwhs.length;
+    }
+
+    function getPPAs() public view returns(uint count){
+        return listOfPPAs.length;
     }
 }
