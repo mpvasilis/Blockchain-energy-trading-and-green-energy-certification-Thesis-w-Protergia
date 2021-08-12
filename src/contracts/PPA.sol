@@ -65,6 +65,9 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
     using Counters for Counters.Counter;
     Counters.Counter private contractID;
 
+    uint constant cent = 1;
+    uint constant dollar = 100 * cent;
+
     uint constant mWh = 1;
     uint constant  Wh = 1000 * mWh;
     uint constant kWh = 1000 * Wh;
@@ -134,6 +137,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
     function corporatePPA(address _buyer, uint _agreedKwhPrice,uint _startDay, uint _endDay, uint _id) public onlyRegisteredProducers {
         address _producer = msg.sender;
         require(_endDay > _startDay, "It's impossible endDay < startDay");
+        require(_agreedKwhPrice >= dollar, "Value in Cent, for example 1.5dollar -> 150cents");
         corporatePPAList.push(ppa({
             buyer: _buyer,
             producer: _producer,
