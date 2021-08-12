@@ -137,7 +137,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
     function corporatePPA(address _buyer, uint _agreedKwhPrice,uint _startDay, uint _endDay, uint _id) public onlyRegisteredProducers {
         address _producer = msg.sender;
         require(_endDay > _startDay, "It's impossible endDay < startDay");
-        require(_agreedKwhPrice >= dollar, "Value in Cent, for example 1.5dollar -> 150cents");
+        require(_agreedKwhPrice >= dollar, "Price in Cent, for example 1.5dollar -> 150cents");
         corporatePPAList.push(ppa({
             buyer: _buyer,
             producer: _producer,
@@ -180,11 +180,10 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
 
     function createPPA(uint _kwhPrice,uint _startDay, uint _endDay) public onlyRegisteredProducers { //onlyRegisteredProducers
         address _producer = msg.sender;
-        //uint currentTime = block.timestamp;
-        //uint idOfContract = _endDay-currentTime;
         contractID.increment();
         uint currentID = contractID.current();
         require(_endDay > _startDay, "It's impossible endDay < startDay");
+        require(_kwhPrice >= dollar, "Price in Cent, for example 1.5dollar -> 150cents");
         listOfPPAs.push(ppa({
             buyer: address(0x0),
             producer: _producer,

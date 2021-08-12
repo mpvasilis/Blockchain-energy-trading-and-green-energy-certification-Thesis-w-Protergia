@@ -88,6 +88,9 @@ contract energyBid is owned, batteryRegistry {
     //event offerEnergyMade(address indexed sellerBatteryID, uint32 indexed day, uint32 indexed price, uint64 energy);
     //event buyEnergyMade(address indexed sellerBatteryID, uint32 indexed day, uint32 price, uint64 energy, address indexed batteryID);
 
+    uint constant cent = 1;
+    uint constant dollar = 100 * cent;
+
     uint constant mWh = 1;
     uint constant  Wh = 1000 * mWh;
     uint constant kWh = 1000 * Wh;
@@ -135,6 +138,7 @@ contract energyBid is owned, batteryRegistry {
     //Only registered batteries can use this function
     function energyOffer(uint _energy, uint _eprice) public onlyRegisteredBattery {
         require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh(in whs), for instance 5.6kwhs = 5600whs");
+        require(_eprice >= dollar, "Price in 'cent', for example 1.5dollars/kwh = 150cents/kwh");
 
         listOfBids.push(bid({
             prosumerID: msg.sender,
