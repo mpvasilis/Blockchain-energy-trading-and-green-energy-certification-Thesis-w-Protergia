@@ -97,7 +97,6 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
     mapping(address => ppa) ppas;
     ppa[] listOfPPAs;
     ppa[] corporatePPAList;
-    //uint contractID = 0;
 
     struct approvedPPA{       //Struct only for approved PPAs
         address buyer;
@@ -178,7 +177,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         }
     }
 
-    function createPPA(uint _kwhPrice,uint _startDay, uint _endDay) public onlyRegisteredProducers { //onlyRegisteredProducers
+    function createPPA(uint _kwhPrice, uint _startDay, uint _endDay) public onlyRegisteredProducers { //onlyRegisteredProducers
         address _producer = msg.sender;
         contractID.increment();
         uint currentID = contractID.current();
@@ -193,7 +192,6 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
             id: currentID,
             status: Status.Pending
         }));
-        //nextID++;
         emit createdPPA(_producer, _kwhPrice);
     }
 
