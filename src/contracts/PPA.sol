@@ -527,10 +527,10 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         uint[] memory energyList_ = new uint[](listOfkwhs.length);
         uint[] memory idOfPPAlist_ = new uint[](listOfkwhs.length);
         for(uint i = 0; i < n; i++){
-            producerList_[i] = listOfPPAs[i].producer;
-            buyerList_[i] = listOfPPAs[i].buyer;
-            energyList_[i] = listOfPPAs[i].kwhPrice;
-            idOfPPAlist_[i] = listOfPPAs[i].id;
+            producerList_[i] = listOfkwhs[i].producer;
+            buyerList_[i] = listOfkwhs[i].buyer;
+            energyList_[i] = listOfkwhs[i].energy;
+            idOfPPAlist_[i] = listOfkwhs[i].idOfmatchContract;
         }
         return(producerList_, buyerList_, energyList_, idOfPPAlist_);
     }
