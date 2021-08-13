@@ -181,8 +181,8 @@ contract energyBid is owned, batteryRegistry {
                 _prosumerID = listOfBids[i].prosumerID;
                 energyPurchased = listOfBids[i].energy; 
                 remainingEnergy = remainingEnergy - listOfBids[i].energy;
-                listOfAsks[i].remainingEnergy = remainingEnergy;//-----
-                _price = listOfBids[i].eprice*energyPurchased; //price per kWh
+                listOfAsks[i].remainingEnergy = remainingEnergy;
+                _price = listOfBids[i].eprice*energyPurchased;
                 listOfBids[i].energy = 0;
 
                 isEnergyPurchased = true;
@@ -192,7 +192,7 @@ contract energyBid is owned, batteryRegistry {
                     listOfBids[i] = listOfBids[listOfBids.length-1];
                 }
                 listOfBids.length--;
-                i--;//-----
+                i--;
 
             }else if(listOfBids[i].energy == remainingEnergy){
                 _prosumerID = listOfBids[i].prosumerID;
@@ -327,14 +327,6 @@ contract energyBid is owned, batteryRegistry {
         return listOfAsks.length;
     }
 
-    /*//view single ask energy request by batteryID
-    function getAskByBatteryId (address _consumerID) public view returns (address, uint, uint){
-        uint indexA = asks[_consumerID];
-        require(listOfAsks.length > indexA, "Wrong index");
-        require(listOfAsks[indexA].consumerID == _consumerID, "Wrong Battery Id");
-        return (listOfAsks[indexA].consumerID, listOfAsks[indexA].timestamp, listOfAsks[indexA].energy);
-    }*/
-
     //list of all energy purchases
     function viewAllEnergyPurchases (uint n) public view returns (address[] memory, address[] memory, uint[] memory, uint[] memory, uint[] memory){
         address[] memory _prosumers = new address[](listOfBuyedEnergy.length);
@@ -368,14 +360,6 @@ contract energyBid is owned, batteryRegistry {
     function getCountOfBids () public view returns (uint count){
         return listOfBids.length;
     }
-
-    /*//view single bid by batteryID
-    function getBidByBatteryID (address prosumerID, uint numberOfBid) public view returns (uint, uint, uint){
-        uint index = bids[prosumerID][numberOfBid];
-        require(listOfBids.length > index, "Wrong index");
-        require(listOfBids[index].prosumerID == prosumerID, "Wrong ID");
-        return (listOfBids[index].numberOfBid, listOfBids[index].timestamp, listOfBids[index].energy);
-    }*/
 
     //Functions "getBidsByLength" and "getAsksByLength" are only for unit test
     function getBidsByID (uint _idbid) public view returns (address, uint, uint){
