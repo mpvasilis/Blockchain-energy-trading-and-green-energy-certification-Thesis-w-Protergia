@@ -78,8 +78,8 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
     mapping (uint => uint) price;
 
     enum Status {Pending, Approved, Rejected, Expired}
-    event createdPPA(address indexed producer, uint price);
-    event createdCorpPPA(address indexed producer, address indexed buyer, uint price);
+    event createdPPA(address indexed producer, uint price, uint id);
+    event createdCorpPPA(address indexed producer, address indexed buyer, uint price, uint id);
     event acceptedCorpPPA(address indexed producer, address indexed buyer, uint id, uint agreedPrice);
     event purchasedPPA(uint id, address indexed buyer, address indexed producer);
     event expiredPPA(address indexed producer, address indexed buyer, uint startDay, uint endDay, Status status);
@@ -147,7 +147,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
             id: _id,
             status: Status.Pending
         }));
-        emit createdCorpPPA(_producer, _buyer, _agreedKwhPrice);
+        emit createdCorpPPA(_producer, _buyer, _agreedKwhPrice, _id);
     }
 
     //Corporate PPAs are based on an agreed price
@@ -193,7 +193,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
             id: currentID,
             status: Status.Pending
         }));
-        emit createdPPA(_producer, _kwhPrice);
+        emit createdPPA(_producer, _kwhPrice, currentID);
     }
 
     function claimPPA() public {
@@ -225,49 +225,17 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         }
     }
 
-    //this function uses a different way to claim a PPA than the other one
-    function TestClaimAuctioningPPA() public{
-        uint _totalkwh = 0;
-        uint comparePPA = 0;
-        bool isClaimed = false;
-        address buyerAddr = msg.sender;
-
-        for(uint i = 0; i < listOfPPAs.length; i++){
-            if(listOfPPAs[i].kwhPrice < comparePPA){
-                require(listOfPPAs[i].status == Status.Pending, "PPA does not exists");
-                require(listOfPPAs[i].producer != buyerAddr, "Wrong address buyer");
-                Appas.push(approvedPPA({
-                    buyer: buyerAddr,
-                    producer: listOfPPAs[i].producer,
-                    kwhPrice: listOfPPAs[i].kwhPrice,
-                    startDay: listOfPPAs[i].startDay,
-                    endDay: listOfPPAs[i].endDay,
-                    id: listOfPPAs[i].id,
-                    totalKwh: _totalkwh,
-                    status: Status.Approved
-                }));
-                ppaBuyerRegistry.registerPPABuyer(buyerAddr);
-                isClaimed = true;
-                emit purchasedPPA(listOfPPAs[i].id, listOfPPAs[i].buyer, listOfPPAs[i].producer);
-            }
-            comparePPA = listOfPPAs[i].kwhPrice;
-            if(isClaimed){
-                if(listOfPPAs.length > 1){
-                    listOfPPAs[i] = listOfPPAs[listOfPPAs.length-1];
-                }
-                listOfPPAs.length--;
-                break;
-            }
-        }
-    }
-
-    function clPPAtest() public{
-        uint comparePPA = 0;
-        uint index = 0;
+    //Claim an Auction type PPA with the lowest price
+    function claimAuctionPPA() public{
+        uint i = 0;
+        uint comparePPA = listOfPPAs[i].kwhPrice;
+        uint index = 1;
         uint _totalkwh = 0;
         address buyerAddr = msg.sender;
-        for(uint i = 0; i < listOfPPAs.length; i++){
+        for(i; i < listOfPPAs.length; i++){
             if(listOfPPAs[i].kwhPrice < comparePPA){
+                require(listOfPPAs[i].endDay > block.timestamp, "PPA has expire, you can not buy it");
+                require(listOfPPAs[i].producer != buyerAddr, "Wrong address buyer...Buyer cannot be the creator of a PPA contract");
                 comparePPA = listOfPPAs[i].kwhPrice;
                 index = i;
             }
@@ -290,72 +258,6 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         }
         listOfPPAs.length--;
         emit purchasedPPA(listOfPPAs[index].id, listOfPPAs[index].buyer, listOfPPAs[index].producer);
-    }
-
-    //Claim an Auction type PPA with the lowest price
-    function claimAuctionPPA() public {
-        uint _totalkwh = 0;
-        bool isClaimed = false;
-        address buyerAddr = msg.sender;
-        //Check for the best price per kwh based on PPA terms
-        //Claim the PPA with lowest price and record this purchase
-        for(uint i = 0; i < listOfPPAs.length; i++){
-            for(uint j = 0; j < listOfPPAs.length; j++){
-                if(listOfPPAs[j].kwhPrice < listOfPPAs[i].kwhPrice){
-                    require(listOfPPAs[j].status == Status.Pending, "PPA does not exists");
-                    require(listOfPPAs[j].producer != buyerAddr, "Wrong address buyer");
-                    require(listOfPPAs[j].endDay > block.timestamp, "PPA has expire, you can not buy it");
-                    Appas.push(approvedPPA({
-                        buyer: buyerAddr,
-                        producer: listOfPPAs[j].producer,
-                        kwhPrice: listOfPPAs[j].kwhPrice,
-                        startDay: listOfPPAs[j].startDay,
-                        endDay: listOfPPAs[j].endDay,
-                        id: listOfPPAs[j].id,
-                        totalKwh: _totalkwh,
-                        status: Status.Approved
-                    }));
-                    if(ppaBuyers[msg.sender] <= 0){
-                        ppaBuyerRegistry.registerPPABuyer(buyerAddr);
-                    }
-                    isClaimed = true;
-                    emit purchasedPPA(listOfPPAs[j].id, listOfPPAs[j].buyer, listOfPPAs[j].producer);
-                }
-                if(isClaimed){
-                    if(listOfPPAs.length > 1){
-                        listOfPPAs[j] = listOfPPAs[listOfPPAs.length-1];
-                    }
-                    listOfPPAs.length--;
-                    break;
-                }
-            }
-            if(isClaimed){
-                break;
-            }else{
-                require(listOfPPAs[i].status == Status.Pending, "PPA does not exists");
-                require(listOfPPAs[i].producer != buyerAddr, "Wrong address buyer");
-                Appas.push(approvedPPA({
-                    buyer: buyerAddr,
-                    producer: listOfPPAs[i].producer,
-                    kwhPrice: listOfPPAs[i].kwhPrice,
-                    startDay: listOfPPAs[i].startDay,
-                    endDay: listOfPPAs[i].endDay,
-                    id: listOfPPAs[i].id,
-                    totalKwh: _totalkwh,
-                    status: Status.Approved
-                }));
-                ppaBuyerRegistry.registerPPABuyer(buyerAddr);
-                isClaimed = true;
-                emit purchasedPPA(listOfPPAs[i].id, listOfPPAs[i].buyer, listOfPPAs[i].producer);
-                if(isClaimed){
-                    if(listOfPPAs.length > 1){
-                        listOfPPAs[i] = listOfPPAs[listOfPPAs.length-1];
-                    }
-                    listOfPPAs.length--;
-                    break;
-                }
-            }
-        }
     }
 
     //this is a trial function just for PPA_energy_trading part
@@ -535,9 +437,9 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         return(_producerList, _buyerList, _priceList, _idPPAlist, _statusList);
     }
 
-    function getApprovedPPAByID(uint _id) public view returns (address, address, uint, uint, uint){
+    function getApprovedPPAByID(uint _id) public view returns (address, address, uint, uint, uint, uint){
         approvedPPA storage _Appa = Appas[_id];
-        return(_Appa.producer, _Appa.buyer, _Appa.kwhPrice, _Appa.startDay, _Appa.endDay);
+        return(_Appa.producer, _Appa.buyer, _Appa.kwhPrice, _Appa.startDay, _Appa.endDay, _Appa.id);
     }
 
     function viewAllPPAs (uint n) public view returns (address[] memory, address[] memory, uint[] memory, uint[] memory, uint[] memory){
