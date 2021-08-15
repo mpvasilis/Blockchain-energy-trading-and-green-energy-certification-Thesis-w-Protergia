@@ -38,24 +38,7 @@ contract batteryRegistry is owned {
     //add a battery by eth account address
     function addNewBattery (bytes32 uuID) public {
         require(batteries[msg.sender].isExist==false, "Battery details already added");
-
-        listOfBatteries.push(battery({
-            batteryID: msg.sender,
-            uuID: uuID,
-            timestamp: block.timestamp,
-            isExist: true
-            }));
-    }
-
-    //to view all batteries
-    function viewAllBatteries (uint n) public view returns (address[] memory, uint[] memory) {
-        address[] memory _batteries = new address[](listOfBatteries.length);
-        uint[] memory _registryDay = new uint[](listOfBatteries.length);
-        for(uint i = 0; i < n; i++){
-            _batteries[i] = listOfBatteries[i].batteryID;
-            _registryDay[i] = listOfBatteries[i].timestamp;
-        }
-        return(_batteries, _registryDay);
+        batteries[msg.sender] = battery(msg.sender, uuID, block.timestamp, true);
     }
 
     function getCountOfBatteries () public view returns (uint count) {
@@ -64,22 +47,12 @@ contract batteryRegistry is owned {
 
     //change details of a battery
     function updateBattery(address batteryID, bytes32 uuID) public onlyRegisteredBattery {
-        for(uint i = 0; i<listOfBatteries.length; i++){
-            if(listOfBatteries[i].batteryID == batteryID){
-                listOfBatteries[i].uuID = uuID;
-            }
-        }
+        batteries[batteryID].uuID = uuID;
     }
 
     //view single battery by battery id
     function getBatteryByID(address batteryID) public view returns (address, bytes32, uint){
         return (batteries[batteryID].batteryID, batteries[batteryID].uuID, batteries[batteryID].timestamp);
-    }
-
-    //This function created in order to help us in unit test
-    function getBatteryByLength(uint _idbat) public view returns(address, bytes32, uint){
-        battery storage _bat = listOfBatteries[_idbat];
-        return(_bat.batteryID, _bat.uuID, _bat.timestamp);
     }
 }
 
