@@ -361,7 +361,6 @@ contract energyBid is owned, batteryRegistry {
         return listOfBids.length;
     }
 
-    //Functions "getBidsByLength" and "getAsksByLength" are only for unit test
     function getBidsByID (uint _idbid) public view returns (address, uint, uint){
         bid storage _bid = listOfBids[_idbid];
         return(_bid.prosumerID, _bid.timestamp, _bid.energy);

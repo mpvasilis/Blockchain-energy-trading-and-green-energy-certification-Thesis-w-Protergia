@@ -262,7 +262,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         listOfPPAs.length--;
     }
 
-    //this is a trial function just for PPA_energy_trading part
+    //This function created in order to deliver the scope of energy trading based on PPAs
     function availableKwhs(address _buyer, uint64 _energy, uint _idOfMatchPPA) public onlyRegisteredProducers{
         require(_energy >= kWh, "You have to put at least 1Kwh (in whs for example 1.5kwhs -> 1500 (wh)), your current input have to be 1.000.000mwh");
         address _producer = msg.sender;
