@@ -137,7 +137,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
     function corporatePPA(address _buyer, uint _agreedKwhPrice,uint _startDay, uint _endDay, uint _id) public onlyRegisteredProducers {
         address _producer = msg.sender;
         require(_endDay > _startDay, "It's impossible endDay < startDay");
-        require(_agreedKwhPrice >= dollar, "Price in Cent, for example 1.5dollar -> 150cents");
+        require(_agreedKwhPrice >= cent, "Price in Cent, for example 1.5dollar -> 150cents");
         corporatePPAList.push(ppa({
             buyer: _buyer,
             producer: _producer,
@@ -183,7 +183,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         contractID.increment();
         uint currentID = contractID.current();
         require(_endDay > _startDay, "It's impossible endDay < startDay");
-        require(_kwhPrice >= dollar, "Price in Cent, for example 1.5dollar -> 150cents");
+        require(_kwhPrice >= cent, "Price in Cent, for example 1.5dollar -> 150cents");
         listOfPPAs.push(ppa({
             buyer: address(0x0),
             producer: _producer,
@@ -214,8 +214,10 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
                     totalKwh: _totalKwh,
                     status: Status.Approved
                 }));
-                ppaBuyerRegistry.registerPPABuyer(buyer);
-                emit purchasedPPA(listOfPPAs[i].id, listOfPPAs[i].buyer, listOfPPAs[i].producer);
+                emit purchasedPPA(listOfPPAs[i].id, buyer, listOfPPAs[i].producer);
+                if(ppaBuyers[msg.sender] <= 0){
+                    ppaBuyerRegistry.registerPPABuyer(buyer);
+                }
                 if(listOfPPAs.length > 1){
                     listOfPPAs[i] = listOfPPAs[listOfPPAs.length-1];
                 }
@@ -250,6 +252,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
             totalKwh: _totalkwh,
             status: Status.Approved
         }));
+        emit purchasedPPA(listOfPPAs[index].id, buyerAddr, listOfPPAs[index].producer);
         if(ppaBuyers[msg.sender] <= 0){
             ppaBuyerRegistry.registerPPABuyer(buyerAddr);
         }
@@ -257,7 +260,6 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
             listOfPPAs[index] = listOfPPAs[listOfPPAs.length-1];
         }
         listOfPPAs.length--;
-        emit purchasedPPA(listOfPPAs[index].id, listOfPPAs[index].buyer, listOfPPAs[index].producer);
     }
 
     //this is a trial function just for PPA_energy_trading part
