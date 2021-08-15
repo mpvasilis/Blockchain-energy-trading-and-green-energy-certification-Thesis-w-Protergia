@@ -138,7 +138,7 @@ contract energyBid is owned, batteryRegistry {
     //Only registered batteries can use this function
     function energyOffer(uint _energy, uint _eprice) public onlyRegisteredBattery {
         require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh(in whs), for instance 5.6kwhs = 5600whs");
-        require(_eprice >= dollar, "Price in 'cent', for example 1.5dollars/kwh = 150cents/kwh");
+        require(_eprice >= cent, "Price in 'cent', for example 1.5dollars/kwh = 150cents/kwh");
 
         listOfBids.push(bid({
             prosumerID: msg.sender,
