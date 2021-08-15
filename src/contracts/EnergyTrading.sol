@@ -19,10 +19,12 @@ contract batteryRegistry is owned {
 
     struct battery {
         address batteryID;            //battery wallet address
-        string uuID;                  //id of battery
+        bytes32 uuID;                  //id of battery
         uint timestamp;
         bool isExist;                 //Check if battery exists
     }
+    //e.g. type of bytes32: 0x454f533857453739536f6e4847486335447175563466787479396248666e4c53
+    //You have to convert string to bytes32 through web3.
 
     //mapping address as key to struct battery with mapping name batteries
     mapping (address => battery) batteries;
@@ -34,9 +36,8 @@ contract batteryRegistry is owned {
      }
 
     //add a battery by eth account address
-    function addNewBattery (string memory uuID) public {
+    function addNewBattery (bytes32 uuID) public {
         require(batteries[msg.sender].isExist==false, "Battery details already added");
-        //batteries[msg.sender] = battery(msg.sender, uuID, date, block.timestamp, true);
 
         listOfBatteries.push(battery({
             batteryID: msg.sender,
@@ -62,22 +63,21 @@ contract batteryRegistry is owned {
     }
 
     //change details of a battery
-    function updateBattery(address batteryID, string memory uuID) public onlyRegisteredBattery {
+    function updateBattery(address batteryID, bytes32 uuID) public onlyRegisteredBattery {
         for(uint i = 0; i<listOfBatteries.length; i++){
             if(listOfBatteries[i].batteryID == batteryID){
                 listOfBatteries[i].uuID = uuID;
-                //batteries[batteryID].uuID = uuID;
             }
         }
     }
 
     //view single battery by battery id
-    function getBatteryByID(address batteryID) public view returns (address, string memory, uint){
+    function getBatteryByID(address batteryID) public view returns (address, bytes32, uint){
         return (batteries[batteryID].batteryID, batteries[batteryID].uuID, batteries[batteryID].timestamp);
     }
 
     //This function created in order to help us in unit test
-    function getBatteryByLength(uint _idbat) public view returns(address, string memory, uint){
+    function getBatteryByLength(uint _idbat) public view returns(address, bytes32, uint){
         battery storage _bat = listOfBatteries[_idbat];
         return(_bat.batteryID, _bat.uuID, _bat.timestamp);
     }
