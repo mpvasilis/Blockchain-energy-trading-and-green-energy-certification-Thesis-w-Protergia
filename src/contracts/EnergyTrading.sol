@@ -1,21 +1,7 @@
 pragma solidity >=0.4.21 <0.9.0;
 
-contract owned {
-    
-    address owner;
-    
-    constructor() public {
-        owner = msg.sender;
-    }
-    
-    modifier onlyOwner {
-        require(msg.sender == owner, "Only owner can call this function.");
-         _;
-    }
-}
-
 //Contract that allows battery address to be registered
-contract batteryRegistry is owned {
+contract batteryRegistry {
 
     event batteryAdded(address indexed ownerOfBattery, uint date, bytes32 id);
 
@@ -59,7 +45,7 @@ contract batteryRegistry is owned {
     }
 }
 
-contract energyTrading is owned, batteryRegistry {
+contract energyTrading is batteryRegistry {
 
     event offerEnergyNotifier(address indexed seller, uint indexed day, uint indexed price, uint energy);
     event askEnergyNotifier(address indexed buyer, uint indexed day, uint energy);
