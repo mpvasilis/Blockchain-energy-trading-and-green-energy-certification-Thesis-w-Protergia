@@ -56,7 +56,7 @@ contract batteryRegistry is owned {
     }
 }
 
-contract energyBid is owned, batteryRegistry {
+contract energyTrading is owned, batteryRegistry {
 
     //event offerEnergyMade(address indexed sellerBatteryID, uint32 indexed day, uint32 indexed price, uint64 energy);
     //event buyEnergyMade(address indexed sellerBatteryID, uint32 indexed day, uint32 price, uint64 energy, address indexed batteryID);
