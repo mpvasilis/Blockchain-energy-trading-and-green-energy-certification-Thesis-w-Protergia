@@ -17,6 +17,8 @@ contract owned {
 //Contract that allows battery address to be registered
 contract batteryRegistry is owned {
 
+    event batteryAdded(address indexed ownerOfBattery, uint date, bytes32 id);
+
     struct battery {
         address batteryID;            //battery wallet address
         bytes32 uuID;                  //id of battery
@@ -39,6 +41,7 @@ contract batteryRegistry is owned {
     function addNewBattery (bytes32 uuID) public {
         require(batteries[msg.sender].isExist==false, "Battery details already added");
         batteries[msg.sender] = battery(msg.sender, uuID, block.timestamp, true);
+        emit batteryAdded(msg.sender, block.timestamp, uuID);
     }
 
     function getCountOfBatteries () public view returns (uint count) {
@@ -58,8 +61,8 @@ contract batteryRegistry is owned {
 
 contract energyTrading is owned, batteryRegistry {
 
-    //event offerEnergyMade(address indexed sellerBatteryID, uint32 indexed day, uint32 indexed price, uint64 energy);
-    //event buyEnergyMade(address indexed sellerBatteryID, uint32 indexed day, uint32 price, uint64 energy, address indexed batteryID);
+    event offerEnergyNotifier(address indexed seller, uint indexed day, uint indexed price, uint energy);
+    event askEnergyNotifier(address indexed buyer, uint indexed day, uint energy);
 
     uint constant cent = 1;
     uint constant dollar = 100 * cent;
@@ -121,6 +124,9 @@ contract energyTrading is owned, batteryRegistry {
             timestamp: block.timestamp
         }));
         nextNumberOfBid++;
+
+        emit offerEnergyNotifier(msg.sender, block.timestamp, _eprice, _energy);
+
         bidEnergyTrading(listOfBids[listOfBids.length-1]);
     }
 
@@ -134,6 +140,9 @@ contract energyTrading is owned, batteryRegistry {
             timestamp: block.timestamp,
             remainingEnergy: _energy
         }));
+
+        emit askEnergyNotifier(msg.sender, block.timestamp, _energy);
+
         askEnergyTrading(listOfAsks[listOfAsks.length-1]);
     }
 
