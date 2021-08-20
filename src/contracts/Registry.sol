@@ -20,7 +20,7 @@ import "./ERC1888/IERC1888.sol";
 
 /// @title Implementation of the Transferable Certificate standard ERC-1888.
 /// @dev Also complies to ERC-1155: https://eips.ethereum.org/EIPS/eip-1155.
-contract Registry is ERC1155, ERC1888 {
+contract Registry is ERC1155, ERC1888{
 
 	// Storage for the Certificate structs
 	mapping(uint256 => Certificate) public certificateStorage;
