@@ -3,11 +3,11 @@ pragma solidity >=0.4.21 <0.9.0;
 //Contract that allows battery address to be registered
 contract batteryRegistry {
 
-    event batteryAdded(address indexed ownerOfBattery, uint date, bytes32 id);
+    event batteryAdded(address indexed ownerOfBattery, uint date, string id);
 
     struct battery {
         address batteryID;            //battery wallet address
-        bytes32 uuID;                  //id of battery
+        string uuID;                  //id of battery
         uint timestamp;
         bool isExist;                 //Check if battery exists
     }
@@ -24,7 +24,7 @@ contract batteryRegistry {
      }
 
     //add a battery by eth account address
-    function addNewBattery (bytes32 uuID) public {
+    function addNewBattery (string memory uuID) public {
         require(batteries[msg.sender].isExist==false, "Battery details already added");
         batteries[msg.sender] = battery(msg.sender, uuID, block.timestamp, true);
         emit batteryAdded(msg.sender, block.timestamp, uuID);
@@ -35,12 +35,12 @@ contract batteryRegistry {
     }
 
     //change details of a battery
-    function updateBattery(address batteryID, bytes32 uuID) public onlyRegisteredBattery {
+    function updateBattery(address batteryID, string memory uuID) public onlyRegisteredBattery {
         batteries[batteryID].uuID = uuID;
     }
 
     //view single battery by battery id
-    function getBatteryByID(address batteryID) public view returns (address, bytes32, uint){
+    function getBatteryByID(address batteryID) public view returns (address, string memory, uint){
         return (batteries[batteryID].batteryID, batteries[batteryID].uuID, batteries[batteryID].timestamp);
     }
 }
@@ -91,7 +91,7 @@ contract energyTrading is batteryRegistry {
 
     buyedEnergy[] listOfBuyedEnergy;
 
-    mapping(address => mapping(uint => uint)) bids;
+    mapping(address => uint) bids;
     bid[] listOfBids;
     uint nextNumberOfBid;                                    
 
@@ -325,17 +325,21 @@ contract energyTrading is batteryRegistry {
         return(prosumers, dates, energyList);
     }
 
-    function getCountOfBids () public view returns (uint count){
+    function getBidsLength () public view returns (uint count){
         return listOfBids.length;
     }
 
-    function getBidsByID (uint _idbid) public view returns (address, uint, uint){
-        bid storage _bid = listOfBids[_idbid];
-        return(_bid.prosumerID, _bid.timestamp, _bid.energy);
+    function getAsksLength () public view returns (uint count){
+        return listOfAsks.length;
     }
 
-    function getAsksByID (uint _idask) public view returns (address, uint, uint){
-        ask storage _ask = listOfAsks[_idask];
-        return(_ask.consumerID, _ask.timestamp, _ask.energy);
+    function getBidsByIndex (uint _index) public view returns (address, uint, uint){
+        bid storage _bid = listOfBids[_index];
+        return(_bid.prosumerID, _bid.energy, _bid.timestamp);
+    }
+
+    function getAsksByIndex (uint _index) public view returns (address, uint, uint){
+        ask storage _ask = listOfAsks[_index];
+        return(_ask.consumerID, _ask.energy, _ask.timestamp);
     }
 }
