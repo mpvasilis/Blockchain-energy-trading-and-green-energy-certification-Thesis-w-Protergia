@@ -26,7 +26,7 @@ contract Registry is ERC1155, ERC1888{
 	mapping(uint256 => Certificate) public certificateStorage;
 
 	// Mapping from token ID to account balances
-	mapping(uint256 => mapping(address => uint256)) public claimedBalances;
+    mapping(uint256 => mapping(address => uint256)) public claimedBalances;
 
 	// Incrementing nonce, used for generating certificate IDs
     uint256 private _latestCertificateId;
