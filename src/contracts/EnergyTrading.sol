@@ -45,7 +45,7 @@ contract batteryRegistry {
     }
 }
 
-contract energyTrading is batteryRegistry {
+contract EnergyTrading is batteryRegistry {
 
     event offerEnergyNotifier(address indexed seller, uint indexed day, uint indexed price, uint energy);
     event askEnergyNotifier(address indexed buyer, uint indexed day, uint energy);
