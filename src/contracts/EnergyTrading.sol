@@ -325,12 +325,8 @@ contract EnergyTrading is batteryRegistry {
         return(prosumers, dates, energyList);
     }
 
-    function getBidsLength () public view returns (uint count){
+    function getCountOfBids () public view returns (uint count){
         return listOfBids.length;
-    }
-
-    function getAsksLength () public view returns (uint count){
-        return listOfAsks.length;
     }
 
     function getBidsByIndex (uint _index) public view returns (address, uint, uint){
