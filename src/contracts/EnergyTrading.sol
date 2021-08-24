@@ -313,16 +313,18 @@ contract EnergyTrading is batteryRegistry {
     }
 
     //view all bids 
-    function viewAllBids (uint n) public view returns (address[] memory, uint[] memory, uint[] memory){
+    function viewAllBids (uint n) public view returns (address[] memory, uint[] memory, uint[] memory, uint[] memory){
         address[] memory prosumers = new address[](listOfBids.length);
         uint[] memory dates = new uint[](listOfBids.length);
         uint[] memory energyList = new uint[](listOfBids.length);
+        uint[] memory prices = new uint[](listOfBids.length);
         for(uint i = 0; i < n; i++){
             prosumers[i] = listOfBids[i].prosumerID;
             dates[i] = listOfBids[i].timestamp;
             energyList[i] = listOfBids[i].energy;
+            prices[i] = listOfBids[i].eprice;
         }
-        return(prosumers, dates, energyList);
+        return(prosumers, dates, energyList, prices);
     }
 
     function getCountOfBids () public view returns (uint count){
