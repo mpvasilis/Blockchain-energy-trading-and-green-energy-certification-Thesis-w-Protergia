@@ -18,37 +18,33 @@ contract testEnergyTrading {
 
     function testAddNewBattery() public {
         string memory uuIDExpected = "ead234dfdh";
-        uint dateExpected = 21102021;
 
         address batteryID;
         string memory uuID;
-        uint date;
+        uint timestamp;
 
         uint _idbat = 0;
-        br.addNewBattery(uuIDExpected, dateExpected);
-        (batteryID, uuID, date) = br.getBatteryByLength(_idbat);
+        br.addNewBattery(uuIDExpected);
+        (batteryID, uuID, timestamp) = br.getBatteryByLength(_idbat);
         Assert.equal(batteryID, address(this), "Wrong result 0");
         Assert.equal(uuID, uuIDExpected, "Wrong result 1");
-        Assert.equal(date, dateExpected, "Wrong result 2");
     }
 
     function testCreateEnergyBid() public {
-        uint dayExpected = 21102021;
         uint energyExpected = 1000;
         uint priceExpected = 10;
 
         address prosumerID;
-        uint day;
+        uint timestamp;
         uint energy;
         uint eprice;
         //note: this test is not working unless you removed the modifier var "onlyRegisteredBattery" from energy offer function.
 
         uint _idbid = 0;
         eb.energyOffer(dayExpected, energyExpected, priceExpected);
-        (prosumerID, day, energy, eprice) = eb.getBidsByLength(_idbid);
+        (prosumerID, timestamp, energy, eprice) = eb.getBidsByLength(_idbid);
         Assert.equal(energy, energyExpected, "Wrong result 3");
-        Assert.equal(day, dayExpected, "Wrong result 4");
-        Assert.equal(prosumerID, address(this), "Wrong result 5");
-        Assert.equal(eprice, priceExpected, "Wrong result 6");
+        Assert.equal(prosumerID, address(this), "Wrong result 4");
+        Assert.equal(eprice, priceExpected, "Wrong result 5");
     }
 }
