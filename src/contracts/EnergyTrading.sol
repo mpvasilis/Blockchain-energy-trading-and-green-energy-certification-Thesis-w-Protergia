@@ -287,7 +287,8 @@ contract EnergyTrading is batteryRegistry {
         for(uint i = 0; i < n; i++){
             _consumers[i] = listOfAsks[i].consumerID;
             _dates[i] = listOfAsks[i].timestamp;
-            _energyList[i] = listOfAsks[i].remainingEnergy;
+            _energyList[i] = listOfAsks[i].energy;
+            _remainingEnList[i] = listOfAsks[i].remainingEnergy;
         }
         return(_consumers, _dates, _energyList, _remainingEnList);
     }
