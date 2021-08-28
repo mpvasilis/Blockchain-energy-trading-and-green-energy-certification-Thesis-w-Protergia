@@ -7,6 +7,8 @@ import Rtl from "views/Rtl.js";
 import TableList from "views/TableList.js";
 import Typography from "views/Typography.js";
 import EnergyTrading from "views/EnergyTrading.js";
+import Devices from "./views/Devices";
+import Transactions from "./views/Transactions";
 
 var routes = [
   {
@@ -18,11 +20,11 @@ var routes = [
     layout: "/panel",
   },
   {
-    path: "/energy-trading",
+    path: "/devices",
     name: "Device Manager",
     rtlName: "",
     icon: "tim-icons icon-chart-pie-36",
-    component: EnergyTrading,
+    component: Devices,
     layout: "/panel",
   },
   {
@@ -34,11 +36,11 @@ var routes = [
     layout: "/panel",
   },
   {
-    path: "/energy-trading",
+    path: "/transactions",
     name: "Transactions",
     rtlName: "",
     icon: "tim-icons icon-chart-pie-36",
-    component: EnergyTrading,
+    component: Transactions,
     layout: "/panel",
   },
   {
