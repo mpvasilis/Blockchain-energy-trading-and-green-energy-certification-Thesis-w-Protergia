@@ -75,7 +75,7 @@ function Sidebar(props) {
 
             {logoImg !== null || logoText !== null ? (
               <div className="logo">
-                <img src={logo.imgSrc} alt="protegia-logo" style={{display: "block",marginLeft: 'auto',marginright: 'auto'}} />
+                <img src={logo.imgSrc} alt="protegia-logo" style={{display: "block",marginLeft: 'auto',marginRight: 'auto'}} />
                 {logoText}
               </div>
             ) : null}

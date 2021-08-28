@@ -6,7 +6,7 @@ import Notifications from "views/Notifications.js";
 import Rtl from "views/Rtl.js";
 import TableList from "views/TableList.js";
 import Typography from "views/Typography.js";
-import UserProfile from "views/UserProfile.js";
+import EnergyTrading from "views/EnergyTrading.js";
 
 var routes = [
   {
@@ -15,15 +15,31 @@ var routes = [
     rtlName: "",
     icon: "tim-icons icon-chart-pie-36",
     component: Dashboard,
-    layout: "/admin",
+    layout: "/panel",
+  },
+  {
+    path: "/energy-trading",
+    name: "Device Manager",
+    rtlName: "",
+    icon: "tim-icons icon-chart-pie-36",
+    component: EnergyTrading,
+    layout: "/panel",
   },
   {
     path: "/energy-trading",
     name: "Energy Trading",
     rtlName: "",
     icon: "tim-icons icon-chart-pie-36",
-    component: UserProfile,
-    layout: "/admin",
+    component: EnergyTrading,
+    layout: "/panel",
+  },
+  {
+    path: "/energy-trading",
+    name: "Transactions",
+    rtlName: "",
+    icon: "tim-icons icon-chart-pie-36",
+    component: EnergyTrading,
+    layout: "/panel",
   },
   {
     path: "/ppas",
@@ -31,7 +47,7 @@ var routes = [
     rtlName: "",
     icon: "tim-icons icon-chart-pie-36",
     component: Dashboard,
-    layout: "/admin",
+    layout: "/panel",
   }
 ];
 export default routes;
