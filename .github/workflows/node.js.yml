@@ -26,6 +26,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm install create-react-app truffle
+    - run: npm install -g create-react-app truffle
     - run: CI=false npm run build
     - run: truffle migrate --network ropsten --reset
