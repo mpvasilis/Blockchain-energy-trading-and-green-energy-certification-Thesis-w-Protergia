@@ -25,7 +25,6 @@
     "babel-polyfill": "^6.26.0",
     "babel-register": "^6.26.0",
     "truffle": "^5.1.54"
-	
   },
   "scripts": {
     "start": "react-scripts start",
