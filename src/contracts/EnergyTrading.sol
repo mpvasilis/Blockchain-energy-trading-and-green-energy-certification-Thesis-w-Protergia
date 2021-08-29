@@ -293,10 +293,6 @@ contract EnergyTrading is batteryRegistry {
         return(_consumers, _dates, _energyList, _remainingEnList);
     }
 
-    function getCountOfAsks () public view returns (uint count){
-        return listOfAsks.length;
-    }
-
     //list of all energy purchases
     function viewAllEnergyPurchases (uint n) public view returns (address[] memory, address[] memory, uint[] memory, uint[] memory, uint[] memory){
         address[] memory _prosumers = new address[](listOfBuyedEnergy.length);
@@ -329,17 +325,30 @@ contract EnergyTrading is batteryRegistry {
         return(prosumers, dates, energyList, prices);
     }
 
+    function getCountOfAsks () public view returns (uint count){
+        return listOfAsks.length;
+    }
+
     function getCountOfBids () public view returns (uint count){
         return listOfBids.length;
     }
 
-    function getBidsByIndex (uint _index) public view returns (address, uint, uint){
-        bid storage _bid = listOfBids[_index];
-        return(_bid.prosumerID, _bid.energy, _bid.timestamp);
+    function getCountOfPurchases () public view returns (uint count){
+        return listOfBuyedEnergy.length;
     }
 
-    function getAsksByIndex (uint _index) public view returns (address, uint, uint){
+    function getPurchaseByIndex (uint _index) public view returns (address, address, uint, uint, uint){
+        buyedEnergy storage _purchases = listOfBuyedEnergy[_index];
+        return(_purchases.prosumerID, _purchases.consumerID, _purchases.energy, _purchases.price, _purchases.timestamp);
+    }
+
+    function getBidsByIndex (uint _index) public view returns (address, uint, uint, uint){
+        bid storage _bid = listOfBids[_index];
+        return(_bid.prosumerID, _bid.energy, _bid.eprice, _bid.timestamp);
+    }
+
+    function getAsksByIndex (uint _index) public view returns (address, uint, uint, uint){
         ask storage _ask = listOfAsks[_index];
-        return(_ask.consumerID, _ask.energy, _ask.timestamp);
+        return(_ask.consumerID, _ask.energy, _ask.timestamp, _ask.remainingEnergy);
     }
 }
