@@ -426,7 +426,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         return(_producerList1, _buyerList1, _purchaseList1, _idPPAlist1);
     }
 
-    function viewCorporatePPAlist(uint n, uint offset) public view returns(address[] memory, address[] memory, uint32[] memory, uint[] memory, uint[] memory, uint[] memory, uint[] memory){
+    function viewCorporatePPAlist(uint n, uint offset) public view returns(address[] memory, address[] memory, uint32[] memory, uint[] memory, uint[] memory, uint[] memory){
         require(n>0, "n must be greater than 0");
         if(offset+n > corporatePPAList.length) offset=0;
         if(n>corporatePPAList.length) n=corporatePPAList.length;
@@ -436,7 +436,6 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         uint[] memory _idPPAlist = new uint[](n);
         uint[] memory _sDayList = new uint[](n);
         uint[] memory _eDayList = new uint[](n);
-        uint[] memory _statusList = new uint[](n);
         for(uint i = offset; i < n; i++){
             _producerList[i] = corporatePPAList[i].producer;
             _buyerList[i] = corporatePPAList[i].buyer;
@@ -444,9 +443,8 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
             _idPPAlist[i] = corporatePPAList[i].id;
             _sDayList[i] = corporatePPAList[i].startDay;
             _eDayList[i] = corporatePPAList[i].endDay;
-            _statusList[i] = uint(corporatePPAList[i].status);
         }
-        return(_producerList, _buyerList, _priceList, _idPPAlist, _sDayList, _eDayList, _statusList);
+        return(_producerList, _buyerList, _priceList, _idPPAlist, _sDayList, _eDayList);
     }
 
     function viewAllPPAs (uint n, uint offset) public view returns (address[] memory, uint32[] memory, uint[] memory, uint[] memory, uint[] memory, uint[] memory){
@@ -487,7 +485,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         return(producerList_, buyerList_, energyList_, idOfPPAlist_);
     }
 
-    function viewApprovalPPAs(uint n, uint offset) public view returns(address[] memory, address[] memory, uint64[] memory, uint32[] memory, uint[] memory, uint[] memory, uint[] memory){
+    function viewApprovalPPAs(uint n, uint offset) public view returns(address[] memory, address[] memory, uint64[] memory, uint32[] memory, uint[] memory, uint[] memory){
         require(n>0, "n must be greater than 0");
         if(offset+n > Appas.length) offset=0;
         if(n>Appas.length) n=Appas.length;
@@ -497,7 +495,6 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         uint32[] memory prList = new uint32[](n);//price
         uint[] memory sDateList = new uint[](n);//startDay
         uint[] memory eDateList = new uint[](n);//endDay
-        uint[] memory idList = new uint[](n);//id
         for(uint i = offset; i < n; i++){
             proList[i] = Appas[i].producer;
             buyerList[i] = Appas[i].buyer;
@@ -505,9 +502,8 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
             prList[i] = Appas[i].kwhPrice;
             sDateList[i] = Appas[i].startDay;
             eDateList[i] = Appas[i].endDay;
-            idList[i] = Appas[i].id;
         }
-        return(proList, buyerList, enlist, prList, sDateList, eDateList, idList);
+        return(proList, buyerList, enlist, prList, sDateList, eDateList);
     }
 
     //Return items of each list by idx (based on legth)
