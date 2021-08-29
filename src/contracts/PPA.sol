@@ -510,11 +510,33 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         return(proList, buyerList, enlist, prList, sDateList, eDateList, idList);
     }
 
-    function getApprovedPPAByID(uint _id) public view returns (address, address, uint32, uint, uint, uint){
-        approvedPPA storage _Appa = Appas[_id];
+    //Return items of each list by idx (based on legth)
+    function getAvailableEnergyByIndex(uint _idx) public view returns (address, address, uint64, uint, uint){
+        producerEnergy storage _kwhs = listOfkwhs[_idx];
+        return(_kwhs.producer, _kwhs.buyer, _kwhs.energy, _kwhs.timestamp, _kwhs.idOfmatchContract);
+    }
+
+    function getPPAByIndex(uint _idx) public view returns (address, address, uint32, uint, uint, uint){
+        ppa storage _ppa = listOfPPAs[_idx];
+        return(_ppa.producer, _ppa.buyer, _ppa.kwhPrice, _ppa.startDay, _ppa.endDay, _ppa.id);
+    }
+
+    function getCorporatePPAByIndex(uint _idx) public view returns (address, address, uint32, uint, uint, uint){
+        ppa storage _corporate = corporatePPAList[_idx];
+        return(_corporate.producer, _corporate.buyer, _corporate.kwhPrice, _corporate.startDay, _corporate.endDay, _corporate.id);
+    }
+
+    function getApprovedPPAByIndex(uint _idx) public view returns (address, address, uint32, uint, uint, uint){
+        approvedPPA storage _Appa = Appas[_idx];
         return(_Appa.producer, _Appa.buyer, _Appa.kwhPrice, _Appa.startDay, _Appa.endDay, _Appa.id);
     }
 
+    function getPurchasesByIndex(uint _idx) public view returns (address, address, uint64, uint, uint){
+        purchasesPPA storage _Allpurchases = listOfprchs[_idx];
+        return(_Allpurchases.producer, _Allpurchases.buyer, _Allpurchases.purchasedEnergy, _Allpurchases.timestamp, _Allpurchases.idOfPPA);
+    }
+
+    //Return lengths of each list
     function getAvKwhs() public view returns(uint count){
         return listOfkwhs.length;
     }
@@ -525,5 +547,13 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
 
     function getCorpPPAs () public view returns(uint count){
         return corporatePPAList.length;
+    }
+
+    function getApprovedPPAs () public view returns(uint count){
+        return Appas.length;
+    }
+
+    function getPurchases () public view returns(uint count){
+        return listOfprchs.length;
     }
 }
