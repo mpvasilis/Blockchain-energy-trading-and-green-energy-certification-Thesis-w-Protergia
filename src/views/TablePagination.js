@@ -2,6 +2,7 @@ import React  from "react";
 import PropTypes from 'prop-types';
 import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 
+
 const TablePagination = ({
     pagesCount,
     currentPage,

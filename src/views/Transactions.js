@@ -27,11 +27,11 @@ const energyTrading = new web3.eth.Contract(abi, contractAddress);
 
 
 function Transactions() {
-  const [totalPurchases, setTotalPurchases] = useState(0);
+  const [totalAsks, setTotalAsks] = useState(0);
   const [asks, setAsks] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
   const pageSize = 10;
-  const pagesCount = Math.ceil(totalPurchases / pageSize);
+  const pagesCount = Math.ceil(totalAsks / pageSize);
  
   
   const handlePageClick = (e, index) => {
@@ -59,7 +59,7 @@ function Transactions() {
 
     
     energyTrading.methods.getCountOfPurchases().call().then(function(total){
-      setTotalPurchases(total)
+      setTotalAsks(total)
       if(total>0)
       energyTrading.methods.viewAllEnergyPurchases(pageSize, offset).call()
           .then(function(result){
@@ -94,7 +94,7 @@ function Transactions() {
       
         <Row>
           <Col md="12">
-          {totalPurchases>0 ?
+          {totalAsks>0 ?
                 <Card>
               <CardHeader>
                 <h5 className="title">Purchased Energy</h5>
