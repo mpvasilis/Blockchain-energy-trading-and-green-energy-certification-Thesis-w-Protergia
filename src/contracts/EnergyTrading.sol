@@ -4,6 +4,7 @@ pragma solidity >=0.4.21 <0.9.0;
 contract batteryRegistry {
 
     event batteryAdded(address indexed ownerOfBattery, uint date, string id);
+    event batteryUpdated(address indexed ownerOfBattery, uint date, string id);
 
     struct battery {
         address batteryID;            //battery wallet address
@@ -16,7 +17,6 @@ contract batteryRegistry {
 
     //mapping address as key to struct battery with mapping name batteries
     mapping (address => battery) batteries;
-    battery[] listOfBatteries;
 
     modifier onlyRegisteredBattery{
          require(batteries[msg.sender].isExist==true, "Only registered batteries have access");
@@ -30,17 +30,15 @@ contract batteryRegistry {
         emit batteryAdded(msg.sender, block.timestamp, uuID);
     }
 
-    function getCountOfBatteries () public view returns (uint count) {
-        return listOfBatteries.length;
-    }
-
     //change details of a battery
     function updateBattery(address batteryID, string memory uuID) public onlyRegisteredBattery {
         batteries[batteryID].uuID = uuID;
+        uint day = block.timestamp;
+        emit batteryUpdated(batteryID, day, uuID);
     }
 
     //view single battery by battery id
-    function getBatteryByID(address batteryID) public view returns (address, string memory, uint){
+    function getBatteryByAddress(address batteryID) public view returns (address, string memory, uint){
         return (batteries[batteryID].batteryID, batteries[batteryID].uuID, batteries[batteryID].timestamp);
     }
 }

@@ -2,8 +2,9 @@ require("babel-register");
 require("babel-polyfill");
 
 const HDWalletProvider = require("@truffle/hdwallet-provider");
-
-const MNEMONIC = 'aspect lamp jacket pet vehicle essence child salad uphold fold nurse judge';
+//aspect lamp jacket pet vehicle essence child salad uphold fold nurse judge
+//near ethics bitter absorb treat alien ski other exile cluster lonely arrive (Chris R)
+const MNEMONIC = 'near ethics bitter absorb treat alien ski other exile cluster lonely arrive';
 //get test ether for ropsten from https://moonborrow.com/
 
 module.exports = {
@@ -11,18 +12,22 @@ module.exports = {
         development: {
             host: "127.0.0.1",
             port: 7545,
-            network_id: "*", 
+            network_id: "*",
+            gas: 6721975
         },
         ropsten: {
+            //https://ropsten.infura.io/v3/5f552c63b2834a588871339fd81f7943
+            //https://ropsten.infura.io/v3/f1cfc83058034e8c85ca5528555181c7 (Chris R)
             provider: function() {
-              return new HDWalletProvider(MNEMONIC, "https://ropsten.infura.io/v3/5f552c63b2834a588871339fd81f7943")
+              return new HDWalletProvider(MNEMONIC, "https://ropsten.infura.io/v3/f1cfc83058034e8c85ca5528555181c7")
             },
             network_id: 3,
-            gas: 5500000,
+            gas: 8000000,
+            gasPrice: 5000000000,
+            networkCheckTimeout: 10000000,
             confirmations: 2,
             timeoutBlocks: 4000,
-            skipDryRun: true,
-            gasPrice: "5000000000"
+            skipDryRun: true
           }
     },
     contracts_directory: "./src/contracts/",
