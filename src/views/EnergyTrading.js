@@ -1,7 +1,8 @@
-import React, {useEffect, useState} from "react";
-import TablePagination from "./TablePagination";
+import React, {useEffect, useState, useRef} from "react";
+import  TablePaginationAsk  from  '../components/pagination/TablePaginationAsk';
+import  TablePaginationBid  from '../components/pagination/TablePaginationBid';
+import detectEthereumProvider from '@metamask/detect-provider';
 import PropTypes from 'prop-types';
-import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 
 // reactstrap components
 import {
@@ -24,9 +25,6 @@ var contractAddress = '0x1cFc32f1ec7991849355ddAF3d204d535CE407c9' ;
 var abi =  [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"askEnergyNotifier","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"ownerOfBattery","type":"address"},{"indexed":false,"internalType":"uint256","name":"date","type":"uint256"},{"indexed":false,"internalType":"string","name":"id","type":"string"}],"name":"batteryAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"seller","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"offerEnergyNotifier","type":"event"},{"constant":false,"inputs":[{"internalType":"string","name":"uuID","type":"string"}],"name":"addNewBattery","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_energy","type":"uint256"}],"name":"askEnergy","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_energy","type":"uint256"},{"internalType":"uint256","name":"_eprice","type":"uint256"}],"name":"energyOffer","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getAsksByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"batteryID","type":"address"}],"name":"getBatteryByID","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"string","name":"","type":"string"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getBidsByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfAsks","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfBatteries","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfBids","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfPurchases","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getPurchaseByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"batteryID","type":"address"},{"internalType":"string","name":"uuID","type":"string"}],"name":"updateBattery","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"n","type":"uint256"},{"internalType":"uint256","name":"offset","type":"uint256"}],"name":"viewAllAsks","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"n","type":"uint256"},{"internalType":"uint256","name":"offset","type":"uint256"}],"name":"viewAllBids","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"n","type":"uint256"},{"internalType":"uint256","name":"offset","type":"uint256"}],"name":"viewAllEnergyPurchases","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"}] ;
 const energyTrading = new web3.eth.Contract(abi, contractAddress);
 
-
-  
-
 function EnergyTrading() {
   const [open, setOpen] = useState('bid');
   const [totalAsks, setTotalAsks] = useState(0);
@@ -37,6 +35,54 @@ function EnergyTrading() {
   const pageSize = 10;
   const pagesCountAsk = Math.ceil(totalAsks / pageSize);
   const pagesCountBid = Math.ceil(totalBids / pageSize);
+  const [energyKW, setEnergyKW] = useState(0);
+  const [priceBid, setPriceBid] = useState(0);
+  const account = useRef('');
+
+  
+const signInMetamask = async() => {
+  const provider = await detectEthereumProvider();
+
+  if(provider !== window.ethereum) {
+    console.error('Do you have multiple wallets installed?');
+  }
+
+  if(!provider) {
+    console.error('Metamask not found');
+    return;
+  }
+
+  provider.on('accountsChanged', handleAccountsChanged);
+
+  provider.on('disconnect', () => {
+    console.log('disconnect');
+    account.current = '';
+  });
+
+  provider.on('chainIdChanged', chainId => {
+    console.log('chainIdChanged', chainId);
+  });
+
+  provider.request({method: 'eth_requestAccounts' }).then(async params => {
+    handleAccountsChanged(params);
+  }).catch(err => {
+    if(err.code === 4001){
+      console.error('Please connect to Metamask.');
+    }else {
+      console.error(err);
+    }
+  })
+};
+
+const handleAccountsChanged = (accounts) => {
+  console.log("ACCS: ", accounts);
+  if(accounts.length === 0) {
+    console.log("connect to metamsk");
+  }else if(accounts[0] !== account.current){
+    account.current = accounts[0];
+    console.log('Current addr: ', account.current);
+  }
+}
   
   const handlePageClickAsk = (e, index) => {
     e.preventDefault();
@@ -126,11 +172,25 @@ function EnergyTrading() {
     });
   }
 
+  const addBidOrAsk = () => {
+    
+    if (open == 'bid'){
+      energyTrading.methods.energyOffer(energyKW, priceBid).send({from: account.current}).then(function(e) {
+        console.log(e);
+      });
+      
+    }else{
+      energyTrading.methods.askEnergy(energyKW).send({from: account.current}).then(function(e) {
+        console.log(e);
+      });
+    }
+  }
+
   useEffect(() => {
 
     getDataAsks(currentPage * pageSize);
     getDataBids(currentPage * pageSize);
-
+    signInMetamask();
   
   }, []);
   
@@ -160,7 +220,7 @@ function EnergyTrading() {
                   {asks}
                   </tbody>
                 </Table> : <></>}
-                <TablePagination
+                <TablePaginationAsk
                        pagesCountAsk={pagesCountAsk}
                        currentPage={currentPage}
                        handlePageClickAsk={handlePageClickAsk}
@@ -193,7 +253,7 @@ function EnergyTrading() {
                           {bids}
                           </tbody>
                         </Table> : <></>}
-                        <TablePagination
+                        <TablePaginationBid
                              pagesCountBid={pagesCountBid}
                              currentPage={currentPage}
                              handlePageClickBid={handlePageClickBid}
@@ -231,6 +291,7 @@ function EnergyTrading() {
                       <Input
                           placeholder="Enter KWhs"
                           type="text"
+                          onChange={event => setEnergyKW(event.target.value)}
                       />
                     </FormGroup>
                     <FormGroup style={{display:(open==='ask'? 'none':"block")}} >
@@ -238,14 +299,14 @@ function EnergyTrading() {
                       <Input
                           placeholder="Bid price (EUR)"
                           type="text"
+                          onChange={event => setPriceBid(event.target.value)}
                       />
                     </FormGroup>
                     <FormGroup>
-                    <Button variant="secondary" size="lg" onClick={()=>{setOpen('ask')}}>
+                    <Button variant="secondary" size="lg" onClick={() => addBidOrAsk()}>
                       Place {open==='ask'? 'Ask':"Bid"}
                     </Button>
                   </FormGroup>
-
           </Col>
                 </Row>
 

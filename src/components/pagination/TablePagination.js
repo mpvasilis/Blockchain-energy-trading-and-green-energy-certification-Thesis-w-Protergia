@@ -7,9 +7,11 @@ const TablePagination = ({
     pagesCount,
     currentPage,
     handlePageClick,
-    handlePreviousClick,
+    handlePreviousClick, 
     handleNextClick,
-  }) => {
+    
+    
+  }) => { 
     return (
      
       <div>

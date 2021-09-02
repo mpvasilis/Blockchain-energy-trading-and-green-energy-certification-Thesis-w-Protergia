@@ -43,7 +43,9 @@ function Devices() {
 
       const addBattery=()=>{
 
-        energyTrading.methods.addNewBattery(input).send()
+        energyTrading.methods.addNewBattery(input).send({from: '0x80f728A68cBba6deF4C6AED3013b958d4c402F7E'}).then(function(err){
+          console.error(err);
+        })
        // console.log("input:", input);
       }
        
