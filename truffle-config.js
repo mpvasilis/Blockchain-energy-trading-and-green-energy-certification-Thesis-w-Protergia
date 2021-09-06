@@ -19,7 +19,7 @@ module.exports = {
             //https://ropsten.infura.io/v3/5f552c63b2834a588871339fd81f7943
             //https://ropsten.infura.io/v3/f1cfc83058034e8c85ca5528555181c7 (Chris R)
             provider: function() {
-              return new HDWalletProvider(MNEMONIC, "https://ropsten.infura.io/v3/5f552c63b2834a588871339fd81f7943");
+              return new HDWalletProvider(MNEMONIC, "https://ropsten.infura.io/v3/f1cfc83058034e8c85ca5528555181c7");
             },
             network_id: 3,
             gas: 8000000,
@@ -28,6 +28,12 @@ module.exports = {
             confirmations: 2,
             timeoutBlocks: 4000,
             skipDryRun: true
+        },
+        rinkeby: {
+            provider: function() {
+                return new HDWalletProvider(MNEMONIC, "https://rinkeby.infura.io/v3/f1cfc83058034e8c85ca5528555181c7");
+            },
+            network_id: 4,
         },
         kovan: {
             networkCheckTimeout: 10000,

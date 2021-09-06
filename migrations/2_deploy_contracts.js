@@ -3,6 +3,6 @@ const EnergyTrading = artifacts.require("EnergyTrading");
 const PPA = artifacts.require("PPA");
 
 module.exports = async function (deployer, network, accounts) {
-    await deployer.deploy(EnergyTrading);
+    await deployer.deploy(EnergyTrading,{from: accounts[0]});
     await deployer.deploy(PPA);
 };
