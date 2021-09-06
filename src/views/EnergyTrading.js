@@ -176,18 +176,16 @@ const handleAccountsChanged = (accounts) => {
   const addBidOrAsk = () => {
     
     if (open == 'bid'){
-      if (energyKW == ""){
+      if (energyKW == ""||priceBid == ""){
 
         setError(true); 
       }
-      else if (priceBid == ""){
-        setError(true);
-      } 
+    else{
     
       energyTrading.methods.energyOffer(energyKW, priceBid).send({from: account.current}).then(function(e) {
         console.log(e);
       });
-      
+    }
     }else{
       if (energyKW == ""){
 
