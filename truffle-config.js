@@ -6,7 +6,6 @@ const HDWalletProvider = require("@truffle/hdwallet-provider");
 //near ethics bitter absorb treat alien ski other exile cluster lonely arrive (Chris R)
 const MNEMONIC = 'near ethics bitter absorb treat alien ski other exile cluster lonely arrive';
 //get test ether for ropsten from https://moonborrow.com/
-
 module.exports = {
     networks: {
         development: {

@@ -12,8 +12,6 @@ contract batteryRegistry {
         uint timestamp;
         bool isExist;                 //Check if battery exists
     }
-    //e.g. type of bytes32: 0x454f533857453739536f6e4847486335447175563466787479396248666e4c53
-    //You have to convert string to bytes32 through web3.
 
     //mapping address as key to struct battery with mapping name batteries
     mapping (address => battery) batteries;
