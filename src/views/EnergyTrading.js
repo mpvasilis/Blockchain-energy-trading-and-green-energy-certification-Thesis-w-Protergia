@@ -39,6 +39,8 @@ function EnergyTrading() {
   const [priceBid, setPriceBid] = useState(0);
   const account = useRef('');
   const[error, setError] = useState(false);
+  const[isDisabled, setIsDisabled] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
 
   
 const signInMetamask = async() => {
@@ -78,9 +80,11 @@ const signInMetamask = async() => {
 const handleAccountsChanged = (accounts) => {
   console.log("ACCS: ", accounts);
   if(accounts.length === 0) {
+    setIsConnected(false)
     console.log("connect to metamsk");
   }else if(accounts[0] !== account.current){
     account.current = accounts[0];
+    setIsConnected(true)
     console.log('Current addr: ', account.current);
   }
 }
@@ -202,7 +206,10 @@ const handleAccountsChanged = (accounts) => {
 
     getDataAsks(currentPage * pageSize);
     getDataBids(currentPage * pageSize);
-    signInMetamask();
+    // signInMetamask();
+    web3.eth.getAccounts().then(r=>{
+      handleAccountsChanged(r);
+    });
   
   }, []);
   
@@ -282,7 +289,9 @@ const handleAccountsChanged = (accounts) => {
             <Card className="card-user">
               <CardBody>
                 <CardText />
-                <div className="author">
+              <div>
+                  {isConnected
+                  ? <>  <div className="author">
                   <div className="block block-one" />
                   <div className="block block-two" />
                   <div className="block block-three" />
@@ -324,7 +333,20 @@ const handleAccountsChanged = (accounts) => {
                   </FormGroup>
           </Col>
                 </Row>
-
+</>
+                  :<div className="author">
+                  <div className="block block-one" />
+                  <div className="block block-two" />
+                  <div className="block block-three" />
+                  <div className="block block-four" />
+                   <p className="description">Connect your wallet to make a new Bid/Ask</p>
+                     < Button className="btn-fill" variant="primary"  size="lg"  color="secondary" type="button" onClick= { signInMetamask }>
+                  <img src={"https://docs.metamask.io/metamask-fox.svg"} style={{"height": "30px"}}></img>{"  "} Connect Wallet
+                  </Button>         
+                   
+             </div>   
+                }
+</div> 
               </CardBody>
               <CardFooter>
               </CardFooter>

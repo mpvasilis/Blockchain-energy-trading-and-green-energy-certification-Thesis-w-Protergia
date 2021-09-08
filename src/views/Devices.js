@@ -1,6 +1,7 @@
 import React, {useEffect, useState, useRef} from "react";
 import detectEthereumProvider from '@metamask/detect-provider';
 
+
 // reactstrap components
 import {
   Button,
@@ -23,10 +24,6 @@ var abi = [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address"
 const energyTrading = new web3.eth.Contract(abi, contractAddress);
 
 
-
- 
-
-
 function Devices() {
   const [open, setOpen] = useState('add');
   const [totalAsks, setTotalAsks] = useState(0);
@@ -37,9 +34,10 @@ function Devices() {
   const [input, setInput] = useState(''); 
   const account = useRef('');
   const [error, setError] = useState(false);
-
+  const [isConnected, setIsConnected] = useState(false);
   
-
+   const [accounts, setAccounts] = useState([]);
+  
   const signInMetamask = async() => {
     const provider = await detectEthereumProvider();
   
@@ -53,6 +51,8 @@ function Devices() {
     }
   
     provider.on('accountsChanged', handleAccountsChanged);
+    provider.on('connect', handleAccountsChanged);
+
   
     provider.on('disconnect', () => {
       console.log('disconnect');
@@ -72,39 +72,41 @@ function Devices() {
         console.error(err);
       }
     })
+    
   };
   const handleAccountsChanged = (accounts) => {
     console.log("ACCS: ", accounts);
     if(accounts.length === 0) {
+      setIsConnected(false)
       console.log("connect to metamsk");
     }else if(accounts[0] !== account.current){
       account.current = accounts[0];
+      setIsConnected(true)
       console.log('Current addr: ', account.current);
     }
   }
-
+  
   useEffect(() => {
-    
-    signInMetamask();
+    web3.eth.getAccounts().then(r=>{
+      handleAccountsChanged(r);
+    });
 
       }, []);
-
+   
 
       const addBattery=()=>{
-
+        
         if (input == ""){
 
           setError(true);
-          
         }
         else
         energyTrading.methods.addNewBattery(input).send({from: account.current}).then(function(e){
           console.error(e);
         })
       }
-       
-       
 
+    
   return (
     <>
       <div className="content">
@@ -112,54 +114,59 @@ function Devices() {
             <Card className="card-user">
               <CardBody>
                 <CardText />
-                <div className="author">
-                  <div className="block block-one" />
-                  <div className="block block-two" />
-                  <div className="block block-three" />
-                  <div className="block block-four" />
-                  <p className="description">Add new battery</p>
-                  <br/>
-                  
-                  <Row>
-                  <Col className="pr-md-1 form"  md="11"  >
-                    <FormGroup>
-            
-                    <Input
-                     
-                          placeholder="Enter your ID"
-                          type="text"
-                          value={input}
-                          onInput={e => setInput(e.target.value)}
+                <div>
+                   {isConnected
+                      ?   <form>
+                      <div className="author">
+                        <div className="block block-one" />
+                        <div className="block block-two" />
+                        <div className="block block-three" />
+                        <div className="block block-four" />
+                         <p className="description">Add new battery</p>
+                           <br/>
+                           <Row>
+                           <Col className="pr-md-1 form"  md="11"  >
+                             <FormGroup>
+                             <Input
+                              
+                                   placeholder="Enter your ID"
+                                   type="text"
+                                   value={input}
+                                   onInput={e => setInput(e.target.value)}
+                               />
+                               {
+                                 error && <div style={{color: `red`}}>Please enter a valid ID</div>
+                               }
+                               <Button variant="primary" size="lg"  onClick={addBattery}>
                         
-                      />
-                      {
-                        error && <div style={{color: `red`}}>Please enter a valid ID</div>
-                      }
-                      <Button variant="primary" size="lg"  onClick={addBattery}>
-                      
-                    Add Battery
-                  </Button>{' '}
-                 
-                  
-
-                    </FormGroup>
-                    </Col>
-                    </Row>
-                   
-                   
-                  
-                </div>
+                             Add Battery
+                           </Button>{' '}
+                             </FormGroup>
+                             </Col>
+                             </Row>
+                             </div>
+                             </form>
+                             
+                      :<div className="author">
+                      <div className="block block-one" />
+                      <div className="block block-two" />
+                      <div className="block block-three" />
+                      <div className="block block-four" />
+                       <p className="description">Connect your wallet to add battery</p>
+                         < Button className="btn-fill" variant="primary"  size="lg"  color="secondary" type="button" onClick= { signInMetamask }>
+                      <img src={"https://docs.metamask.io/metamask-fox.svg"} style={{"height": "30px"}}></img>{"  "} Connect Wallet
+                      </Button>         
+                       
+                 </div>   
+                    }
+    </div> 
                 </CardBody>
                 </Card>
                 </Col>
-                
-               
-
-              
-
       </div>
     </>
   );
 }
+
 
 export default Devices;
