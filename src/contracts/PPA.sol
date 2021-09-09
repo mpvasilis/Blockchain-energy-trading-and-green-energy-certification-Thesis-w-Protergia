@@ -150,11 +150,11 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
 
     //Corporate PPAs are based on an agreed price
     //Both parties benefit from long-term price guarantees that protect them from market price volatility
-    function acceptCorporatePPA() public {
+    function acceptCorporatePPA(uint _id) public {
         address _buyer = msg.sender;
         uint64 _totalKwh = 0;
         for(uint i = 0; i < corporatePPAList.length; i++){
-            if((corporatePPAList[i].buyer == _buyer) && (corporatePPAList[i].status == Status.Pending)){
+            if((corporatePPAList[i].buyer == _buyer) && (corporatePPAList[i].id == _id)){
                 Appas.push(approvedPPA({
                     buyer: _buyer,
                     producer: corporatePPAList[i].producer,
@@ -196,14 +196,14 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         emit createdPPA(_producer, _kwhPrice, currentID);
     }
 
-    function claimPPA() public {
+    function claimPPA(uint _id) public {
         uint64 _totalKwh = 0;
         address buyer = msg.sender;
         for(uint i = 0; i<listOfPPAs.length; i++){
             require(listOfPPAs[i].producer != buyer, "Wrong address buyer");
             require(listOfPPAs[i].status != Status.Rejected, "error");
             require(listOfPPAs[i].endDay > block.timestamp, "PPA has expired");
-            if(listOfPPAs[i].status == Status.Pending){
+            if(listOfPPAs[i].id == _id){
                 Appas.push(approvedPPA({
                     buyer: buyer,
                     producer: listOfPPAs[i].producer,
