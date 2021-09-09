@@ -21,12 +21,12 @@ import {
 import Web3 from 'web3';
 const web3 = new Web3(Web3.givenProvider || "wss://ropsten.infura.io/ws/v3/5f552c63b2834a588871339fd81f7943");
 
-var contractAddress = '0xe03AC856cEb6f46778F9Efea5B4f954da80702C0' ;
-var abi = [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"askEnergyNotifier","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"ownerOfBattery","type":"address"},{"indexed":false,"internalType":"uint256","name":"date","type":"uint256"},{"indexed":false,"internalType":"string","name":"id","type":"string"}],"name":"batteryAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"ownerOfBattery","type":"address"},{"indexed":false,"internalType":"uint256","name":"date","type":"uint256"},{"indexed":false,"internalType":"string","name":"id","type":"string"}],"name":"batteryUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"seller","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"offerEnergyNotifier","type":"event"},{"constant":false,"inputs":[{"internalType":"string","name":"uuID","type":"string"}],"name":"addNewBattery","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_energy","type":"uint256"}],"name":"askEnergy","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_energy","type":"uint256"},{"internalType":"uint256","name":"_eprice","type":"uint256"}],"name":"energyOffer","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getAsksByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"batteryID","type":"address"}],"name":"getBatteryByAddress","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"string","name":"","type":"string"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getBidsByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfAsks","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfBids","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfPurchases","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getPurchaseByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"batteryID","type":"address"},{"internalType":"string","name":"uuID","type":"string"}],"name":"updateBattery","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"n","type":"uint256"},{"internalType":"uint256","name":"offset","type":"uint256"}],"name":"viewAllAsks","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"n","type":"uint256"},{"internalType":"uint256","name":"offset","type":"uint256"}],"name":"viewAllBids","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"n","type":"uint256"},{"internalType":"uint256","name":"offset","type":"uint256"}],"name":"viewAllEnergyPurchases","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"}]
-const energyTrading = new web3.eth.Contract(abi, contractAddress);
+var contractAddress = '0x5c3bF6C9AaaC0e9F40Eb4462b8E6630677153217' ;
+var abi = [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"producer","type":"address"},{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"},{"indexed":false,"internalType":"uint32","name":"agreedPrice","type":"uint32"}],"name":"acceptedCorpPPA","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"producer","type":"address"},{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":false,"internalType":"uint64","name":"energy","type":"uint64"},{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"}],"name":"availableEnergyNotification","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"ppaBuyer","type":"address"}],"name":"buyerDeregistered","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"ppaBuyer","type":"address"}],"name":"buyerRegistered","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"producer","type":"address"},{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":false,"internalType":"uint32","name":"price","type":"uint32"},{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"}],"name":"createdCorpPPA","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"producer","type":"address"},{"indexed":false,"internalType":"uint32","name":"price","type":"uint32"},{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"}],"name":"createdPPA","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"producer","type":"address"},{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":false,"internalType":"uint256","name":"startDay","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"endDay","type":"uint256"},{"indexed":false,"internalType":"enum PPA.Status","name":"status","type":"uint8"}],"name":"expiredPPA","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"producer","type":"address"}],"name":"producerDeregistered","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"producer","type":"address"}],"name":"producerRegistered","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":true,"internalType":"address","name":"producer","type":"address"},{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"}],"name":"purchasedPPA","type":"event"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"acceptCorporatePPA","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"_buyer","type":"address"},{"internalType":"uint64","name":"_energy","type":"uint64"},{"internalType":"uint256","name":"_idOfMatchPPA","type":"uint256"}],"name":"availableKwhs","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_idOfPPA","type":"uint256"}],"name":"buyPPAKwhs","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"claimAuctionPPA","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"claimPPA","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"_buyer","type":"address"},{"internalType":"uint32","name":"_agreedKwhPrice","type":"uint32"},{"internalType":"uint256","name":"_startDay","type":"uint256"},{"internalType":"uint256","name":"_endDay","type":"uint256"},{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"corporatePPA","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_kwhPrice","type":"uint32"},{"internalType":"uint256","name":"_startDay","type":"uint256"},{"internalType":"uint256","name":"_endDay","type":"uint256"}],"name":"createPPA","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"abuyer","type":"address"}],"name":"deregisterPPABuyer","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"deregisterProducer","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_idOfContract","type":"uint256"},{"internalType":"uint64","name":"_buyEnergy","type":"uint64"}],"name":"energyTradingPPA","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_idx","type":"uint256"}],"name":"getApprovedPPAByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"},{"internalType":"uint32","name":"","type":"uint32"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getApprovedPPAs","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getAvKwhs","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_idx","type":"uint256"}],"name":"getAvailableEnergyByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"},{"internalType":"uint64","name":"","type":"uint64"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCorpPPAs","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_idx","type":"uint256"}],"name":"getCorporatePPAByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"},{"internalType":"uint32","name":"","type":"uint32"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_idx","type":"uint256"}],"name":"getPPAByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"},{"internalType":"uint32","name":"","type":"uint32"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getPPAs","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getPurchases","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_idx","type":"uint256"}],"name":"getPurchasesByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"},{"internalType":"uint64","name":"","type":"uint64"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"killPPA","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"abuyer","type":"address"}],"name":"registerPPABuyer","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"registerProducer","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"n","type":"uint256"},{"internalType":"uint256","name":"offset","type":"uint256"}],"name":"viewAllPPAs","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint32[]","name":"","type":"uint32[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"n","type":"uint256"},{"internalType":"uint256","name":"offset","type":"uint256"}],"name":"viewAllpurchases","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint64[]","name":"","type":"uint64[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"n","type":"uint256"},{"internalType":"uint256","name":"offset","type":"uint256"}],"name":"viewApprovalPPAs","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint64[]","name":"","type":"uint64[]"},{"internalType":"uint32[]","name":"","type":"uint32[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"n","type":"uint256"},{"internalType":"uint256","name":"offset","type":"uint256"}],"name":"viewAvailableKwhs","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint64[]","name":"","type":"uint64[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"n","type":"uint256"},{"internalType":"uint256","name":"offset","type":"uint256"}],"name":"viewCorporatePPAlist","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint32[]","name":"","type":"uint32[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"}] ;
+const PPA = new web3.eth.Contract(abi, contractAddress);
 
 function PPAs() {
-  const [open, setOpen] = useState('bid');
+  const [open, setOpen] = useState('PPA');
   const [totalAsks, setTotalAsks] = useState(0);
   const [asks, setAsks] = useState(null);
   const [totalBids, setTotalBids] = useState(0);
@@ -35,8 +35,12 @@ function PPAs() {
   const pageSize = 10;
   const pagesCountAsk = Math.ceil(totalAsks / pageSize);
   const pagesCountBid = Math.ceil(totalBids / pageSize);
-  const [energyKW, setEnergyKW] = useState(0);
-  const [priceBid, setPriceBid] = useState(0);
+  const [price, setPrice] = useState(0);
+  // const [priceBid, setPriceBid] = useState(0);
+  const [placeStartDay, setPlaceStartDay] = useState(0);
+  const [placeEndDay, setPlaceEndDay] = useState(0);
+  const [ID, setID] = useState(0);
+  const [address, setAddress] = useState('');
   const account = useRef('');
   const[error, setError] = useState(false);
   const[isDisabled, setIsDisabled] = useState(false);
@@ -89,124 +93,57 @@ const handleAccountsChanged = (accounts) => {
   }
 }
   
-  const handlePageClickAsk = (e, index) => {
-    e.preventDefault();
-    setCurrentPage(index);
-  };
-
-  const handlePreviousClickAsk = e => {
-    e.preventDefault();
-    const index = currentPage - 1;
-    setCurrentPage(index);
-    getDataAsks(currentPage * pageSize);
-
-  };
-
-  const handleNextClickAsk = e => {
-    e.preventDefault();
-    const index = currentPage + 1;
-    setCurrentPage(index);
-    getDataAsks(currentPage * pageSize);
-
-  };
-
-  const handlePageClickBid = (e, index) => {
-    e.preventDefault();
-    setCurrentPage(index);
-  };
-
-  const handlePreviousClickBid = e => {
-    e.preventDefault();
-    const index = currentPage - 1;
-    setCurrentPage(index);
-    getDataBids(currentPage * pageSize);
-
-  };
-
-  const handleNextClickBid = e => {
-    e.preventDefault();
-    const index = currentPage + 1;
-    setCurrentPage(index);
-    getDataBids(currentPage * pageSize);
-
-  };
-
-  const getDataAsks = (offset)=>{
-
-    energyTrading.methods.getCountOfAsks().call().then(function(askNum){
-      console.log("Total asks:" , askNum);
-      setTotalAsks(askNum)
-      if(askNum>0)
-      energyTrading.methods.viewAllAsks(pageSize, offset).call()
-          .then(function(result){
-            console.log(result);
-            var rows = [];
-            for (var i = 0; i < askNum; i++) {
-              rows.push( <tr key={i}>
-                <td>{result[0][i].substr(0,6)}</td>
-                <td>{result[1][i]}</td>
-                <td>{result[2][i]}</td>
-                <td>{result[3][i]}</td>
-              </tr>);
-            }
-            setAsks(rows)
-          });
-    });
-
-  }
-
-  const getDataBids = (offset)=>{
-    energyTrading.methods.getCountOfBids().call().then(function(bidsnum){
-      console.log("Total bids:" , bidsnum);
-      setTotalBids(bidsnum)
-      if(bidsnum>0)
-        energyTrading.methods.viewAllBids(pageSize, offset).call()
-            .then(function(result){
-              console.log(result);
-              var rows = [];
-              for (var i = 0; i < bidsnum; i++) {
-                rows.push( <tr key={i}>
-                  <td>{result[0][i].substr(0,6)}</td>
-                  <td>{result[1][i]}</td>
-                  <td>{result[2][i]}</td>
-                  <td>{result[3][i]}</td>
-                </tr>);
-              }
-              setBids(rows)
-            });
-    });
-  }
-
-  const addBidOrAsk = () => {
+  
+  
+  const createPPA = () => {
     
-    if (open == 'bid'){
-      if (energyKW == ""||priceBid == ""){
+    if (open == 'PPA'){
+      if (price == ""||placeStartDay == ""||placeEndDay == ""){
 
         setError(true); 
       }
-    else{
-    
-      energyTrading.methods.energyOffer(energyKW, priceBid).send({from: account.current}).then(function(e) {
-        console.log(e);
-      });
-    }
-    }else{
-      if (energyKW == ""){
-
-        setError(true);
-        
+      else{
+       
+        PPA.methods.createPPA(price, placeStartDay, placeEndDay).send({from: account.current}).then(function(e) {
+          console.log(e);
+        });
       }
-      energyTrading.methods.askEnergy(energyKW).send({from: account.current}).then(function(e) {
-        console.log(e);
-      });
+    }
+
+    if (open == 'CPPA'){
+      if (price == ""||placeStartDay == ""||placeEndDay == ""||ID == ""||address == ""){
+
+        setError(true); 
+      }
+      else{
+       
+        PPA.methods.corporatePPA(address, price, placeStartDay, placeEndDay, ID, ).send({from: account.current}).then(function(e) {
+          console.log(e);
+        });
+      }
+    }
+  }
+  const claimPPA = () => {
+    
+    if (open == 'PPA'){
+      if (ID == ""){
+
+        setError(true); 
+      }
+      else{
+       
+        PPA.methods.claimPPA(ID).send({from: account.current}).then(function(e) {
+          console.log(e);
+        });
+      }
     }
   }
 
+  
   useEffect(() => {
 
-    getDataAsks(currentPage * pageSize);
-    getDataBids(currentPage * pageSize);
-    // signInMetamask();
+    
+
     web3.eth.getAccounts().then(r=>{
       handleAccountsChanged(r);
     });
@@ -218,77 +155,11 @@ const handleAccountsChanged = (accounts) => {
     <>
       <div className="content">
         <Row>
-          <Col md="8">
-            {totalAsks>0 ?
-                <Card>
-              <CardHeader>
-                <h5 className="title">Open Asks {totalAsks}</h5>
-              </CardHeader>
-              <CardBody>
-                {asks!==null ?
-                  <Table className="tablesorter" responsive>                  
-                      <thead className="text-primary">
-                  <tr>
-                    <th>Owner</th>
-                    <th>Date</th>
-                    <th>Total KWhs</th>
-                    <th>Remaining KWhs</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  {asks}
-                  </tbody>
-                </Table> : <></>}
-                <TablePaginationAsk
-                       pagesCountAsk={pagesCountAsk}
-                       currentPage={currentPage}
-                       handlePageClickAsk={handlePageClickAsk}
-                       handlePreviousClickAsk={handlePreviousClickAsk}
-                       handleNextClickAsk={handleNextClickAsk}
-                   />
-              </CardBody>
-              <CardFooter>
-
-              </CardFooter>
-            </Card> : <></>}
-            <br/>
-            {totalBids>0 ?
-                <Card>
-                  <CardHeader>
-                    <h5 className="title">Open Bids {totalBids}</h5>
-                  </CardHeader>
-                  <CardBody>
-                    {bids!==null ?
-                        <Table className="tablesorter" responsive>
-                          <thead className="text-primary">
-                          <tr>
-                            <th>Owner</th>
-                            <th>Date</th>
-                            <th>Total KWhs</th>
-                            <th>Price (EUR)</th>
-                          </tr>
-                          </thead>
-                          <tbody>
-                          {bids}
-                          </tbody>
-                        </Table> : <></>}
-                        <TablePaginationBid
-                             pagesCountBid={pagesCountBid}
-                             currentPage={currentPage}
-                             handlePageClickBid={handlePageClickBid}
-                             handlePreviousClickBid={handlePreviousClickBid}
-                             handleNextClickBid={handleNextClickBid}
-                         />
-                  </CardBody>
-                  <CardFooter>
-
-                  </CardFooter>
-                </Card> : <></>}
-          </Col>
+    
           <Col md="4">
             <Card className="card-user">
               <CardBody>
-                <CardText />
+                
               <div>
                   {isConnected
                   ? <>  <div className="author">
@@ -296,40 +167,83 @@ const handleAccountsChanged = (accounts) => {
                   <div className="block block-two" />
                   <div className="block block-three" />
                   <div className="block block-four" />
-                  <p className="description">New bid or ask</p>
+                  <p className="description">Create a PPA</p>
                   <br/>
-                  <Button variant="primary" size="lg" onClick={()=>{setOpen('bid')}}>
-                    Bid
+                  <Button variant="primary" size="lg" onClick={()=>{setOpen('PPA')}}>
+                    Create PPA
                   </Button>{' '}
-                  <Button variant="secondary" size="lg" onClick={()=>{setOpen('ask')}}>
-                    Ask
+                  <Button variant="secondary" size="lg" onClick={()=>{setOpen('CPPA')}}>
+                    Create CorporatePPA
                   </Button>
                 </div>
                 <Row>
                   <Col className="pr-md-1 form"  md="11"  >
                     <FormGroup>
-                      <label>{open==='ask'? 'Ask':"Bid"} amount (KWhs)</label>
+                      <label>{open==='CPPA'? 'CPPA':"PPA"} Price (EUR)</label>
                       <Input
-                          placeholder="Enter KWhs"
+                          placeholder="Enter Price(EUR)"
                           type="text"
-                          onChange={event => setEnergyKW(event.target.value)}
+                          onChange={event => setPrice(event.target.value)}
                       />
                     </FormGroup>
-                    <FormGroup style={{display:(open==='ask'? 'none':"block")}} >
-                      <label>Price (EUR)</label>
+                    <FormGroup style={{display:(open==='CPPA'? 'none':"block")}} >
+                      <label>Start Day</label>
                       <Input
-                          placeholder="Bid price (EUR)"
+                          placeholder="Start Day"
                           type="text"
-                          onChange={event => setPriceBid(event.target.value)}
+                          onChange={event => setPlaceStartDay(event.target.value)}
+                      />
+                    </FormGroup>
+                    <FormGroup style={{display:(open==='CPPA'? 'none':"block")}} >
+                      <label>End Day</label>
+                      <Input
+                          placeholder="End Day"
+                          type="text"
+                          onChange={event => setPlaceEndDay(event.target.value)}
+                      />
+                    </FormGroup>
+                    <FormGroup style={{display:(open==='PPA'? 'none':"block")}} >
+                      <label>Start Day</label>
+                      <Input
+                          placeholder="Start Day"
+                          type="text"
+                          onChange={event => setPlaceStartDay(event.target.value)}
+                      />
+                    </FormGroup>
+                    <FormGroup style={{display:(open==='PPA'? 'none':"block")}} >
+                      <label>End Day</label>
+                      <Input
+                          placeholder="End Day"
+                          type="text"
+                          onChange={event => setPlaceEndDay(event.target.value)}
+                      />
+                    </FormGroup>
+                    <FormGroup style={{display:(open==='PPA'? 'none':"block")}} >
+                      <label>ID</label>
+                      <Input
+                          placeholder="ID"
+                          type="text"
+                          onChange={event => setID(event.target.value)}
+                      />
+                    </FormGroup>
+                    <FormGroup style={{display:(open==='PPA'? 'none':"block")}} >
+                      <label>Address</label>
+                      <Input
+                          placeholder="Address"
+                          type="text"
+                          onChange={event => setAddress(event.target.value)}
                       />
                     </FormGroup>
                     <FormGroup>
                     {
-                        error && <div style={{color: `red`}}>Please enter a valid amount of price or KWHs</div>
+                        error && <div style={{color: `red`}}>Not valid details</div>
                       }
-                    <Button variant="secondary" size="lg" onClick={() => addBidOrAsk()}>
-                      Place {open==='ask'? 'Ask':"Bid"}
+                    <Button variant="secondary" size="lg" onClick={() => createPPA()}>
+                      Create {open==='CPPA'? 'CPPA':"PPA"}
                     </Button>
+                    
+                    
+                    
                   </FormGroup>
           </Col>
                 </Row>
@@ -339,7 +253,7 @@ const handleAccountsChanged = (accounts) => {
                   <div className="block block-two" />
                   <div className="block block-three" />
                   <div className="block block-four" />
-                   <p className="description">Connect your wallet to make a new Bid/Ask</p>
+                   <p className="description">Connect your wallet to create a new PPA</p>
                      < Button className="btn-fill" variant="primary"  size="lg"  color="secondary" type="button" onClick= { signInMetamask }>
                   <img src={"https://docs.metamask.io/metamask-fox.svg"} style={{"height": "30px"}}></img>{"  "} Connect Wallet
                   </Button>         
@@ -352,7 +266,7 @@ const handleAccountsChanged = (accounts) => {
               </CardFooter>
             </Card>
           </Col>
-
+     
         </Row>
       </div>
     </>
