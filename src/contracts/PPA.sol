@@ -200,9 +200,9 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         uint64 _totalKwh = 0;
         address buyer = msg.sender;
         for(uint i = 0; i<listOfPPAs.length; i++){
-            require(listOfPPAs[i].producer != buyer, "Wrong address buyer");
-            require(listOfPPAs[i].status != Status.Rejected, "error");
-            require(listOfPPAs[i].endDay > block.timestamp, "PPA has expired");
+            if((listOfPPAs[i].producer == buyer) && (listOfPPAs[i].endDay < block.timestamp)){
+                break;
+            }
             if(listOfPPAs[i].id == _id){
                 Appas.push(approvedPPA({
                     buyer: buyer,
