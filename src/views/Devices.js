@@ -122,7 +122,7 @@ function Devices() {
                         <div className="block block-two" />
                         <div className="block block-three" />
                         <div className="block block-four" />
-                         <p className="description">Add new battery</p>
+                         <p className="description">Add new Device</p>
                            <br/>
                            <Row>
                            <Col className="pr-md-1 form"  md="11"  >
@@ -152,7 +152,7 @@ function Devices() {
                       <div className="block block-two" />
                       <div className="block block-three" />
                       <div className="block block-four" />
-                       <p className="description">Connect your wallet to add battery</p>
+                       <p className="description">Connect your wallet to add a device</p>
                          < Button className="btn-fill" variant="primary"  size="lg"  color="secondary" type="button" onClick= { signInMetamask }>
                       <img src={"https://docs.metamask.io/metamask-fox.svg"} style={{"height": "30px"}}></img>{"  "} Connect Wallet
                       </Button>         

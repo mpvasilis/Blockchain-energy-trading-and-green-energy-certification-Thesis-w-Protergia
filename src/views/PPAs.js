@@ -35,11 +35,11 @@ function PPAs() {
   const pageSize = 10;
   const pagesCountAsk = Math.ceil(totalAsks / pageSize);
   const pagesCountBid = Math.ceil(totalBids / pageSize);
-  const [price, setPrice] = useState(0);
+  const [price, setPrice] = useState('');
   // const [priceBid, setPriceBid] = useState(0);
-  const [placeStartDay, setPlaceStartDay] = useState(0);
-  const [placeEndDay, setPlaceEndDay] = useState(0);
-  const [ID, setID] = useState(0);
+  const [placeStartDay, setPlaceStartDay] = useState('');
+  const [placeEndDay, setPlaceEndDay] = useState('');
+  const [ID, setID] = useState('');
   const [address, setAddress] = useState('');
   const account = useRef('');
   const[error, setError] = useState(false);
@@ -98,7 +98,7 @@ const handleAccountsChanged = (accounts) => {
   const createPPA = () => {
     
     if (open == 'PPA'){
-      if (price == ""||placeStartDay == ""||placeEndDay == ""){
+      if (price === ""||placeStartDay === ""||placeEndDay === ""||placeEndDay < placeStartDay||price <= 0){
 
         setError(true); 
       }
@@ -106,26 +106,37 @@ const handleAccountsChanged = (accounts) => {
        
         PPA.methods.createPPA(price, placeStartDay, placeEndDay).send({from: account.current}).then(function(e) {
           console.log(e);
-        });
+    
+        }); 
+        setPrice("");
+        setPlaceStartDay("");
+        setPlaceEndDay("");
       }
     }
 
     if (open == 'CPPA'){
-      if (price == ""||placeStartDay == ""||placeEndDay == ""||ID == ""||address == ""){
+      if (price === ""||placeStartDay === ""||placeEndDay === ""||ID === ""||address === ""||price <= 0||placeEndDay < placeStartDay){
 
         setError(true); 
       }
       else{
-       
+        
+        
         PPA.methods.corporatePPA(address, price, placeStartDay, placeEndDay, ID, ).send({from: account.current}).then(function(e) {
           console.log(e);
         });
+        setAddress("");
+        setPrice("");
+        setPlaceStartDay("");
+        setPlaceEndDay("");
+        setID("");
+        
       }
     }
   }
   const claimPPA = () => {
     
-    if (open == 'PPA'){
+    
       if (ID == ""){
 
         setError(true); 
@@ -136,7 +147,7 @@ const handleAccountsChanged = (accounts) => {
           console.log(e);
         });
       }
-    }
+    
   }
 
   
@@ -181,14 +192,17 @@ const handleAccountsChanged = (accounts) => {
                     <FormGroup>
                       <label>{open==='CPPA'? 'CPPA':"PPA"} Price (EUR)</label>
                       <Input
+                          value = {price}
                           placeholder="Enter Price(EUR)"
                           type="text"
                           onChange={event => setPrice(event.target.value)}
                       />
+                    
                     </FormGroup>
                     <FormGroup style={{display:(open==='CPPA'? 'none':"block")}} >
                       <label>Start Day</label>
                       <Input
+                           value = {placeStartDay}
                           placeholder="Start Day"
                           type="text"
                           onChange={event => setPlaceStartDay(event.target.value)}
@@ -197,6 +211,7 @@ const handleAccountsChanged = (accounts) => {
                     <FormGroup style={{display:(open==='CPPA'? 'none':"block")}} >
                       <label>End Day</label>
                       <Input
+                           value = {placeEndDay}
                           placeholder="End Day"
                           type="text"
                           onChange={event => setPlaceEndDay(event.target.value)}
@@ -205,6 +220,7 @@ const handleAccountsChanged = (accounts) => {
                     <FormGroup style={{display:(open==='PPA'? 'none':"block")}} >
                       <label>Start Day</label>
                       <Input
+                          value = {placeStartDay}
                           placeholder="Start Day"
                           type="text"
                           onChange={event => setPlaceStartDay(event.target.value)}
@@ -213,6 +229,7 @@ const handleAccountsChanged = (accounts) => {
                     <FormGroup style={{display:(open==='PPA'? 'none':"block")}} >
                       <label>End Day</label>
                       <Input
+                          value = {placeEndDay}
                           placeholder="End Day"
                           type="text"
                           onChange={event => setPlaceEndDay(event.target.value)}
@@ -221,6 +238,7 @@ const handleAccountsChanged = (accounts) => {
                     <FormGroup style={{display:(open==='PPA'? 'none':"block")}} >
                       <label>ID</label>
                       <Input
+                          value = {ID}
                           placeholder="ID"
                           type="text"
                           onChange={event => setID(event.target.value)}
@@ -229,6 +247,7 @@ const handleAccountsChanged = (accounts) => {
                     <FormGroup style={{display:(open==='PPA'? 'none':"block")}} >
                       <label>Address</label>
                       <Input
+                          value = {address}
                           placeholder="Address"
                           type="text"
                           onChange={event => setAddress(event.target.value)}
