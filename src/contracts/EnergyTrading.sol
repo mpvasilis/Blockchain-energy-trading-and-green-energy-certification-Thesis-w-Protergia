@@ -8,7 +8,7 @@ contract deviceRegistry {
 
     struct device {
         address ownerOfDevice;        //device wallet address
-        string uuID;                  //id of device
+        string typeOfDevice;                  //id of device
         uint timestamp;
         bool isExist;                 //Check if device exists
     }
@@ -22,22 +22,22 @@ contract deviceRegistry {
      }
 
     //add a battery by eth account address
-    function addDevice (string memory uuID) public {
+    function addDevice (string memory typeOfDevice) public {
         require(devices[msg.sender].isExist==false, "Device details already added");
-        devices[msg.sender] = device(msg.sender, uuID, block.timestamp, true);
-        emit deviceAdded(msg.sender, block.timestamp, uuID);
+        devices[msg.sender] = device(msg.sender, typeOfDevice, block.timestamp, true);
+        emit deviceAdded(msg.sender, block.timestamp, typeOfDevice);
     }
 
     //change details of a battery
-    function updateBattery(address ownerOfDevice, string memory uuID) public onlyRegisteredDevice {
-        devices[ownerOfDevice].uuID = uuID;
+    function updateBattery(address ownerOfDevice, string memory typeOfDevice) public onlyRegisteredDevice {
+        devices[ownerOfDevice].typeOfDevice = typeOfDevice;
         uint day = block.timestamp;
-        emit deviceUpdated(ownerOfDevice, day, uuID);
+        emit deviceUpdated(ownerOfDevice, day, typeOfDevice);
     }
 
     //view single battery by battery id
     function getDeviceByAddress(address deviceID) public view returns (address, string memory, uint){
-        return (devices[deviceID].ownerOfDevice, devices[deviceID].uuID, devices[deviceID].timestamp);
+        return (devices[deviceID].ownerOfDevice, devices[deviceID].typeOfDevice, devices[deviceID].timestamp);
     }
 }
 
