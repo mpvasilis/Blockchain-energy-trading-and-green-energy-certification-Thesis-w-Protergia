@@ -35,8 +35,8 @@ function EnergyTrading() {
   const pageSize = 10;
   const pagesCountAsk = Math.ceil(totalAsks / pageSize);
   const pagesCountBid = Math.ceil(totalBids / pageSize);
-  const [energyKW, setEnergyKW] = useState(0);
-  const [priceBid, setPriceBid] = useState(0);
+  const [energyKW, setEnergyKW] = useState('');
+  const [priceBid, setPriceBid] = useState('');
   const account = useRef('');
   const[error, setError] = useState(false);
   const[isDisabled, setIsDisabled] = useState(false);
@@ -180,7 +180,7 @@ const handleAccountsChanged = (accounts) => {
   const addBidOrAsk = () => {
     
     if (open == 'bid'){
-      if (energyKW == ""||priceBid == ""){
+      if (energyKW == ""||priceBid == ""||energyKW < 1000000){
 
         setError(true); 
       }
@@ -189,9 +189,11 @@ const handleAccountsChanged = (accounts) => {
       energyTrading.methods.energyOffer(energyKW, priceBid).send({from: account.current}).then(function(e) {
         console.log(e);
       });
+      setEnergyKW("");
+      setPriceBid("");
     }
     }else{
-      if (energyKW == ""){
+      if (energyKW == ""||energyKW < 1000000){
 
         setError(true);
         
@@ -199,6 +201,7 @@ const handleAccountsChanged = (accounts) => {
       energyTrading.methods.askEnergy(energyKW).send({from: account.current}).then(function(e) {
         console.log(e);
       });
+      setEnergyKW("");
     }
   }
 
@@ -310,6 +313,7 @@ const handleAccountsChanged = (accounts) => {
                     <FormGroup>
                       <label>{open==='ask'? 'Ask':"Bid"} amount (KWhs)</label>
                       <Input
+                          value = {energyKW}
                           placeholder="Enter KWhs"
                           type="text"
                           onChange={event => setEnergyKW(event.target.value)}
@@ -318,6 +322,7 @@ const handleAccountsChanged = (accounts) => {
                     <FormGroup style={{display:(open==='ask'? 'none':"block")}} >
                       <label>Price (EUR)</label>
                       <Input
+                          value = {priceBid}
                           placeholder="Bid price (EUR)"
                           type="text"
                           onChange={event => setPriceBid(event.target.value)}

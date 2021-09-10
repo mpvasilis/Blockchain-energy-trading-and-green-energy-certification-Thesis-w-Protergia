@@ -104,6 +104,7 @@ function Devices() {
         energyTrading.methods.addNewBattery(input).send({from: account.current}).then(function(e){
           console.error(e);
         })
+        setInput("");
       }
 
     
@@ -128,7 +129,7 @@ function Devices() {
                            <Col className="pr-md-1 form"  md="11"  >
                              <FormGroup>
                              <Input
-                              
+                                   value = {setInput}
                                    placeholder="Enter your ID"
                                    type="text"
                                    value={input}
