@@ -1,47 +1,47 @@
 pragma solidity >=0.4.21 <0.9.0;
 
-//Contract that allows battery address to be registered
-contract batteryRegistry {
+//Contract that allows device address to be registered
+contract deviceRegistry {
 
-    event batteryAdded(address indexed ownerOfBattery, uint date, string id);
-    event batteryUpdated(address indexed ownerOfBattery, uint date, string id);
+    event deviceAdded(address indexed ownerOfDevice, uint date, string id);
+    event deviceUpdated(address indexed ownerOfDevice, uint date, string id);
 
-    struct battery {
-        address batteryID;            //battery wallet address
-        string uuID;                  //id of battery
+    struct device {
+        address ownerOfDevice;        //device wallet address
+        string uuID;                  //id of device
         uint timestamp;
-        bool isExist;                 //Check if battery exists
+        bool isExist;                 //Check if device exists
     }
 
     //mapping address as key to struct battery with mapping name batteries
-    mapping (address => battery) batteries;
+    mapping (address => device) devices;
 
-    modifier onlyRegisteredBattery{
-         require(batteries[msg.sender].isExist==true, "Only registered batteries have access");
+    modifier onlyRegisteredDevice{
+         require(devices[msg.sender].isExist==true, "Only registered devices have access");
          _;
      }
 
     //add a battery by eth account address
-    function addNewBattery (string memory uuID) public {
-        require(batteries[msg.sender].isExist==false, "Battery details already added");
-        batteries[msg.sender] = battery(msg.sender, uuID, block.timestamp, true);
-        emit batteryAdded(msg.sender, block.timestamp, uuID);
+    function addDevice (string memory uuID) public {
+        require(devices[msg.sender].isExist==false, "Device details already added");
+        devices[msg.sender] = device(msg.sender, uuID, block.timestamp, true);
+        emit deviceAdded(msg.sender, block.timestamp, uuID);
     }
 
     //change details of a battery
-    function updateBattery(address batteryID, string memory uuID) public onlyRegisteredBattery {
-        batteries[batteryID].uuID = uuID;
+    function updateBattery(address ownerOfDevice, string memory uuID) public onlyRegisteredDevice {
+        devices[ownerOfDevice].uuID = uuID;
         uint day = block.timestamp;
-        emit batteryUpdated(batteryID, day, uuID);
+        emit deviceUpdated(ownerOfDevice, day, uuID);
     }
 
     //view single battery by battery id
-    function getBatteryByAddress(address batteryID) public view returns (address, string memory, uint){
-        return (batteries[batteryID].batteryID, batteries[batteryID].uuID, batteries[batteryID].timestamp);
+    function getDeviceByAddress(address deviceID) public view returns (address, string memory, uint){
+        return (devices[deviceID].ownerOfDevice, devices[deviceID].uuID, devices[deviceID].timestamp);
     }
 }
 
-contract EnergyTrading is batteryRegistry {
+contract EnergyTrading is deviceRegistry {
 
     event offerEnergyNotifier(address indexed seller, uint indexed day, uint indexed price, uint energy);
     event askEnergyNotifier(address indexed buyer, uint indexed day, uint energy);
@@ -94,7 +94,7 @@ contract EnergyTrading is batteryRegistry {
     //create energy offer 
     //There is a minimum energy requirement 
     //Only registered batteries can use this function
-    function energyOffer(uint _energy, uint _eprice) public onlyRegisteredBattery {
+    function energyOffer(uint _energy, uint _eprice) public onlyRegisteredDevice {
         require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh(in whs), for instance 5.6kwhs = 5600whs");
         require(_eprice >= cent, "Price in 'cent', for example 1.5dollars/kwh = 150cents/kwh");
 
@@ -113,7 +113,7 @@ contract EnergyTrading is batteryRegistry {
     }
 
     //make ask request and buy energy from available bids
-    function askEnergy(uint _energy) public onlyRegisteredBattery {
+    function askEnergy(uint _energy) public onlyRegisteredDevice {
         require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh (in whs), for instance 5.6kwhs = 5600whs");
 
         listOfAsks.push(ask({
@@ -129,7 +129,7 @@ contract EnergyTrading is batteryRegistry {
     }
 
     //core function for energy trading (ask case)
-    function askEnergyTrading(ask memory _ask) private onlyRegisteredBattery {
+    function askEnergyTrading(ask memory _ask) private onlyRegisteredDevice {
         //require(listOfBids.length > 0, "There is no energy offer");
 
         uint remainingEnergy = _ask.remainingEnergy;
@@ -205,7 +205,7 @@ contract EnergyTrading is batteryRegistry {
     }
 
     /////Energy trading for bid case 
-    function bidEnergyTrading(bid memory _bid) private onlyRegisteredBattery {
+    function bidEnergyTrading(bid memory _bid) private onlyRegisteredDevice {
         uint _remainingBidEnergy = _bid.energy;
 
         for(uint i = 0; i<listOfAsks.length; i++){

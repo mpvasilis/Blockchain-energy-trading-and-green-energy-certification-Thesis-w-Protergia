@@ -4,7 +4,7 @@ require("babel-polyfill");
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 //aspect lamp jacket pet vehicle essence child salad uphold fold nurse judge
 //near ethics bitter absorb treat alien ski other exile cluster lonely arrive (Chris R)
-const MNEMONIC = 'near ethics bitter absorb treat alien ski other exile cluster lonely arrive';
+const MNEMONIC = 'vibrant high banana genius excess decorate liberty club clip business hand hill';
 //get test ether for ropsten from https://moonborrow.com/
 module.exports = {
     networks: {
