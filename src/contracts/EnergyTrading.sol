@@ -29,7 +29,7 @@ contract deviceRegistry {
     }
 
     //change details of a battery
-    function updateBattery(address ownerOfDevice, string memory typeOfDevice) public onlyRegisteredDevice {
+    function updateDevice(address ownerOfDevice, string memory typeOfDevice) public onlyRegisteredDevice {
         devices[ownerOfDevice].typeOfDevice = typeOfDevice;
         uint day = block.timestamp;
         emit deviceUpdated(ownerOfDevice, day, typeOfDevice);
