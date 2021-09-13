@@ -1,16 +1,22 @@
 import React, {useEffect, useState, useRef} from "react";
 import detectEthereumProvider from '@metamask/detect-provider';
-
+import 'bootstrap';
+import { Dropdown } from 'reactstrap';
+import { Button, ButtonGroup } from 'reactstrap';
 
 
 
 // reactstrap components
 import {
-  Button,
+
   Card,
   CardHeader,
   CardBody,
   CardFooter,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+  UncontrolledDropdown,
   CardText,
   FormGroup,
   Form,
@@ -37,9 +43,9 @@ function Devices() {
   const account = useRef('');
   const [error, setError] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
-  
    const [accounts, setAccounts] = useState([]);
-  
+   
+
    
 
    
@@ -146,12 +152,17 @@ function Devices() {
                                  error && <div style={{color: `red`}}>Please enter a valid ID</div>
                                }
             
-     
-    
-                               <Button variant="primary" size="lg"  onClick={addBattery}>
-                        
-                             Add Device
-                           </Button>{' '}
+              <div className="chart-area">
+                <select class="form-select" aria-label="Default select example">
+                    <option selected>Select Devices</option>
+                    <option value="1">DeviceOne</option>
+                     <option value="2">DeviceTwo</option>
+                     <option value="3">DeviceThree</option>
+                    </select>
+               </div>
+               
+               <Button variant="primary" size="lg" onClick={addBattery}  > Add Device  </Button>{' '}
+                               
                              </FormGroup>
                              </Col>
                              </Row>
