@@ -97,6 +97,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
     ppa[] listOfPPAs;
     ppa[] corporatePPAList;
 
+    //Struct in order to store all claimed ppas
     struct approvedPPA{         //Struct only for approved PPAs
         address buyer;
         address producer;
