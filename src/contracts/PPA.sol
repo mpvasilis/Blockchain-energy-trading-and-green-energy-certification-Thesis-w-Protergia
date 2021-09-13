@@ -200,11 +200,14 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
     function claimPPA(uint _id) public {
         uint64 _totalKwh = 0;
         address buyer = msg.sender;
+        uint idx = approvedPPAs[_id];
         for(uint i = 0; i<listOfPPAs.length; i++){
             if((listOfPPAs[i].producer == buyer) && (listOfPPAs[i].endDay < block.timestamp)){
                 break;
             }
             if(listOfPPAs[i].id == _id){
+                idx = Appas.length;
+                approvedPPAs[_id] = idx;
                 Appas.push(approvedPPA({
                     buyer: buyer,
                     producer: listOfPPAs[i].producer,
@@ -235,6 +238,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         uint index = 1;
         uint64 _totalkwh = 0;
         address buyerAddr = msg.sender;
+        uint idx;
         for(i; i < listOfPPAs.length; i++){
             if(listOfPPAs[i].kwhPrice < comparePPA){
                 require(listOfPPAs[i].endDay > block.timestamp, "PPA has expire, you can not buy it");
@@ -243,6 +247,8 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
                 index = i;
             }
         }
+        idx = Appas.length;
+        approvedPPAs[listOfPPAs[index].id] = idx;
         Appas.push(approvedPPA({
             buyer: buyerAddr,
             producer: listOfPPAs[index].producer,
@@ -486,25 +492,25 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         return(producerList_, buyerList_, energyList_, idOfPPAlist_);
     }
 
-    function viewApprovalPPAs(uint n, uint offset) public view returns(address[] memory, address[] memory, uint64[] memory, uint32[] memory, uint[] memory, uint[] memory){
+    function viewApprovalPPAs(uint n, uint offset) public view returns(address[] memory, address[] memory, uint[] memory, uint32[] memory, uint[] memory, uint[] memory){
         require(n>0, "n must be greater than 0");
         if(offset+n > Appas.length) offset=0;
         if(n>Appas.length) n=Appas.length;
         address[] memory proList = new address[](n);//producer
         address[] memory buyerList = new address[](n);//buyer
-        uint64[] memory enlist = new uint64[](n);//energy
+        uint[] memory idlist = new uint[](n);//energy
         uint32[] memory prList = new uint32[](n);//price
         uint[] memory sDateList = new uint[](n);//startDay
         uint[] memory eDateList = new uint[](n);//endDay
         for(uint i = offset; i < n; i++){
             proList[i] = Appas[i].producer;
             buyerList[i] = Appas[i].buyer;
-            enlist[i] = Appas[i].totalKwh;
+            idlist[i] = Appas[i].id;
             prList[i] = Appas[i].kwhPrice;
             sDateList[i] = Appas[i].startDay;
             eDateList[i] = Appas[i].endDay;
         }
-        return(proList, buyerList, enlist, prList, sDateList, eDateList);
+        return(proList, buyerList, idlist, prList, sDateList, eDateList);
     }
 
     //Return items of each list by idx (based on legth)
