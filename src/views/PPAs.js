@@ -3,6 +3,7 @@ import  TablePaginationAsk  from  '../components/pagination/TablePaginationAsk';
 import  TablePaginationBid  from '../components/pagination/TablePaginationBid';
 import detectEthereumProvider from '@metamask/detect-provider';
 import PropTypes from 'prop-types';
+import TablePagination from '../components/pagination/TablePagination';
 
 // reactstrap components
 import {
@@ -31,7 +32,7 @@ function PPAs() {
   const [totalBids, setTotalBids] = useState(0);
   const [bids, setBids] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
-  const pageSize = 15;
+  const pageSize = 14;
   const [totalPPAs, setTotalPPAs] = useState(0);
   const [PPAs, setPPAs] = useState(null);
   const [totalCPPAs, setTotalCPPAs] = useState(0);
@@ -49,7 +50,47 @@ function PPAs() {
   const[error, setError] = useState(false);
   const[isDisabled, setIsDisabled] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
+ 
+  const handlePageClickPPA  = (e, index) => {
+    e.preventDefault();
+    setCurrentPage(index);
+  };
 
+  const handlePreviousClickPPA = e => {
+    e.preventDefault();
+    const index = currentPage - 1;
+    setCurrentPage(index);
+    getDataPPAs(currentPage * pageSize);
+
+  };
+
+  const handleNextClickPPA = e => {
+    e.preventDefault();
+    const index = currentPage + 1;
+    setCurrentPage(index);
+    getDataPPAs(currentPage * pageSize);
+
+  };
+  const handlePageClickCPPA  = (e, index) => {
+    e.preventDefault();
+    setCurrentPage(index);
+  };
+
+  const handlePreviousClickCPPA = e => {
+    e.preventDefault();
+    const index = currentPage - 1;
+    setCurrentPage(index);
+    getDataCPPAs(currentPage * pageSize);
+
+  };
+
+  const handleNextClickCPPA = e => {
+    e.preventDefault();
+    const index = currentPage + 1;
+    setCurrentPage(index);
+    getDataCPPAs(currentPage * pageSize);
+
+  };
   
 const signInMetamask = async() => {
   const provider = await detectEthereumProvider();
@@ -167,11 +208,11 @@ const handleAccountsChanged = (accounts) => {
             for (var i = 0; i < askNum; i++) {
               rows.push( <tr key={i}>
                 <td>{result[0][i].substr(0,6)}</td>
-                
                 <td>{result[1][i]}</td>
                 <td>{result[2][i]}</td>
                 <td>{result[3][i]}</td>
                 <td>{result[4][i]}</td>
+                <td>{result[5][i]}</td>
                 
               </tr>);
             }
@@ -192,7 +233,7 @@ const handleAccountsChanged = (accounts) => {
             for (var i = 0; i < askNum; i++) {
               rows.push( <tr key={i}>
                 <td>{result[0][i].substr(0,6)}</td>
-                <td>{result[1][i]}</td>
+                <td>{result[1][i].substr(0,6)}</td>
                 <td>{result[2][i]}</td>
                 <td>{result[3][i]}</td>
                 <td>{result[4][i]}</td>
@@ -222,13 +263,13 @@ const handleAccountsChanged = (accounts) => {
     <>
       <div className="content">
         
-        <Row>
-        
-          <Col md="5">
-          {totalPPAs>0 ?
+      <Row>
+           
+            <Col md="7">
+            {totalPPAs>0 ?
                 <Card>
               <CardHeader>
-                <h5 className="title">Open PPAs {totalPPAs}</h5>
+                <h4 className="title">Open PPAs </h4>
               </CardHeader>
               <CardBody>
                 {PPAs!==null ?
@@ -246,18 +287,23 @@ const handleAccountsChanged = (accounts) => {
                   {PPAs}
                   </tbody>
                 </Table> : <></>}
-                
+                <TablePagination
+                  pagesCountPPA={pagesCountPPA}
+                  currentPage={currentPage}
+                  handlePageClickPPA={handlePageClickPPA}
+                  handlePreviousClickPPA={handlePreviousClickPPA}
+                  handleNextClickPPA={handleNextClickPPA}
+                />
               </CardBody>
               <CardFooter>
 
               </CardFooter>
             </Card> : <></>}
-            </Col>
-            <Col md="5">
+
           {totalCPPAs>0 ?
                 <Card>
               <CardHeader>
-                <h5 className="title">Open CPPAs {totalCPPAs}</h5>
+                <h4 className="title">Open Corporate PPAs</h4>
               </CardHeader>
               <CardBody>
                 {CPPAs!==null ?
@@ -276,14 +322,23 @@ const handleAccountsChanged = (accounts) => {
                   {CPPAs}
                   </tbody>
                 </Table> : <></>}
-                
+                <TablePagination
+                  pagesCountCPPA={pagesCountCPPA}
+                  currentPage={currentPage}
+                  handlePageClickCPPA={handlePageClickCPPA}
+                  handlePreviousClickCPPA={handlePreviousClickCPPA}
+                  handleNextClickCPPA={handleNextClickCPPA}
+                />
               </CardBody>
               <CardFooter>
 
               </CardFooter>
             </Card> : <></>}
+           
+             
+         
             </Col>
-            <Col md="4">
+            <Col md="5">
             <Card className="card-user">
               <CardBody>
                 
@@ -300,7 +355,7 @@ const handleAccountsChanged = (accounts) => {
                     Create PPA
                   </Button>{' '}
                   <Button variant="secondary" size="lg" onClick={()=>{setOpen('CPPA')}}>
-                    Create CorporatePPA
+                    Create Corporate PPA
                   </Button>
                 </div>
                 <Row>
@@ -381,7 +436,10 @@ const handleAccountsChanged = (accounts) => {
                     
                   </FormGroup>
           </Col>
+            
+           
                 </Row>
+                
 </>
                   :<div className="author">
                   <div className="block block-one" />
@@ -401,8 +459,9 @@ const handleAccountsChanged = (accounts) => {
               </CardFooter>
             </Card>
           </Col>
-     
           </Row>
+     
+          
        
            
       </div>

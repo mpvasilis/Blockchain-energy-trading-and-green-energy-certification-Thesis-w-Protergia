@@ -225,7 +225,7 @@ const handleAccountsChanged = (accounts) => {
             {totalAsks>0 ?
                 <Card>
               <CardHeader>
-                <h5 className="title">Open Asks {totalAsks}</h5>
+                <h4 className="title">Open Asks</h4>
               </CardHeader>
               <CardBody>
                 {asks!==null ?

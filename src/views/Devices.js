@@ -2,6 +2,8 @@ import React, {useEffect, useState, useRef} from "react";
 import detectEthereumProvider from '@metamask/detect-provider';
 
 
+
+
 // reactstrap components
 import {
   Button,
@@ -38,6 +40,11 @@ function Devices() {
   
    const [accounts, setAccounts] = useState([]);
   
+   
+
+   
+  
+
   const signInMetamask = async() => {
     const provider = await detectEthereumProvider();
   
@@ -138,9 +145,12 @@ function Devices() {
                                {
                                  error && <div style={{color: `red`}}>Please enter a valid ID</div>
                                }
+            
+     
+    
                                <Button variant="primary" size="lg"  onClick={addBattery}>
                         
-                             Add Battery
+                             Add Device
                            </Button>{' '}
                              </FormGroup>
                              </Col>
