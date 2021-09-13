@@ -154,8 +154,11 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
     function acceptCorporatePPA(uint _id) public {
         address _buyer = msg.sender;
         uint64 _totalKwh = 0;
+        uint idx = approvedPPAs[_id];
         for(uint i = 0; i < corporatePPAList.length; i++){
             if((corporatePPAList[i].buyer == _buyer) && (corporatePPAList[i].id == _id)){
+                idx = Appas.length;
+                approvedPPAs[_id] = idx;
                 Appas.push(approvedPPA({
                     buyer: _buyer,
                     producer: corporatePPAList[i].producer,
