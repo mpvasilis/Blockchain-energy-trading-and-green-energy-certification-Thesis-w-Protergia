@@ -93,7 +93,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         Status status;
     }
 
-    mapping(address => ppa) ppas;
+    mapping(uint => uint) ppas;
     ppa[] listOfPPAs;
     ppa[] corporatePPAList;
 
@@ -109,7 +109,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         Status status;
     }
 
-    mapping(address => mapping(uint => approvedPPA)) approvedPPAs;
+    mapping(uint => uint) approvedPPAs;
     approvedPPA[] Appas;
 
     struct producerEnergy{      //Trial struct for available producer' s energy in order to sale 
@@ -552,5 +552,13 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
 
     function getPurchases () public view returns(uint count){
         return listOfprchs.length;
+    }
+
+    //get details by id
+    function getApprovedPPAByID(uint _id) public view returns(address, address, uint32, uint, uint, uint){
+        uint index = approvedPPAs[_id];
+        require(Appas.length > index, "Wrong index");
+        require(Appas[index].id == _id, "Wrong PPA ID");
+        return(Appas[index].producer, Appas[index].buyer, Appas[index].kwhPrice, Appas[index].startDay, Appas[index].endDay, Appas[index].id);
     }
 }
