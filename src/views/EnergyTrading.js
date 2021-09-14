@@ -1,6 +1,5 @@
 import React, {useEffect, useState, useRef} from "react";
-import  TablePaginationAsk  from  '../components/pagination/TablePaginationAsk';
-import  TablePaginationBid  from '../components/pagination/TablePaginationBid';
+import TablePagination from '../components/pagination/TablePagination';
 import detectEthereumProvider from '@metamask/detect-provider';
 import PropTypes from 'prop-types';
 
@@ -89,12 +88,12 @@ const handleAccountsChanged = (accounts) => {
   }
 }
   
-  const handlePageClickAsk = (e, index) => {
+  const handlePageClick = (e, index) => {
     e.preventDefault();
     setCurrentPage(index);
   };
 
-  const handlePreviousClickAsk = e => {
+  const handlePreviousClick= e => {
     e.preventDefault();
     const index = currentPage - 1;
     setCurrentPage(index);
@@ -102,34 +101,15 @@ const handleAccountsChanged = (accounts) => {
 
   };
 
-  const handleNextClickAsk = e => {
+  const handleNextClick= e => {
     e.preventDefault();
     const index = currentPage + 1;
     setCurrentPage(index);
-    getDataAsks(currentPage * pageSize);
+     getDataAsks(currentPage * pageSize);
 
   };
 
-  const handlePageClickBid = (e, index) => {
-    e.preventDefault();
-    setCurrentPage(index);
-  };
-
-  const handlePreviousClickBid = e => {
-    e.preventDefault();
-    const index = currentPage - 1;
-    setCurrentPage(index);
-    getDataBids(currentPage * pageSize);
-
-  };
-
-  const handleNextClickBid = e => {
-    e.preventDefault();
-    const index = currentPage + 1;
-    setCurrentPage(index);
-    getDataBids(currentPage * pageSize);
-
-  };
+  
 
   const getDataAsks = (offset)=>{
 
@@ -141,7 +121,7 @@ const handleAccountsChanged = (accounts) => {
           .then(function(result){
             console.log(result);
             var rows = [];
-            for (var i = 0; i < askNum; i++) {
+            for (var i = 0; i <  pageSize-(askNum*offset); i++) {
               rows.push( <tr key={i}>
                 <td>{result[0][i].substr(0,6)}</td>
                 <td>{result[1][i]}</td>
@@ -242,12 +222,12 @@ const handleAccountsChanged = (accounts) => {
                   {asks}
                   </tbody>
                 </Table> : <></>}
-                <TablePaginationAsk
+                <TablePagination
                        pagesCountAsk={pagesCountAsk}
                        currentPage={currentPage}
-                       handlePageClickAsk={handlePageClickAsk}
-                       handlePreviousClickAsk={handlePreviousClickAsk}
-                       handleNextClickAsk={handleNextClickAsk}
+                       handlePageClick={handlePageClick}
+                       handlePreviousClick={handlePreviousClick}
+                       handleNextClick={handleNextClick}
                    />
               </CardBody>
               <CardFooter>
@@ -275,12 +255,12 @@ const handleAccountsChanged = (accounts) => {
                           {bids}
                           </tbody>
                         </Table> : <></>}
-                        <TablePaginationBid
+                        <TablePagination
                              pagesCountBid={pagesCountBid}
                              currentPage={currentPage}
-                             handlePageClickBid={handlePageClickBid}
-                             handlePreviousClickBid={handlePreviousClickBid}
-                             handleNextClickBid={handleNextClickBid}
+                             handlePageClick={handlePageClick}
+                             handlePreviousClick={handlePreviousClick}
+                             handleNextClick={handleNextClick}
                          />
                   </CardBody>
                   <CardFooter>

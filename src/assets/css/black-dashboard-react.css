@@ -51,6 +51,14 @@
   --breakpoint-xl: 1200px;
   --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+  
+  .react-select .react-select__control .react-select__indicators {
+    width: 60px;
+    padding-right: 10px;
+    align-items: flex-end;
+    vertical-align: middle;
+    text-align: right;
+}
 
 *,
 *::before,

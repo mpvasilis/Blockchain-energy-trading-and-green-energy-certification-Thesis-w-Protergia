@@ -1,10 +1,8 @@
 import React, {useEffect, useState, useRef} from "react";
 import detectEthereumProvider from '@metamask/detect-provider';
 import 'bootstrap';
-import { Dropdown } from 'reactstrap';
 import { Button, ButtonGroup } from 'reactstrap';
-
-
+import "assets/css/black-dashboard-react.css";
 
 // reactstrap components
 import {
@@ -151,15 +149,21 @@ function Devices() {
                                {
                                  error && <div style={{color: `red`}}>Please enter a valid ID</div>
                                }
-            
-              <div className="chart-area">
-                <select class="form-select" aria-label="Default select example">
+
+          <div className="chart-area">
+          <select class="form-select" aria-label="Default select example">
                     <option selected>Select Devices</option>
-                    <option value="1">DeviceOne</option>
-                     <option value="2">DeviceTwo</option>
-                     <option value="3">DeviceThree</option>
+                    <option value="1">Wind</option>
+                     <option value="2">Biomass</option>
+                     <option value="3">Hydo turbine</option>
+                     <option value="4">Solar Thermal</option>
+                     <option value="5">PV</option>
+                     <option value="6">Battery (multiple devices)</option>
+
                     </select>
+                  
                </div>
+               
                
                <Button variant="primary" size="lg" onClick={addBattery}  > Add Device  </Button>{' '}
                                
