@@ -93,7 +93,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         Status status;
     }
 
-    mapping(uint => uint) ppas;
+    mapping(address => uint) ppas;
     ppa[] listOfPPAs;
     ppa[] corporatePPAList;
 
@@ -135,8 +135,9 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
 
     function corporatePPA(address _buyer, uint32 _agreedKwhPrice,uint _startDay, uint _endDay, uint _id) public onlyRegisteredProducers {
         address _producer = msg.sender;
-        require(_endDay > _startDay, "It's impossible endDay < startDay");
-        require(_agreedKwhPrice >= cent, "Price in Cent, for example 1.5dollar -> 150cents");
+        require(_startDay >= block.timestamp, "ERROR...wrong date");
+        require(_endDay > _startDay, "ERROR...end day must be greater than start day");
+        require(_agreedKwhPrice >= cent, "ERROR...price in Cent, i.e. 1.5dollar = 150cents");
         corporatePPAList.push(ppa({
             buyer: _buyer,
             producer: _producer,
@@ -186,8 +187,9 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         address _producer = msg.sender;
         contractID.increment();
         uint currentID = contractID.current();
-        require(_endDay > _startDay, "It's impossible endDay < startDay");
-        require(_kwhPrice >= cent, "Price in Cent, for example 1.5dollar -> 150cents");
+        require(_startDay >= block.timestamp, "ERROR...wrong date");
+        require(_endDay > _startDay, "ERROR...end day must be greater than start day");
+        require(_kwhPrice >= cent, "ERROR...price in Cent, i.e. 1.5dollar = 150cents");
         listOfPPAs.push(ppa({
             buyer: address(0x0),
             producer: _producer,
@@ -439,20 +441,31 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
     function viewCorporatePPAlist(uint n, uint offset) public view returns(address[] memory, address[] memory, uint32[] memory, uint[] memory, uint[] memory, uint[] memory){
         require(n>0, "n must be greater than 0");
         if(offset+n > corporatePPAList.length) offset=0;
-        if(n>corporatePPAList.length) n=corporatePPAList.length;
-        address[] memory _producerList = new address[](n);
-        address[] memory _buyerList = new address[](n);
-        uint32[] memory _priceList = new uint32[](n);
-        uint[] memory _idPPAlist = new uint[](n);
-        uint[] memory _sDayList = new uint[](n);
-        uint[] memory _eDayList = new uint[](n);
+        uint cnt=0;
+        for(uint j = 0; j < corporatePPAList.length; j++){
+            if((corporatePPAList[j].buyer == msg.sender) || (corporatePPAList[j].producer == msg.sender)){
+                cnt++;
+            }
+        }
+        if(n>cnt) n=cnt;
+        if(n<cnt) n=cnt;
+        
+        address[] memory _producerList = new address[](cnt);
+        address[] memory _buyerList = new address[](cnt);
+        uint32[] memory _priceList = new uint32[](cnt);
+        uint[] memory _idPPAlist = new uint[](cnt);
+        uint[] memory _sDayList = new uint[](cnt);
+        uint[] memory _eDayList = new uint[](cnt);
+
         for(uint i = offset; i < n; i++){
-            _producerList[i] = corporatePPAList[i].producer;
-            _buyerList[i] = corporatePPAList[i].buyer;
-            _priceList[i] = corporatePPAList[i].kwhPrice;
-            _idPPAlist[i] = corporatePPAList[i].id;
-            _sDayList[i] = corporatePPAList[i].startDay;
-            _eDayList[i] = corporatePPAList[i].endDay;
+            if((corporatePPAList[i].buyer == msg.sender) || (corporatePPAList[i].producer == msg.sender)){
+                _producerList[i] = corporatePPAList[i].producer;
+                _buyerList[i] = corporatePPAList[i].buyer;
+                _priceList[i] = corporatePPAList[i].kwhPrice;
+                _idPPAlist[i] = corporatePPAList[i].id;
+                _sDayList[i] = corporatePPAList[i].startDay;
+                _eDayList[i] = corporatePPAList[i].endDay;
+            }
         }
         return(_producerList, _buyerList, _priceList, _idPPAlist, _sDayList, _eDayList);
     }
