@@ -17,7 +17,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
-import "./Registry.sol";
+import "src/contracts/RECs/Registry.sol";
 
 /// @title Issuer contract
 /// @notice Used to manage the request/approve workflow for issuing ERC-1888 certificates.
