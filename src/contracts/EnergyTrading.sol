@@ -6,14 +6,18 @@ contract deviceRegistry {
     event deviceAdded(address indexed ownerOfDevice, uint date, string id);
     event deviceUpdated(address indexed ownerOfDevice, uint date, string id);
 
+    //@notice Struct to store all devices 
+    //@dev ownerOfDevice is the current address which the device is connected
+    //@dev typeOfDevice, PV, EV, Solar, Biomass, Hydo Turbine or battery(Multiple)
+    //@dev isExist to match the registered device with bool value.
     struct device {
-        address ownerOfDevice;        //device wallet address
-        string typeOfDevice;                  //id of device
+        address ownerOfDevice;
+        string typeOfDevice;
         uint timestamp;
-        bool isExist;                 //Check if device exists
+        bool isExist;
     }
 
-    //mapping address as key to struct battery with mapping name batteries
+    //@notice Mapping address as key to struct battery with mapping name batteries
     mapping (address => device) devices;
 
     modifier onlyRegisteredDevice{
@@ -21,21 +25,23 @@ contract deviceRegistry {
          _;
      }
 
-    //add a battery by eth account address
+    //@notice Add a battery by address.
+    //@dev Only one device can register by each address.
     function addDevice (string memory typeOfDevice) public {
         require(devices[msg.sender].isExist==false, "Device details already added");
         devices[msg.sender] = device(msg.sender, typeOfDevice, block.timestamp, true);
         emit deviceAdded(msg.sender, block.timestamp, typeOfDevice);
     }
 
-    //change details of a battery
+    //@notice Change details of a battery.
+    //@dev Only registered devices have access to this function.
     function updateDevice(address ownerOfDevice, string memory typeOfDevice) public onlyRegisteredDevice {
         devices[ownerOfDevice].typeOfDevice = typeOfDevice;
         uint day = block.timestamp;
         emit deviceUpdated(ownerOfDevice, day, typeOfDevice);
     }
 
-    //view single battery by battery id
+    //@notice Get signle device details from specific address
     function getDeviceByAddress(address deviceID) public view returns (address, string memory, uint){
         return (devices[deviceID].ownerOfDevice, devices[deviceID].typeOfDevice, devices[deviceID].timestamp);
     }
@@ -46,6 +52,9 @@ contract EnergyTrading is deviceRegistry {
     event offerEnergyNotifier(address indexed seller, uint indexed day, uint indexed price, uint energy);
     event askEnergyNotifier(address indexed buyer, uint indexed day, uint energy);
 
+    //@notice To deal with decimal, must to set a minimum value.
+    //@dev For prices, the solution for decimal values is the "cent" i.e. 1.5dollars = 150cents.
+    //@dev For kWhs, mWhs set as a lower value i.e. 0.4kWhs = 400.000mWhs.
     uint constant cent = 1;
     uint constant dollar = 100 * cent;
 
@@ -56,8 +65,8 @@ contract EnergyTrading is deviceRegistry {
     uint constant GWh = 1000 * MWh;
     uint constant TWh = 1000 * GWh;
 
-    //uint uinversalPrice = 2; //Energy market price per kWh (ex. 2euro/kWh, the price is trial)
-
+    //@notice Structs
+    //@dev 
     struct bid {
         address prosumerID;    
         uint numberOfBid;    //A battery can create more than one energy offer
@@ -91,9 +100,10 @@ contract EnergyTrading is deviceRegistry {
     bid[] listOfBids;
     uint nextNumberOfBid;                                    
 
-    //create energy offer 
-    //There is a minimum energy requirement 
-    //Only registered batteries can use this function
+    //@notice Create energy offer 
+    //@dev There is a minimum energy requirement 
+    //@dev Only registered devices can use this function
+    //@dev If there is available ask request, when you make a bid then the kWhs automatically sold.
     function energyOffer(uint _energy, uint _eprice) public onlyRegisteredDevice {
         require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh(in whs), for instance 5.6kwhs = 5600whs");
         require(_eprice >= cent, "Price in 'cent', for example 1.5dollars/kwh = 150cents/kwh");
@@ -112,7 +122,9 @@ contract EnergyTrading is deviceRegistry {
         bidEnergyTrading(listOfBids[listOfBids.length-1]);
     }
 
-    //make ask request and buy energy from available bids
+    //@notice Make ask request and buy energy from available bids
+    //@dev Ask a minimum energy of 1kWh = 1.000.000mWhs.
+    //@dev Each time you request for energy, bid will be searched automatically.
     function askEnergy(uint _energy) public onlyRegisteredDevice {
         require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh (in whs), for instance 5.6kwhs = 5600whs");
 
@@ -128,9 +140,15 @@ contract EnergyTrading is deviceRegistry {
         askEnergyTrading(listOfAsks[listOfAsks.length-1]);
     }
 
-    //core function for energy trading (ask case)
+    //@notice Energy trading (ask case).
+    //@param remainingEnergy use for store the incompleted energy.
+    //@param isEnergyPurchased to let us know if energy trading was made.
+    //@param energyPurchased to see how much energy we bought. 
+    //@dev When a purchase is made, bid removed from the list and 
+    //@dev is replaced by the last item on the list.
+    //@dev Purchased energy store to another list "listOfbuyedEnergy".
+    //@dev At the end of each transaction-purchase, the market price calculated as well.
     function askEnergyTrading(ask memory _ask) private onlyRegisteredDevice {
-        //require(listOfBids.length > 0, "There is no energy offer");
 
         uint remainingEnergy = _ask.remainingEnergy;
 
@@ -204,7 +222,7 @@ contract EnergyTrading is deviceRegistry {
         }
     }
 
-    /////Energy trading for bid case 
+    //@notice Energy Trading (bid case)
     function bidEnergyTrading(bid memory _bid) private onlyRegisteredDevice {
         uint _remainingBidEnergy = _bid.energy;
 
@@ -274,7 +292,11 @@ contract EnergyTrading is deviceRegistry {
         }
     }
 
-    //list of all ask energy requests
+    //@notice Get functions
+    //@dev All viewers are tailormade for front end. 
+    //@dev each function go through the lists,  split the data and store the values to the corresponding lists.
+    //@param offset to difene the point from which we want to receive data from a list. 
+    //@param n to get a specific number of details. 
     function viewAllAsks (uint n, uint offset) public view returns (address[] memory, uint[] memory, uint[] memory, uint[] memory){
         require(n>0, "n must be greater than 0");
         if(offset+n > listOfAsks.length) offset = 0;
@@ -292,7 +314,6 @@ contract EnergyTrading is deviceRegistry {
         return(_consumers, _dates, _energyList, _remainingEnList);
     }
 
-    //list of all energy purchases
     function viewAllEnergyPurchases (uint n, uint offset) public view returns (address[] memory, address[] memory, uint[] memory, uint[] memory, uint[] memory){
         require(n>0, "n must be greater than 0");
         if(offset+n > listOfBuyedEnergy.length) offset = 0;
@@ -312,7 +333,6 @@ contract EnergyTrading is deviceRegistry {
         return(_prosumers, _consumersList, _prchsEnergy, _prices, _time);
     }
 
-    //view all bids 
     function viewAllBids (uint n, uint offset) public view returns (address[] memory, uint[] memory, uint[] memory, uint[] memory){
         require(n>0, "n must be greater than 0");
         if(offset+n > listOfBids.length) offset=0;

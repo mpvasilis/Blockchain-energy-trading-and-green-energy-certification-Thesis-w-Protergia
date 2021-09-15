@@ -1,13 +1,17 @@
 pragma solidity >=0.4.21 <0.9.0;
 
+// SPDX-License-Identifier: MIT
+
 import "src/contracts/SafeMath.sol";
 import "src/contracts/Counters.sol";
+import "src/contracts/IRegistry.sol";
 
 contract producerRegistry {
     event producerRegistered(address indexed producer);
     event producerDeregistered(address indexed producer);
     
-    // map address to bool "is a registered producer"
+    //@notice This contract register producer in order to have access on PPA' s creatable functions
+    //@dev map address to bool "is a registered producer"
     mapping(address => bool) producers;
     
     modifier onlyRegisteredProducers {
@@ -32,6 +36,8 @@ contract ppaBuyerRegistry {
     event buyerRegistered(address indexed ppaBuyer);
     event buyerDeregistered(address indexed ppaBuyer);
 
+    //@notice This contract register PPA buyers automatically each time someone purchase a PPA
+    //@dev Each buyer must have aBuyerID > 0 
     mapping(address => uint32) ppaBuyers;
     address[] listOfPPABuyers;
 
@@ -61,9 +67,12 @@ contract ppaBuyerRegistry {
 //Corporate PPAs
 contract PPA is producerRegistry, ppaBuyerRegistry {
 
-    //using SafeMath for uint256;
+    //@notice Using counters for ID of each PPA contract 
+    //@dev each time a new PPA is created, ID will increase by one.
+    //@param registry is the address of the registry deployed contract to issue and store RECs
     using Counters for Counters.Counter;
     Counters.Counter private contractID;
+    address registry;
 
     uint32 constant cent = 1;
     uint32 constant dollar = 100 * cent;
@@ -83,6 +92,11 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
     event expiredPPA(address indexed producer, address indexed buyer, uint startDay, uint endDay, Status status);
     event availableEnergyNotification(address indexed producer, address indexed buyer, uint64 energy, uint id);
 
+    //@notice Structs
+    //@dev ppa for all pending PPA contracts
+    //@dev When claimed a ppa then store to approvedPPA struct
+    //@dev producerEnergy belongs to producer side from which store the available kWhs.
+    //@dev purchasesPPA all kWhs purchases based on PPAs.
     struct ppa {               //Struct with all PPA contracts
         address buyer;
         address producer;
@@ -133,8 +147,22 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
 
     purchasesPPA[] listOfprchs;
 
+    //@notice Interaction with Registry Smart Contract 
+    //@dev issuance address of deployed Registry contract.
+    function setRegistryAddress(address _registry) public{
+        registry = _registry;
+    } 
+
+    //@notice corporate and create PPA function
+    //@dev corporatePPA based on agreed terms between 2 parts Both parties benefit from long-term price guarantees that protect them from market price volatility.
+    //@dev createPPA ad hoc contracts with specific price per kWhs.
+    //@param _agreedKwhPrice agreed price per kWhs.
+    //@param _kwhPrice just price per kWhs based on market and producer' s choice.
+    //@param _startDay the day the PPA enters into force. 
+    //@param _endDay the day the PPA expires.
     function corporatePPA(address _buyer, uint32 _agreedKwhPrice,uint _startDay, uint _endDay, uint _id) public onlyRegisteredProducers {
         address _producer = msg.sender;
+        bytes memory data = new bytes(_id);
         require(_startDay >= block.timestamp, "ERROR...wrong date");
         require(_endDay > _startDay, "ERROR...end day must be greater than start day");
         require(_agreedKwhPrice >= cent, "ERROR...price in Cent, i.e. 1.5dollar = 150cents");
@@ -147,11 +175,14 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
             id: _id,
             status: Status.Pending
         }));
+        iRegistry(registry).issue(_buyer, data, _id, 1, data);
         emit createdCorpPPA(_producer, _buyer, _agreedKwhPrice, _id);
     }
 
-    //Corporate PPAs are based on an agreed price
-    //Both parties benefit from long-term price guarantees that protect them from market price volatility
+    //@notice acceptCorporatePPA, claimAuctionPPA and claimPPA
+    //@dev acceptCorporatePPA based on id and the address which contract refers to.
+    //@dev claimPPA you can claim any PPA just from its ID.
+    //@dev claimAuctionPPA claim PPA based on lower price per kWhs.
     function acceptCorporatePPA(uint _id) public {
         address _buyer = msg.sender;
         uint64 _totalKwh = 0;
@@ -173,6 +204,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
                 if(ppaBuyers[msg.sender] <= 0){
                     ppaBuyerRegistry.registerPPABuyer(_buyer);
                 }
+                iRegistry(registry).getCertificate(_id);
                 emit acceptedCorpPPA(corporatePPAList[i].producer, _buyer, corporatePPAList[i].id, corporatePPAList[i].kwhPrice);
                 if(corporatePPAList.length > 1){
                     corporatePPAList[i] = corporatePPAList[corporatePPAList.length-1];
@@ -236,7 +268,6 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         }
     }
 
-    //Claim an Auction type PPA with the lowest price
     function claimAuctionPPA() public{
         uint i = 0;
         uint comparePPA = listOfPPAs[i].kwhPrice;
@@ -275,7 +306,11 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         listOfPPAs.length--;
     }
 
-    //This function created in order to deliver the scope of energy trading based on PPAs
+    //@notice availableKwhs, buyPPAKwhs and energyTradingPPA
+    //@dev only producers can inform the network for available energy.
+    //@dev if there is available energy in network then you can buy kWhs if you have PPA, if not you have to claim one.
+    //@dev kWhs you can buy from buyPPAKwhs with your id and from energyTradingPPA you can buy specific amount of kWhs.
+    //@param _idOfMatchPPA, producers must also finalized the PPA to which they are referring.
     function availableKwhs(address _buyer, uint64 _energy, uint _idOfMatchPPA) public onlyRegisteredProducers{
         require(_energy >= kWh, "You have to put at least 1Kwh (in whs for example 1.5kwhs -> 1500 (wh)), your current input have to be 1.000.000mwh");
         address _producer = msg.sender;
@@ -293,7 +328,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         uint currentTime = block.timestamp;
         address aBuyer = msg.sender; 
         for(uint j = 0; j<Appas.length; j++){ //uint j = 0; j<Appas.length; j++
-            //search on Approved PPAs to match the id - producer with kwhs
+            //@dev search on Approved PPAs to match the id - producer with kwhs
             for(uint i = 0; i<listOfkwhs.length; i++){ //uint i = 0; i<listOfkwhs.length; i++
                 uint64 totalEnergyPurchased = 0;
                 //find the correct available kwhs based on id of ppa
@@ -580,7 +615,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         return listOfprchs.length;
     }
 
-    //get details by id of PPA contract
+    //@notice get details by id of each PPA contract.
     function getApprovedPPAByID(uint _id) public view returns(address, address, uint32, uint, uint, uint){
         uint index = approvedPPAs[_id];
         require(Appas.length > index, "Wrong index");
