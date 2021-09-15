@@ -10,7 +10,7 @@ contract producerRegistry {
     event producerRegistered(address indexed producer);
     event producerDeregistered(address indexed producer);
     
-    //@notice This contract register producer in order to have access on PPA' s creatable functions
+    //@title This contract register producer in order to have access on PPA' s creatable functions
     //@dev map address to bool "is a registered producer"
     mapping(address => bool) producers;
     
@@ -36,7 +36,7 @@ contract ppaBuyerRegistry {
     event buyerRegistered(address indexed ppaBuyer);
     event buyerDeregistered(address indexed ppaBuyer);
 
-    //@notice This contract register PPA buyers automatically each time someone purchase a PPA
+    //@title This contract register PPA buyers automatically each time someone purchase a PPA
     //@dev Each buyer must have aBuyerID > 0 
     mapping(address => uint32) ppaBuyers;
     address[] listOfPPABuyers;
@@ -92,18 +92,19 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
     event expiredPPA(address indexed producer, address indexed buyer, uint startDay, uint endDay, Status status);
     event availableEnergyNotification(address indexed producer, address indexed buyer, uint64 energy, uint id);
 
-    //@notice Structs
+    //@title Structs
     //@dev ppa for all pending PPA contracts
     //@dev When claimed a ppa then store to approvedPPA struct
     //@dev producerEnergy belongs to producer side from which store the available kWhs.
     //@dev purchasesPPA all kWhs purchases based on PPAs.
-    struct ppa {               //Struct with all PPA contracts
+    //@param startDay, endDay Must be timestamp (ex. uint64 endDay = 1833746400; // 2028-02-10 00:00:00)
+    struct ppa {
         address buyer;
         address producer;
-        uint32 kwhPrice;       //price per energy(kwh)
+        uint32 kwhPrice;
         uint startDay;
-        uint endDay;           //It must be timestamp (ex. uint64 endDay = 1833746400; // 2028-02-10 00:00:00)
-        uint id;               //id number of each ppa contract
+        uint endDay;
+        uint id;
         Status status;
     }
 
@@ -111,27 +112,26 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
     ppa[] listOfPPAs;
     ppa[] corporatePPAList;
 
-    //Struct in order to store all claimed ppas
-    struct approvedPPA{         //Struct only for approved PPAs
+    struct approvedPPA{
         address buyer;
         address producer;
-        uint32 kwhPrice;        //price per energy(kwh)
+        uint32 kwhPrice;
         uint startDay;
-        uint endDay;            //It must be timestamp (ex. uint endDay = 1833746400; // 2028-02-10 00:00:00)
-        uint id;                //id number of each ppa contract
-        uint64 totalKwh;        //total amount of purchased kwh
+        uint endDay;
+        uint id;
+        uint64 totalKwh;
         Status status;
     }
 
     mapping(uint => uint) approvedPPAs;
     approvedPPA[] Appas;
 
-    struct producerEnergy{      //Trial struct for available producer' s energy in order to sale 
+    struct producerEnergy{
         address producer;
-        address buyer;          //Address of owner of each PPA conract
+        address buyer;
         uint timestamp;
         uint64 energy;
-        uint idOfmatchContract; //id of ppa contract that refers to
+        uint idOfmatchContract;
     }
 
     mapping(address => uint) pEnergy;
@@ -147,7 +147,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
 
     purchasesPPA[] listOfprchs;
 
-    //@notice Interaction with Registry Smart Contract 
+    //@title Interaction with Registry Smart Contract 
     //@dev issuance address of deployed Registry contract.
     function setRegistryAddress(address _registry) public{
         registry = _registry;
