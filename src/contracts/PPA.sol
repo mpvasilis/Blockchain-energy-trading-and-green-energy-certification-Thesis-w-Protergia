@@ -93,7 +93,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         Status status;
     }
 
-    mapping(address => uint) ppas;
+    mapping(address => ppa[]) ppas;
     ppa[] listOfPPAs;
     ppa[] corporatePPAList;
 
@@ -244,10 +244,11 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         uint64 _totalkwh = 0;
         address buyerAddr = msg.sender;
         uint idx;
-        for(i; i < listOfPPAs.length; i++){
+        for(i = 0; i < listOfPPAs.length; i++){
             if(listOfPPAs[i].kwhPrice < comparePPA){
-                require(listOfPPAs[i].endDay > block.timestamp, "PPA has expire, you can not buy it");
-                require(listOfPPAs[i].producer != buyerAddr, "Wrong address buyer...Buyer cannot be the creator of a PPA contract");
+                if((listOfPPAs[i].producer == buyerAddr) && (listOfPPAs[i].endDay < block.timestamp)){
+                    break;
+                }
                 comparePPA = listOfPPAs[i].kwhPrice;
                 index = i;
             }
@@ -438,18 +439,20 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         return(_producerList1, _buyerList1, _purchaseList1, _idPPAlist1);
     }
 
-    function viewCorporatePPAlist(uint n, uint offset) public view returns(address[] memory, address[] memory, uint32[] memory, uint[] memory, uint[] memory, uint[] memory){
-        require(n>0, "n must be greater than 0");
-        if(offset+n > corporatePPAList.length) offset=0;
-        uint cnt=0;
-        for(uint j = 0; j < corporatePPAList.length; j++){
-            if((corporatePPAList[j].buyer == msg.sender) || (corporatePPAList[j].producer == msg.sender)){
-                cnt++;
+    function getCountOfCorpPPAByAddress() public view returns(uint){
+        address currentAddress = msg.sender;
+        uint count = 0;
+        for(uint i = 0; i<corporatePPAList.length; i++){
+            if((corporatePPAList[i].buyer == currentAddress) || (corporatePPAList[i].producer == currentAddress)){
+                count++;
             }
         }
-        if(n>cnt) n=cnt;
-        if(n<cnt) n=cnt;
-        
+        return count;
+    }
+
+    function viewCorporatePPAlist() public view returns(address[] memory, address[] memory, uint32[] memory, uint[] memory, uint[] memory, uint[] memory){
+        uint k = 0;
+        uint cnt = getCountOfCorpPPAByAddress();
         address[] memory _producerList = new address[](cnt);
         address[] memory _buyerList = new address[](cnt);
         uint32[] memory _priceList = new uint32[](cnt);
@@ -457,14 +460,15 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         uint[] memory _sDayList = new uint[](cnt);
         uint[] memory _eDayList = new uint[](cnt);
 
-        for(uint i = offset; i < n; i++){
+        for(uint i = 0; i < corporatePPAList.length; i++){
             if((corporatePPAList[i].buyer == msg.sender) || (corporatePPAList[i].producer == msg.sender)){
-                _producerList[i] = corporatePPAList[i].producer;
-                _buyerList[i] = corporatePPAList[i].buyer;
-                _priceList[i] = corporatePPAList[i].kwhPrice;
-                _idPPAlist[i] = corporatePPAList[i].id;
-                _sDayList[i] = corporatePPAList[i].startDay;
-                _eDayList[i] = corporatePPAList[i].endDay;
+                _producerList[k] = corporatePPAList[i].producer;
+                _buyerList[k] = corporatePPAList[i].buyer;
+                _priceList[k] = corporatePPAList[i].kwhPrice;
+                _idPPAlist[k] = corporatePPAList[i].id;
+                _sDayList[k] = corporatePPAList[i].startDay;
+                _eDayList[k] = corporatePPAList[i].endDay;
+                k++;
             }
         }
         return(_producerList, _buyerList, _priceList, _idPPAlist, _sDayList, _eDayList);
@@ -576,7 +580,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         return listOfprchs.length;
     }
 
-    //get details by id
+    //get details by id of PPA contract
     function getApprovedPPAByID(uint _id) public view returns(address, address, uint32, uint, uint, uint){
         uint index = approvedPPAs[_id];
         require(Appas.length > index, "Wrong index");
