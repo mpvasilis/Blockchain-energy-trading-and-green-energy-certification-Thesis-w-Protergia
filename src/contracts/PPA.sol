@@ -149,7 +149,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
 
     //@title Interaction with Registry Smart Contract 
     //@dev issuance address of deployed Registry contract.
-    function setRegistryAddress(address _registry) public{
+    function setRegistryAddress(address _registry) public {
         registry = _registry;
     } 
 
@@ -183,7 +183,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
     //@dev acceptCorporatePPA based on id and the address which contract refers to.
     //@dev claimPPA you can claim any PPA just from its ID.
     //@dev claimAuctionPPA claim PPA based on lower price per kWhs.
-    function acceptCorporatePPA(uint _id) public {
+    function acceptCorporatePPA(uint _id) public{
         address _buyer = msg.sender;
         uint64 _totalKwh = 0;
         uint idx = approvedPPAs[_id];
@@ -204,7 +204,6 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
                 if(ppaBuyers[msg.sender] <= 0){
                     ppaBuyerRegistry.registerPPABuyer(_buyer);
                 }
-                iRegistry(registry).getCertificate(_id);
                 emit acceptedCorpPPA(corporatePPAList[i].producer, _buyer, corporatePPAList[i].id, corporatePPAList[i].kwhPrice);
                 if(corporatePPAList.length > 1){
                     corporatePPAList[i] = corporatePPAList[corporatePPAList.length-1];
