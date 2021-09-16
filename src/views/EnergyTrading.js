@@ -89,24 +89,24 @@ const handleAccountsChanged = (accounts) => {
   }
 }
   
-  const handlePageClick = (e, currentPage) => {
+  const handlePageClick = (e, page) => {
 
     e.preventDefault();
-    setCurrentPage(currentPage);
-    getDataBids(currentPage * pageSize);
+    setCurrentPage(page);
+    getDataBids(page * pageSize);
   };
 
   const handlePreviousClick= e => {
     e.preventDefault();
     setCurrentPage(currentPage - 1);
-     getDataBids((currentPage - 1) * pageSize);
+     getDataBids(currentPage  * pageSize);
 
   };
 
   const handleNextClick= e => {
     e.preventDefault();
     setCurrentPage(currentPage + 1);
-     getDataBids((currentPage + 1) * pageSize);
+     getDataBids(currentPage  * pageSize);
 
   };
   
