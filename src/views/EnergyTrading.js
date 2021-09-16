@@ -1,5 +1,6 @@
 import React, {useEffect, useState, useRef} from "react";
 import TablePagination from '../components/pagination/TablePagination';
+// import TablePaginationG from '../components/pagination/TablePaginationG';
 import detectEthereumProvider from '@metamask/detect-provider';
 import PropTypes from 'prop-types';
 
@@ -20,8 +21,8 @@ import {
 import Web3 from 'web3';
 const web3 = new Web3(Web3.givenProvider || "wss://ropsten.infura.io/ws/v3/5f552c63b2834a588871339fd81f7943");
 
-var contractAddress = '0xe03AC856cEb6f46778F9Efea5B4f954da80702C0' ;
-var abi = [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"askEnergyNotifier","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"ownerOfBattery","type":"address"},{"indexed":false,"internalType":"uint256","name":"date","type":"uint256"},{"indexed":false,"internalType":"string","name":"id","type":"string"}],"name":"batteryAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"ownerOfBattery","type":"address"},{"indexed":false,"internalType":"uint256","name":"date","type":"uint256"},{"indexed":false,"internalType":"string","name":"id","type":"string"}],"name":"batteryUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"seller","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"offerEnergyNotifier","type":"event"},{"constant":false,"inputs":[{"internalType":"string","name":"uuID","type":"string"}],"name":"addNewBattery","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_energy","type":"uint256"}],"name":"askEnergy","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_energy","type":"uint256"},{"internalType":"uint256","name":"_eprice","type":"uint256"}],"name":"energyOffer","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getAsksByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"batteryID","type":"address"}],"name":"getBatteryByAddress","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"string","name":"","type":"string"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getBidsByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfAsks","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfBids","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfPurchases","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getPurchaseByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"batteryID","type":"address"},{"internalType":"string","name":"uuID","type":"string"}],"name":"updateBattery","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"n","type":"uint256"},{"internalType":"uint256","name":"offset","type":"uint256"}],"name":"viewAllAsks","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"n","type":"uint256"},{"internalType":"uint256","name":"offset","type":"uint256"}],"name":"viewAllBids","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"n","type":"uint256"},{"internalType":"uint256","name":"offset","type":"uint256"}],"name":"viewAllEnergyPurchases","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"}]
+var contractAddress = '0xd9a912efF467Eb65C52e57Fe97D57BAd45d7Ce2a' ;
+var abi = [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"askEnergyNotifier","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"ownerOfDevice","type":"address"},{"indexed":false,"internalType":"uint256","name":"date","type":"uint256"},{"indexed":false,"internalType":"string","name":"id","type":"string"}],"name":"deviceAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"ownerOfDevice","type":"address"},{"indexed":false,"internalType":"uint256","name":"date","type":"uint256"},{"indexed":false,"internalType":"string","name":"id","type":"string"}],"name":"deviceUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"seller","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"offerEnergyNotifier","type":"event"},{"constant":false,"inputs":[{"internalType":"string","name":"typeOfDevice","type":"string"}],"name":"addDevice","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_energy","type":"uint256"}],"name":"askEnergy","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_energy","type":"uint256"},{"internalType":"uint256","name":"_eprice","type":"uint256"}],"name":"energyOffer","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getAsksByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getBidsByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfAsks","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfBids","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfPurchases","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"deviceID","type":"address"}],"name":"getDeviceByAddress","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"string","name":"","type":"string"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getPurchaseByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"ownerOfDevice","type":"address"},{"internalType":"string","name":"typeOfDevice","type":"string"}],"name":"updateDevice","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"n","type":"uint256"},{"internalType":"uint256","name":"offset","type":"uint256"}],"name":"viewAllAsks","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"n","type":"uint256"},{"internalType":"uint256","name":"offset","type":"uint256"}],"name":"viewAllBids","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"n","type":"uint256"},{"internalType":"uint256","name":"offset","type":"uint256"}],"name":"viewAllEnergyPurchases","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"}] ;
 const energyTrading = new web3.eth.Contract(abi, contractAddress);
 
 function EnergyTrading() {
@@ -32,15 +33,15 @@ function EnergyTrading() {
   const [bids, setBids] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
   const pageSize = 10;
-  const pagesCountAsk = Math.ceil(totalAsks / pageSize);
-  const pagesCountBid = Math.ceil(totalBids / pageSize);
+  const [pagesCountAsk, setPagesCountAsk] = useState(0);
+  const [pagesCountBid, setPagesCountBid] = useState(0);
   const [energyKW, setEnergyKW] = useState('');
   const [priceBid, setPriceBid] = useState('');
   const account = useRef('');
   const[error, setError] = useState(false);
   const[isDisabled, setIsDisabled] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
-
+  
   
 const signInMetamask = async() => {
   const provider = await detectEthereumProvider();
@@ -88,40 +89,43 @@ const handleAccountsChanged = (accounts) => {
   }
 }
   
-  const handlePageClick = (e, index) => {
+  const handlePageClick = (e, currentPage) => {
+
     e.preventDefault();
-    setCurrentPage(index);
+    setCurrentPage(currentPage);
+    getDataBids(currentPage * pageSize);
   };
 
   const handlePreviousClick= e => {
     e.preventDefault();
-    const index = currentPage - 1;
-    setCurrentPage(index);
-    getDataAsks(currentPage * pageSize);
+    setCurrentPage(currentPage - 1);
+     getDataBids((currentPage - 1) * pageSize);
 
   };
 
   const handleNextClick= e => {
     e.preventDefault();
-    const index = currentPage + 1;
-    setCurrentPage(index);
-     getDataAsks(currentPage * pageSize);
+    setCurrentPage(currentPage + 1);
+     getDataBids((currentPage + 1) * pageSize);
 
   };
-
+  
   
 
   const getDataAsks = (offset)=>{
 
     energyTrading.methods.getCountOfAsks().call().then(function(askNum){
       console.log("Total asks:" , askNum);
-      setTotalAsks(askNum)
+      setTotalAsks(askNum);
+      setPagesCountAsk(Math.ceil(askNum / pageSize));
+
       if(askNum>0)
       energyTrading.methods.viewAllAsks(pageSize, offset).call()
           .then(function(result){
             console.log(result);
             var rows = [];
-            for (var i = 0; i <  pageSize-(askNum*offset); i++) {
+            for (var i = 0; i < pageSize; i++) {
+              if(i >= pageSize)  break;
               rows.push( <tr key={i}>
                 <td>{result[0][i].substr(0,6)}</td>
                 <td>{result[1][i]}</td>
@@ -136,15 +140,18 @@ const handleAccountsChanged = (accounts) => {
   }
 
   const getDataBids = (offset)=>{
-    energyTrading.methods.getCountOfBids().call().then(function(bidsnum){
-      console.log("Total bids:" , bidsnum);
-      setTotalBids(bidsnum)
-      if(bidsnum>0)
+    energyTrading.methods.getCountOfBids().call().then(function(bidNum){
+      console.log("Total bids:" , bidNum);
+      setTotalBids(bidNum);
+      setPagesCountBid(Math.ceil(bidNum / pageSize));
+
+      if(bidNum>0)
         energyTrading.methods.viewAllBids(pageSize, offset).call()
             .then(function(result){
               console.log(result);
               var rows = [];
-              for (var i = 0; i < bidsnum; i++) {
+              for (var i = 0; i < bidNum - offset  ; i++) {
+                if(i >= pageSize)  break;
                 rows.push( <tr key={i}>
                   <td>{result[0][i].substr(0,6)}</td>
                   <td>{result[1][i]}</td>
@@ -159,8 +166,8 @@ const handleAccountsChanged = (accounts) => {
 
   const addBidOrAsk = () => {
     
-    if (open == 'bid'){
-      if (energyKW == ""||priceBid == ""||energyKW < 1000000){
+    if (open === 'bid'){
+      if (energyKW === ""||priceBid === ""||energyKW < 1000000){
 
         setError(true); 
       }
@@ -173,7 +180,7 @@ const handleAccountsChanged = (accounts) => {
       setPriceBid("");
     }
     }else{
-      if (energyKW == ""||energyKW < 1000000){
+      if (energyKW === ""||energyKW < 1000000){
 
         setError(true);
         
@@ -189,6 +196,10 @@ const handleAccountsChanged = (accounts) => {
 
     getDataAsks(currentPage * pageSize);
     getDataBids(currentPage * pageSize);
+    
+    console.log("pagecountbids: ", totalBids);
+    console.log("pagecountask: ", totalAsks);
+   
     // signInMetamask();
     web3.eth.getAccounts().then(r=>{
       handleAccountsChanged(r);
@@ -196,7 +207,8 @@ const handleAccountsChanged = (accounts) => {
   
   }, []);
   
-
+  
+    
   return (
     <>
       <div className="content">
@@ -211,7 +223,7 @@ const handleAccountsChanged = (accounts) => {
                 {asks!==null ?
                   <Table className="tablesorter" responsive>                  
                       <thead className="text-primary">
-                  <tr>
+                   <tr>
                     <th>Owner</th>
                     <th>Date</th>
                     <th>Total KWhs</th>
@@ -222,13 +234,13 @@ const handleAccountsChanged = (accounts) => {
                   {asks}
                   </tbody>
                 </Table> : <></>}
-                <TablePagination
-                       pagesCountAsk={pagesCountAsk}
+                {/* <TablePagination
+                       pagesCount={pagesCountAsk}
                        currentPage={currentPage}
                        handlePageClick={handlePageClick}
                        handlePreviousClick={handlePreviousClick}
                        handleNextClick={handleNextClick}
-                   />
+                   /> */}
               </CardBody>
               <CardFooter>
 
@@ -256,7 +268,10 @@ const handleAccountsChanged = (accounts) => {
                           </tbody>
                         </Table> : <></>}
                         <TablePagination
-                             pagesCountBid={pagesCountBid}
+                             previousLabel={"previous"}
+                             nextLabel={"next"}
+                             breakLabel={"..."}
+                             pagesCount={pagesCountBid}
                              currentPage={currentPage}
                              handlePageClick={handlePageClick}
                              handlePreviousClick={handlePreviousClick}
@@ -342,8 +357,10 @@ const handleAccountsChanged = (accounts) => {
       </div>
     </>
   );
+
+ 
 }
 
 
 
-export default EnergyTrading;
+export default EnergyTrading; 
