@@ -464,11 +464,11 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         address[] memory _buyerList1 = new address[](n);
         uint64[] memory _purchaseList1 = new uint64[](n);
         uint[] memory _idPPAlist1 = new uint[](n);
-        for(uint i = offset; i < n; i++){
-            _producerList1[i] = listOfprchs[i].producer;
-            _buyerList1[i] = listOfprchs[i].buyer;
-            _purchaseList1[i] = listOfprchs[i].purchasedEnergy;
-            _idPPAlist1[i] = listOfprchs[i].idOfPPA;
+        for(uint i = offset; i < n+offset; i++){
+            _producerList1[i-offset] = listOfprchs[i].producer;
+            _buyerList1[i-offset] = listOfprchs[i].buyer;
+            _purchaseList1[i-offset] = listOfprchs[i].purchasedEnergy;
+            _idPPAlist1[i-offset] = listOfprchs[i].idOfPPA;
         }
         return(_producerList1, _buyerList1, _purchaseList1, _idPPAlist1);
     }
@@ -518,13 +518,13 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         uint[] memory sDayList = new uint[](n);
         uint[] memory eDayList = new uint[](n);
         uint[] memory statusList = new uint[](n);
-        for(uint i = offset; i < n; i++){
-            producerList[i] = listOfPPAs[i].producer;
-            priceList[i] = listOfPPAs[i].kwhPrice;
-            idPPAlist[i] = listOfPPAs[i].id;
-            sDayList[i] = listOfPPAs[i].startDay;
-            eDayList[i] = listOfPPAs[i].endDay;
-            statusList[i] = uint(listOfPPAs[i].status);
+        for(uint i = offset; i < n+offset; i++){
+            producerList[i-offset] = listOfPPAs[i].producer;
+            priceList[i-offset] = listOfPPAs[i].kwhPrice;
+            idPPAlist[i-offset] = listOfPPAs[i].id;
+            sDayList[i-offset] = listOfPPAs[i].startDay;
+            eDayList[i-offset] = listOfPPAs[i].endDay;
+            statusList[i-offset] = uint(listOfPPAs[i].status);
         }
         return(producerList, priceList, idPPAlist, sDayList, eDayList, statusList);
     }
@@ -537,11 +537,11 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         address[] memory buyerList_ = new address[](n);
         uint64[] memory energyList_ = new uint64[](n);
         uint[] memory idOfPPAlist_ = new uint[](n);
-        for(uint i = offset; i < n; i++){
-            producerList_[i] = listOfkwhs[i].producer;
-            buyerList_[i] = listOfkwhs[i].buyer;
-            energyList_[i] = listOfkwhs[i].energy;
-            idOfPPAlist_[i] = listOfkwhs[i].idOfmatchContract;
+        for(uint i = offset; i < n+offset; i++){
+            producerList_[i-offset] = listOfkwhs[i].producer;
+            buyerList_[i-offset] = listOfkwhs[i].buyer;
+            energyList_[i-offset] = listOfkwhs[i].energy;
+            idOfPPAlist_[i-offset] = listOfkwhs[i].idOfmatchContract;
         }
         return(producerList_, buyerList_, energyList_, idOfPPAlist_);
     }
@@ -556,13 +556,13 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         uint32[] memory prList = new uint32[](n);//price
         uint[] memory sDateList = new uint[](n);//startDay
         uint[] memory eDateList = new uint[](n);//endDay
-        for(uint i = offset; i < n; i++){
-            proList[i] = Appas[i].producer;
-            buyerList[i] = Appas[i].buyer;
-            idlist[i] = Appas[i].id;
-            prList[i] = Appas[i].kwhPrice;
-            sDateList[i] = Appas[i].startDay;
-            eDateList[i] = Appas[i].endDay;
+        for(uint i = offset; i < n+offset; i++){
+            proList[i-offset] = Appas[i].producer;
+            buyerList[i-offset] = Appas[i].buyer;
+            idlist[i-offset] = Appas[i].id;
+            prList[i-offset] = Appas[i].kwhPrice;
+            sDateList[i-offset] = Appas[i].startDay;
+            eDateList[i-offset] = Appas[i].endDay;
         }
         return(proList, buyerList, idlist, prList, sDateList, eDateList);
     }

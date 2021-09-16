@@ -305,11 +305,11 @@ contract EnergyTrading is deviceRegistry {
         uint[] memory _dates = new uint[](n);
         uint[] memory _energyList = new uint[](n);
         uint[] memory _remainingEnList = new uint[](n);
-        for(uint i = offset; i < n; i++){
-            _consumers[i] = listOfAsks[i].consumerID;
-            _dates[i] = listOfAsks[i].timestamp;
-            _energyList[i] = listOfAsks[i].energy;
-            _remainingEnList[i] = listOfAsks[i].remainingEnergy;
+        for(uint i = offset; i < n+offset; i++){
+            _consumers[i-offset] = listOfAsks[i].consumerID;
+            _dates[i-offset] = listOfAsks[i].timestamp;
+            _energyList[i-offset] = listOfAsks[i].energy;
+            _remainingEnList[i-offset] = listOfAsks[i].remainingEnergy;
         }
         return(_consumers, _dates, _energyList, _remainingEnList);
     }
@@ -323,12 +323,12 @@ contract EnergyTrading is deviceRegistry {
         uint[] memory _prchsEnergy = new uint[](n);
         uint[] memory _prices = new uint[](n);
         uint[] memory _time = new uint[](n);
-        for(uint i = offset; i < n; i++){
-            _prosumers[i] = listOfBuyedEnergy[i].prosumerID;
-            _consumersList[i] = listOfBuyedEnergy[i].consumerID;
-            _prchsEnergy[i] = listOfBuyedEnergy[i].energy;
-            _prices[i] = listOfBuyedEnergy[i].price;
-            _time[i] = listOfBuyedEnergy[i].timestamp;
+        for(uint i = offset; i < n+offset; i++){
+            _prosumers[i-offset] = listOfBuyedEnergy[i].prosumerID;
+            _consumersList[i-offset] = listOfBuyedEnergy[i].consumerID;
+            _prchsEnergy[i-offset] = listOfBuyedEnergy[i].energy;
+            _prices[i-offset] = listOfBuyedEnergy[i].price;
+            _time[i-offset] = listOfBuyedEnergy[i].timestamp;
         }
         return(_prosumers, _consumersList, _prchsEnergy, _prices, _time);
     }
@@ -341,11 +341,11 @@ contract EnergyTrading is deviceRegistry {
         uint[] memory dates = new uint[](n);
         uint[] memory energyList = new uint[](n);
         uint[] memory prices = new uint[](n);
-        for(uint i = offset; i < n; i++){
-            prosumers[i] = listOfBids[i].prosumerID;
-            dates[i] = listOfBids[i].timestamp;
-            energyList[i] = listOfBids[i].energy;
-            prices[i] = listOfBids[i].eprice;
+        for(uint i = offset; i < n+offset; i++){
+            prosumers[i-offset] = listOfBids[i].prosumerID;
+            dates[i-offset] = listOfBids[i].timestamp;
+            energyList[i-offset] = listOfBids[i].energy;
+            prices[i-offset] = listOfBids[i].eprice;
         }
         return(prosumers, dates, energyList, prices);
     }
