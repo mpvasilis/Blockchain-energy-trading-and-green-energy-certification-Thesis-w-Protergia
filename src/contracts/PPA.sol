@@ -458,7 +458,6 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
 
     function viewAllpurchases(uint n, uint offset) public view returns (address[] memory, address[] memory, uint64[] memory, uint[] memory){
         require(n>0, "n must be greater than 0");
-        if(offset+n > listOfprchs.length) offset=0;
         if(n>listOfprchs.length) n=listOfprchs.length;
         address[] memory _producerList1 = new address[](n);
         address[] memory _buyerList1 = new address[](n);
@@ -510,7 +509,6 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
 
     function viewAllPPAs (uint n, uint offset) public view returns (address[] memory, uint32[] memory, uint[] memory, uint[] memory, uint[] memory, uint[] memory){
         require(n>0, "n must be greater than 0");
-        if(offset+n > listOfPPAs.length) offset=0;
         if(n>listOfPPAs.length) n=listOfPPAs.length;
         address[] memory producerList = new address[](n);
         uint32[] memory priceList = new uint32[](n);
@@ -531,7 +529,6 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
 
     function viewAvailableKwhs(uint n, uint offset) public view returns(address[] memory, address[] memory, uint64[] memory, uint[] memory){
         require(n>0, "n must be greater than 0");
-        if(offset+n > listOfkwhs.length) offset=0;
         if(n>listOfkwhs.length) n=listOfkwhs.length;
         address[] memory producerList_ = new address[](n);
         address[] memory buyerList_ = new address[](n);
@@ -548,7 +545,6 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
 
     function viewApprovalPPAs(uint n, uint offset) public view returns(address[] memory, address[] memory, uint[] memory, uint32[] memory, uint[] memory, uint[] memory){
         require(n>0, "n must be greater than 0");
-        if(offset+n > Appas.length) offset=0;
         if(n>Appas.length) n=Appas.length;
         address[] memory proList = new address[](n);//producer
         address[] memory buyerList = new address[](n);//buyer

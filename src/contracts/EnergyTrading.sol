@@ -299,7 +299,6 @@ contract EnergyTrading is deviceRegistry {
     //@param n to get a specific number of details. 
     function viewAllAsks (uint n, uint offset) public view returns (address[] memory, uint[] memory, uint[] memory, uint[] memory){
         require(n>0, "n must be greater than 0");
-        if(offset+n > listOfAsks.length) offset = 0;
         if(n>listOfAsks.length) n=listOfAsks.length;
         address[] memory _consumers = new address[](n);
         uint[] memory _dates = new uint[](n);
@@ -316,7 +315,6 @@ contract EnergyTrading is deviceRegistry {
 
     function viewAllEnergyPurchases (uint n, uint offset) public view returns (address[] memory, address[] memory, uint[] memory, uint[] memory, uint[] memory){
         require(n>0, "n must be greater than 0");
-        if(offset+n > listOfBuyedEnergy.length) offset = 0;
         if(n>listOfBuyedEnergy.length) n=listOfBuyedEnergy.length;
         address[] memory _prosumers = new address[](n);
         address[] memory _consumersList= new address[](n);
@@ -335,7 +333,6 @@ contract EnergyTrading is deviceRegistry {
 
     function viewAllBids (uint n, uint offset) public view returns (address[] memory, uint[] memory, uint[] memory, uint[] memory){
         require(n>0, "n must be greater than 0");
-        if(offset+n > listOfBids.length) offset=0;
         if(n>listOfBids.length) n=listOfBids.length;
         address[] memory prosumers = new address[](n);
         uint[] memory dates = new uint[](n);
