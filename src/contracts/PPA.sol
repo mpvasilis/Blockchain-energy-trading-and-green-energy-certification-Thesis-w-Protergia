@@ -160,7 +160,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
     //@param _kwhPrice just price per kWhs based on market and producer' s choice.
     //@param _startDay the day the PPA enters into force. 
     //@param _endDay the day the PPA expires.
-    function corporatePPA(address _buyer, uint32 _agreedKwhPrice,uint _startDay, uint _endDay, uint _id) public onlyRegisteredProducers {
+    function corporatePPA(address _buyer, uint32 _agreedKwhPrice,uint _startDay, uint _endDay, uint _id) public {
         address _producer = msg.sender;
         bytes memory data = new bytes(_id);
         require(_startDay >= block.timestamp, "ERROR...wrong date");
@@ -214,7 +214,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
         }
     }
 
-    function createPPA(uint32 _kwhPrice, uint _startDay, uint _endDay) public onlyRegisteredProducers { //onlyRegisteredProducers
+    function createPPA(uint32 _kwhPrice, uint _startDay, uint _endDay) public { //onlyRegisteredProducers
         address _producer = msg.sender;
         contractID.increment();
         uint currentID = contractID.current();
@@ -310,7 +310,7 @@ contract PPA is producerRegistry, ppaBuyerRegistry {
     //@dev if there is available energy in network then you can buy kWhs if you have PPA, if not you have to claim one.
     //@dev kWhs you can buy from buyPPAKwhs with your id and from energyTradingPPA you can buy specific amount of kWhs.
     //@param _idOfMatchPPA, producers must also finalized the PPA to which they are referring.
-    function availableKwhs(address _buyer, uint64 _energy, uint _idOfMatchPPA) public onlyRegisteredProducers{
+    function availableKwhs(address _buyer, uint64 _energy, uint _idOfMatchPPA) public {
         require(_energy >= kWh, "You have to put at least 1Kwh (in whs for example 1.5kwhs -> 1500 (wh)), your current input have to be 1.000.000mwh");
         address _producer = msg.sender;
         listOfkwhs.push(producerEnergy({
