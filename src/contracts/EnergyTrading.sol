@@ -297,64 +297,46 @@ contract EnergyTrading is deviceRegistry {
     //@dev each function go through the lists,  split the data and store the values to the corresponding lists.
     //@param offset to difene the point from which we want to receive data from a list. 
     //@param n to get a specific number of details. 
-    function viewAllAsks (uint n, uint offset) public view returns (address[] memory, uint[] memory, uint[] memory, uint[] memory){
-        require(n>0, "n must be greater than 0");
-        if(n>listOfAsks.length) n=listOfAsks.length;
-        uint x = 0;
-        x = listOfAsks.length - offset;
-        address[] memory _consumers = new address[](x);
-        uint[] memory _dates = new uint[](x);
-        uint[] memory _energyList = new uint[](x);
-        uint[] memory _remainingEnList = new uint[](x);
-        for(uint i = offset; i < n+offset; i++){
-            if(i>listOfAsks.length) break;
-            x = i-offset;
-            _consumers[x] = listOfAsks[i].consumerID;
-            _dates[x] = listOfAsks[i].timestamp;
-            _energyList[x] = listOfAsks[i].energy;
-            _remainingEnList[x] = listOfAsks[i].remainingEnergy;
+    function viewAllAsks () public view returns (address[] memory, uint[] memory, uint[] memory, uint[] memory){
+        address[] memory _consumers = new address[](listOfAsks.length);
+        uint[] memory _dates = new uint[](listOfAsks.length);
+        uint[] memory _energyList = new uint[](listOfAsks.length);
+        uint[] memory _remainingEnList = new uint[](listOfAsks.length);
+        for(uint i = 0; i < listOfAsks.length; i++){
+            _consumers[i] = listOfAsks[i].consumerID;
+            _dates[i] = listOfAsks[i].timestamp;
+            _energyList[i] = listOfAsks[i].energy;
+            _remainingEnList[i] = listOfAsks[i].remainingEnergy;
         }
         return(_consumers, _dates, _energyList, _remainingEnList);
     }
 
-    function viewAllEnergyPurchases (uint n, uint offset) public view returns (address[] memory, address[] memory, uint[] memory, uint[] memory, uint[] memory){
-        require(n>0, "n must be greater than 0");
-        if(n>listOfBuyedEnergy.length) n=listOfBuyedEnergy.length;
-        uint x = 0;
-        x = listOfBuyedEnergy.length - offset;
-        address[] memory _prosumers = new address[](x);
-        address[] memory _consumersList= new address[](x);
-        uint[] memory _prchsEnergy = new uint[](x);
-        uint[] memory _prices = new uint[](x);
-        uint[] memory _time = new uint[](x);
-        for(uint i = offset; i < n+offset; i++){
-            if(i>listOfBuyedEnergy.length) break;
-            x = i-offset;
-            _prosumers[x] = listOfBuyedEnergy[i].prosumerID;
-            _consumersList[x] = listOfBuyedEnergy[i].consumerID;
-            _prchsEnergy[x] = listOfBuyedEnergy[i].energy;
-            _prices[x] = listOfBuyedEnergy[i].price;
-            _time[x] = listOfBuyedEnergy[i].timestamp;
+    function viewAllEnergyPurchases () public view returns (address[] memory, address[] memory, uint[] memory, uint[] memory, uint[] memory){
+        address[] memory _prosumers = new address[](listOfBuyedEnergy.length);
+        address[] memory _consumersList= new address[](listOfBuyedEnergy.length);
+        uint[] memory _prchsEnergy = new uint[](listOfBuyedEnergy.length);
+        uint[] memory _prices = new uint[](listOfBuyedEnergy.length);
+        uint[] memory _time = new uint[](listOfBuyedEnergy.length);
+        for(uint i = 0; i < listOfBuyedEnergy.length; i++){
+            _prosumers[i] = listOfBuyedEnergy[i].prosumerID;
+            _consumersList[i] = listOfBuyedEnergy[i].consumerID;
+            _prchsEnergy[i] = listOfBuyedEnergy[i].energy;
+            _prices[i] = listOfBuyedEnergy[i].price;
+            _time[i] = listOfBuyedEnergy[i].timestamp;
         }
         return(_prosumers, _consumersList, _prchsEnergy, _prices, _time);
     }
 
-    function viewAllBids (uint n, uint offset) public view returns (address[] memory, uint[] memory, uint[] memory, uint[] memory){
-        require(n>0, "n must be greater than 0");
-        if(n>listOfBids.length) n=listOfBids.length;
-        uint x = 0;
-        x = listOfBids.length - offset;
-        address[] memory prosumers = new address[](x);
-        uint[] memory dates = new uint[](x);
-        uint[] memory energyList = new uint[](x);
-        uint[] memory prices = new uint[](x);
-        for(uint i = offset; i < n+offset; i++){
-            if(i>=listOfBids.length) break;
-            x = i-offset;
-            prosumers[x] = listOfBids[i].prosumerID;
-            dates[x] = listOfBids[i].timestamp;
-            energyList[x] = listOfBids[i].energy;
-            prices[x] = listOfBids[i].eprice;
+    function viewAllBids () public view returns (address[] memory, uint[] memory, uint[] memory, uint[] memory){
+        address[] memory prosumers = new address[](listOfBids.length);
+        uint[] memory dates = new uint[](listOfBids.length);
+        uint[] memory energyList = new uint[](listOfBids.length);
+        uint[] memory prices = new uint[](listOfBids.length);
+        for(uint i = 0; i < listOfBids.length; i++){
+            prosumers[i] = listOfBids[i].prosumerID;
+            dates[i] = listOfBids[i].timestamp;
+            energyList[i] = listOfBids[i].energy;
+            prices[i] = listOfBids[i].eprice;
         }
         return(prosumers, dates, energyList, prices);
     }
