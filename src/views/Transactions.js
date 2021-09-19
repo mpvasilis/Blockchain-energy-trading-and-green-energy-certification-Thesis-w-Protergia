@@ -29,46 +29,54 @@ const energyTrading = new web3.eth.Contract(abi, contractAddress);
 function Transactions() {
   const [totalAsks, setTotalAsks] = useState(0);
   const [asks, setAsks] = useState(null);
+  const [data, setData] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [pagesCount, setPagesCount] = useState(0);
+  const [purchases, setPurchases] = useState(null);
+  const [totalPurchases, setTotalPurchases] = useState(0);
   const pageSize = 10;
   
  
   
-  const handlePageClick = (e, currentPage) => {
+  const handlePageClick = (e, page) => {
+    console.log(page);
     e.preventDefault();
-    setCurrentPage(currentPage);
-    getData(currentPage * pageSize);
+    setCurrentPage(page);
+    console.log(page);
+    getData(page  * pageSize);
+    console.log(page);
   };
 
   const handlePreviousClick= e => {
+    const _currentPage = currentPage - 1 ;
     e.preventDefault();
-    setCurrentPage(currentPage - 1);
-     getData((currentPage - 1) * pageSize);
-
+    setCurrentPage(_currentPage);
+     getData(_currentPage   * pageSize);
+     console.log(_currentPage);
   };
 
   const handleNextClick= e => {
+    const _currentPage = currentPage + 1 ;
     e.preventDefault();
-    setCurrentPage(currentPage + 1);
-     getData((currentPage + 1) * pageSize);
-
-    
+    setCurrentPage(_currentPage);
+     getData(_currentPage  * pageSize);
+     console.log(_currentPage);
   };
   
   const getData = (offset)=>{
 
-    
+    if(data===null){
     energyTrading.methods.getCountOfPurchases().call().then(function(total){
-      setTotalAsks(total)
+      setTotalPurchases(total)
       setPagesCount(Math.ceil(total / pageSize));
-      console.log(total);
+      
       if(total>0)
       energyTrading.methods.viewAllEnergyPurchases().call()
           .then(function(result){
-            console.log(result);
+            setData(result);
+            console.log(pageSize + offset);
             var rows = [];
-            for (var i = 0; i < total - offset; i++) {
+            for (var i = offset; i < pageSize + offset  ; i++) {
               if(i >= pageSize)  break;
               if(i >= total)  break;
 
@@ -80,10 +88,24 @@ function Transactions() {
                 <td>{result[4][i]}</td>
               </tr>);
             }
-            setAsks(rows)
+            setPurchases(rows)
           });
     });
-
+  }else{
+    let rows = [];
+    for (let i = offset; i < pageSize + offset  ; i++) {
+      if(i < totalPurchases )  { 
+      rows.push( <tr key={i}>
+        <td>{data[0][i].substr(0,6)}</td>
+        <td>{data[1][i]}</td>
+        <td>{data[2][i]}</td>
+        <td>{data[3][i]}</td>
+      </tr>);
+      }
+    }
+    setPurchases(rows)
+    console.log(rows);
+  }
 
   }
 
@@ -100,14 +122,14 @@ function Transactions() {
       
         <Row>
           <Col md="12">
-          {totalAsks>0 ?
+          {totalPurchases>0 ?
                 <Card>
               <CardHeader>
                 <h5 className="title">Purchased Energy</h5>
               </CardHeader>
               <CardBody>
               
-                {asks!==null ?
+                {purchases!==null ?
                     <Table className="tablesorter" responsive>
                       
                       
@@ -122,7 +144,7 @@ function Transactions() {
                   </tr>
                   </thead>
                   <tbody> 
-                  {asks}
+                  {purchases}
 
                   </tbody>
                 </Table> : <></>}

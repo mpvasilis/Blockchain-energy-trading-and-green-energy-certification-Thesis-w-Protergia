@@ -30,7 +30,7 @@ function EnergyTrading() {
   const [asks, setAsks] = useState(null);
   const [totalBids, setTotalBids] = useState(0);
   const [dataBids, setDataBids] = useState(null);
-
+  const [dataAsks, setDataAsks] = useState(null);
   const [bids, setBids] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
   const pageSize = 10;
@@ -121,6 +121,7 @@ const handleAccountsChanged = (accounts) => {
 
   const getDataAsks = (offset)=>{
 
+    if(dataAsks===null){
     energyTrading.methods.getCountOfAsks().call().then(function(askNum){
       console.log("Total asks:" , askNum);
       setTotalAsks(askNum);
@@ -129,10 +130,11 @@ const handleAccountsChanged = (accounts) => {
       if(askNum>0)
       energyTrading.methods.viewAllAsks().call()
           .then(function(result){
-            console.log(result);
+            setDataAsks(result);
+            console.log(pageSize + offset);
             var rows = [];
-            for (var i = 0; i < askNum - offset ; i++) {
-              if(i >= pageSize)  break;
+            for (var i = offset; i < pageSize + offset  ; i++) {
+              if(i >= askNum)  break;
               rows.push( <tr key={i}>
                 <td>{result[0][i].substr(0,6)}</td>
                 <td>{result[1][i]}</td>
@@ -143,7 +145,22 @@ const handleAccountsChanged = (accounts) => {
             setAsks(rows)
           });
     });
-
+  }
+  else{
+    let rows = [];
+    for (let i = offset; i < pageSize + offset  ; i++) {
+      if(i < totalAsks )  { 
+      rows.push( <tr key={i}>
+        <td>{dataAsks[0][i].substr(0,6)}</td>
+        <td>{dataAsks[1][i]}</td>
+        <td>{dataAsks[2][i]}</td>
+        <td>{dataAsks[3][i]}</td>
+      </tr>);
+      }
+    }
+    setAsks(rows)
+    console.log(rows);
+  }
   }
 
   const getDataBids = (offset)=>{
@@ -172,6 +189,7 @@ const handleAccountsChanged = (accounts) => {
               setBids(rows)
             });
     });
+  
   }else{
     let rows = [];
     for (let i = offset; i < pageSize + offset  ; i++) {
@@ -186,10 +204,7 @@ const handleAccountsChanged = (accounts) => {
     }
     setBids(rows)
     console.log(rows);
-
   }
-
-
   }
 
   const addBidOrAsk = () => {
