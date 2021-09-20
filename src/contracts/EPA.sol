@@ -49,6 +49,7 @@ contract EPA {
 
     //@title Energy Purchase Agreements (EPAs)
     //@dev after each energy transaction in energy trading smart contract will issued an EPA contract.
+    //@notice See https://www.bchydro.com/work-with-us/selling-clean-energy/closed-offerings/open-call-for-power/epas.html
     function EPAs(address _prosumer, uint _kwhPrice, uint _energy) public {
         contractID.increment();
         uint currentID = contractID.current();
@@ -103,9 +104,10 @@ contract EPA {
         return(listOfclaimedEPAs[index].prosumer, listOfclaimedEPAs[index].consumer, listOfclaimedEPAs[index].totalEnergy, listOfclaimedEPAs[index].totalPrice, listOfclaimedEPAs[index].id);
     }
 
-    function viewEPAs(uint n, uint offset) public view returns(address[] memory, address[] memory, uint[] memory, uint[] memory, uint[] memory){
+    function viewAllEPAs(uint n, uint offset) public view returns(address[] memory, address[] memory, uint[] memory, uint[] memory, uint[] memory){
         require(n>0, "n must be greater than 0");
         if(n>listOfEPAs.length) n=listOfEPAs.length;
+        if(offset > listOfEPAs.length) offset = 0;
         uint x = 0;
         x = listOfEPAs.length - offset;
         address[] memory _prosumers = new address[](x);
@@ -128,6 +130,7 @@ contract EPA {
     function viewClaimedEPAs(uint n, uint offset) public view returns(address[] memory, address[] memory, uint[] memory, uint[] memory, uint[] memory){
         require(n>0, "n must be greater than 0");
         if(n>listOfclaimedEPAs.length) n=listOfclaimedEPAs.length;
+        if(offset > listOfEPAs.length) offset = 0;
         uint x = 0;
         x = listOfclaimedEPAs.length - offset;
         address[] memory prosumers = new address[](x);

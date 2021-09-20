@@ -49,7 +49,7 @@ contract deviceRegistry {
     }
 }
 
-contract EnergyTrading is deviceRegistry, PPA {
+contract EnergyTrading is deviceRegistry, EPA {
 
     event offerEnergyNotifier(address indexed seller, uint indexed day, uint indexed price, uint energy);
     event askEnergyNotifier(address indexed buyer, uint indexed day, uint energy);
@@ -108,7 +108,7 @@ contract EnergyTrading is deviceRegistry, PPA {
     function energyOffer(uint _energy, uint _eprice) public onlyRegisteredDevice {
         require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh(in whs), for instance 5.6kwhs = 5600whs");
         require(_eprice >= cent, "Price in 'cent', for example 1.5dollars/kwh = 150cents/kwh");
-        currentAddress = msg.sender;
+        address currentAddress = msg.sender;
         listOfBids.push(bid({
             prosumerID: currentAddress,
             numberOfBid: nextNumberOfBid,
@@ -211,7 +211,7 @@ contract EnergyTrading is deviceRegistry, PPA {
                     price: _price,
                     timestamp: _ask.timestamp
                 }));
-                claimEPA(currentAddr, _prosumerID, energyPurchased, _price);
+                claimEPA(_prosumerID, currentAddr, energyPurchased, _price);
             }
 
             //remove ask request from list 
@@ -228,11 +228,11 @@ contract EnergyTrading is deviceRegistry, PPA {
     //@notice Energy Trading (bid case)
     function bidEnergyTrading(bid memory _bid) private onlyRegisteredDevice {
         uint _remainingBidEnergy = _bid.energy;
+        address currentAddr = msg.sender;
 
         for(uint i = 0; i<listOfAsks.length; i++){
             
             address _consumerID;
-            address currentAddr = msg.sender;
             bool isEnergyPurchased = false;
             uint energyPurchased = 0;
             uint _price = 0;
@@ -284,7 +284,7 @@ contract EnergyTrading is deviceRegistry, PPA {
                     price: _price,
                     timestamp: _bid.timestamp
                 }));
-                claimEPA(currentAddr, _prosumerID, energyPurchased, _price);
+                claimEPA(currentAddr, _consumerID, energyPurchased, _price);
             }
 
             if(_remainingBidEnergy == 0){
