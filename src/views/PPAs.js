@@ -168,7 +168,7 @@ const handleAccountsChanged = (accounts) => {
             console.log(pageSize + offset);
             var rows = [];
             for (var i = offset; i < pageSize + offset ; i++) {
-              if(i >= pageSize)  break;
+              // if(i >= pageSize)  break;
               if(i >= ppaNum)  break;
               rows.push( <tr key={i}>
                 <td>{result[2][i]}</td>
@@ -188,14 +188,14 @@ const handleAccountsChanged = (accounts) => {
     for (let i = offset; i < pageSize + offset  ; i++) {
       if(i < totalPPAs )  { 
       rows.push( <tr key={i}>
+        <td>{dataPPAs[2][i]}</td>
         <td>{dataPPAs[0][i].substr(0,6)}</td>
         <td>{dataPPAs[1][i]}</td>
-        <td>{dataPPAs[2][i]}</td>
         <td>{dataPPAs[3][i]}</td>
         <td>{dataPPAs[4][i]}</td>
         <td>{dataPPAs[5][i]}</td>
       </tr>);
-      // setDataPPAs(null);
+      
       }
     }
     setPPAs(rows)
@@ -231,6 +231,7 @@ const handleAccountsChanged = (accounts) => {
                 <td><Button variant="secondary" size="sm" data-id={result[3][i]} onClick={event => acceptCorporatePPA(event.target.dataset.id)}>Claim</Button></td>
               </tr>);
             }
+            setCPPAs(rows)
           });
       });
   }
