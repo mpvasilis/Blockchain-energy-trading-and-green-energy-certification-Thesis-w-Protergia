@@ -1,5 +1,7 @@
 pragma solidity >=0.4.21 <0.9.0;
 
+import "src/contracts/EPA.sol";
+
 //Contract that allows device address to be registered
 contract deviceRegistry {
 
@@ -47,7 +49,7 @@ contract deviceRegistry {
     }
 }
 
-contract EnergyTrading is deviceRegistry {
+contract EnergyTrading is deviceRegistry, PPA {
 
     event offerEnergyNotifier(address indexed seller, uint indexed day, uint indexed price, uint energy);
     event askEnergyNotifier(address indexed buyer, uint indexed day, uint energy);
@@ -66,13 +68,13 @@ contract EnergyTrading is deviceRegistry {
     uint constant TWh = 1000 * GWh;
 
     //@notice Structs
-    //@dev 
+    //@dev A device can create more than one energy offer
     struct bid {
-        address prosumerID;    
-        uint numberOfBid;    //A battery can create more than one energy offer
-        uint energy;         //energy to trade
-        uint eprice;         //Energy market price per kWh
-        uint timestamp;      //timestamp for when the bid was created
+        address prosumerID;
+        uint numberOfBid;
+        uint energy;
+        uint eprice;
+        uint timestamp;
     }
     
     struct ask {
@@ -82,7 +84,6 @@ contract EnergyTrading is deviceRegistry {
         uint remainingEnergy;
     }
 
-    //struct to store all energy purchases
     struct buyedEnergy {
         address consumerID;
         address prosumerID;
@@ -107,9 +108,9 @@ contract EnergyTrading is deviceRegistry {
     function energyOffer(uint _energy, uint _eprice) public onlyRegisteredDevice {
         require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh(in whs), for instance 5.6kwhs = 5600whs");
         require(_eprice >= cent, "Price in 'cent', for example 1.5dollars/kwh = 150cents/kwh");
-
+        currentAddress = msg.sender;
         listOfBids.push(bid({
-            prosumerID: msg.sender,
+            prosumerID: currentAddress,
             numberOfBid: nextNumberOfBid,
             energy: _energy,
             eprice: _eprice,
@@ -118,7 +119,7 @@ contract EnergyTrading is deviceRegistry {
         nextNumberOfBid++;
 
         emit offerEnergyNotifier(msg.sender, block.timestamp, _eprice, _energy);
-
+        EPAs(currentAddress, _eprice, _energy);
         bidEnergyTrading(listOfBids[listOfBids.length-1]);
     }
 
@@ -155,6 +156,7 @@ contract EnergyTrading is deviceRegistry {
         for(uint i = 0; i<listOfBids.length; i++){
 
             address _prosumerID;
+            address currentAddr = msg.sender;
             bool isEnergyPurchased = false;
             uint energyPurchased = 0;
             uint _price = 0;
@@ -203,12 +205,13 @@ contract EnergyTrading is deviceRegistry {
             //store purchase 
             if(isEnergyPurchased){
                 listOfBuyedEnergy.push(buyedEnergy({
-                    consumerID: msg.sender,
+                    consumerID: currentAddr,
                     prosumerID: _prosumerID,
                     energy: energyPurchased,
                     price: _price,
                     timestamp: _ask.timestamp
                 }));
+                claimEPA(currentAddr, _prosumerID, energyPurchased, _price);
             }
 
             //remove ask request from list 
@@ -229,6 +232,7 @@ contract EnergyTrading is deviceRegistry {
         for(uint i = 0; i<listOfAsks.length; i++){
             
             address _consumerID;
+            address currentAddr = msg.sender;
             bool isEnergyPurchased = false;
             uint energyPurchased = 0;
             uint _price = 0;
@@ -280,6 +284,7 @@ contract EnergyTrading is deviceRegistry {
                     price: _price,
                     timestamp: _bid.timestamp
                 }));
+                claimEPA(currentAddr, _prosumerID, energyPurchased, _price);
             }
 
             if(_remainingBidEnergy == 0){
