@@ -43,7 +43,7 @@ function EnergyTrading() {
   const account = useRef('');
   const[error, setError] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
-
+  
   
 const signInMetamask = async() => {
   const provider = await detectEthereumProvider();
@@ -120,9 +120,9 @@ const handleAccountsChanged = (accounts) => {
   
   
 
-  const getDataAsks = (offset)=>{
+  const getDataAsks = (offset, update = false)=>{
 
-    if(dataAsks===null){
+    if(dataAsks===null || update){
     energyTrading.methods.getCountOfAsks().call().then(function(askNum){
       console.log("Total asks:" , askNum);
       setTotalAsks(askNum);
@@ -157,6 +157,7 @@ const handleAccountsChanged = (accounts) => {
         <td>{dataAsks[2][i]}</td>
         <td>{dataAsks[3][i]}</td>
       </tr>);
+      setDataAsks(null);
       }
     }
     setAsks(rows)
@@ -164,9 +165,9 @@ const handleAccountsChanged = (accounts) => {
   }
   }
 
-  const getDataBids = (offset)=>{
+  const getDataBids = (offset, update = false)=>{
 
-    if(dataBids===null){
+    if(dataBids===null || update){
     energyTrading.methods.getCountOfBids().call().then(function(bidNum){
       console.log("Total bids:" , bidNum);
       setTotalBids(bidNum);
@@ -185,12 +186,12 @@ const handleAccountsChanged = (accounts) => {
                   <td>{result[1][i]}</td>
                   <td>{result[2][i]}</td>
                   <td>{result[3][i]}</td>
-                </tr>);
+                </tr>); 
               }
               setBids(rows)
             });
     });
-  
+
   }else{
     let rows = [];
     for (let i = offset; i < pageSize + offset  ; i++) {
@@ -201,6 +202,7 @@ const handleAccountsChanged = (accounts) => {
         <td>{dataBids[2][i]}</td>
         <td>{dataBids[3][i]}</td>
       </tr>);
+    
       }
     }
     setBids(rows)
@@ -209,24 +211,23 @@ const handleAccountsChanged = (accounts) => {
   }
 
   const addBidOrAsk = () => {
-    
-
+   
     if (open === 'bid'){
-      if (energyKW === ""||priceBid === ""||energyKW < 1000000){
+      if (energyKW === ""||priceBid === ""||energyKW < 1){
 
-        setError(true); 
+        setError(true);
+
       }
     else{
     
-      energyTrading.methods.energyOffer(energyKW, priceBid).send({from: account.current}).on('transactionHash', (th) => {
+      energyTrading.methods.energyOffer(energyKW * 1000000, priceBid * 100).send({from: account.current}).on('transactionHash', (th) => {
        
         toast("Bid has been succesfully submited!")
-      }).then(function(error,e) {
-        if  (!error) {
+      }).then(function(e) {
+
+          setDataBids(null);
+          getDataBids(currentPage   * pageSize, true);
           console.log(e)
-      } else {
-        toast("Bid has not been submited!")
-      }
       });
       setEnergyKW("");
       setPriceBid("");
@@ -237,16 +238,14 @@ const handleAccountsChanged = (accounts) => {
         setError(true);
         
       }
-      energyTrading.methods.askEnergy(energyKW).send({from: account.current}).on('transactionHash', (th) => {
+      energyTrading.methods.askEnergy(energyKW * 1000000).send({from: account.current}).on('transactionHash', (th) => {
        
         toast("Ask has been succesfully submited!")
-      }).then(function(error, e) {
-        if  (!error) {
+      }).then(function(e) {
+
+        setDataAsks(null);
+        getDataAsks(currentPage   * pageSize, true);
             console.log(e)
-    } else {
-      toast("Ask has not been submited!")
-    }
-        
       });
       setEnergyKW("");
     }
@@ -295,6 +294,7 @@ const handleAccountsChanged = (accounts) => {
                   <tbody>
                   {asks}
                   </tbody>
+                
                 </Table> : <></>}
                 <TablePagination
                        pagesCount={pagesCountAsk}
@@ -328,6 +328,7 @@ const handleAccountsChanged = (accounts) => {
                           <tbody>
                           {bids}
                           </tbody>
+                          <script src="extensions/auto-refresh/bootstrap-table-auto-refresh.js"></script>
                         </Table> : <></>}
                         <TablePagination
                              previousLabel={"previous"}

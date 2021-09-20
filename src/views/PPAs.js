@@ -152,73 +152,10 @@ const handleAccountsChanged = (accounts) => {
   }
 }
   
-  
-  
-  const createPPA = () => {
-    
-    if (open === 'PPA'){
-      if (price === ""||placeStartDay === ""||placeEndDay === ""||placeEndDay < placeStartDay||price <= 0){
 
-        setError(true); 
-      }
-      else{
-       
-        PPA.methods.createPPA(price, placeStartDay, placeEndDay).send({from: account.current}).on('transactionHash', (th) => {
-       
-          toast("A PPA has been succesfully submited!")
-        }).then(function(e) {
-          console.log(e);
-    
-        }); 
-        setPrice("");
-        setPlaceStartDay("");
-        setPlaceEndDay("");
-      }
-    }
+  const getDataPPAs = (offset, update = false)=>{
 
-    if (open === 'CPPA'){
-      if (price === ""||placeStartDay === ""||placeEndDay === ""||ID === ""||address === ""||price <= 0||placeEndDay < placeStartDay){
-
-        setError(true); 
-      }
-      else{
-        
-        
-        PPA.methods.corporatePPA(address, price, placeStartDay, placeEndDay, ID, ).send({from: account.current}).on('transactionHash', (th) => {
-       
-          toast("A Corporate PPA has been succesfully submited!")
-        }).then(function(e) {
-          console.log(e);
-        });
-        setAddress("");
-        setPrice("");
-        setPlaceStartDay("");
-        setPlaceEndDay("");
-        setID("");
-        
-      }
-    }
-  }
-  const claimPPA = (id) => {
-    
-    console.log(id);
-
-        PPA.methods.claimPPA(id).send({from: account.current}).then(function(e) {
-          console.log(e);
-        });
-  }
-
-  const acceptCorporatePPA = (id) => {
-   
-
-      PPA.methods.acceptCorporatePPA(id).send({from: account.current}).then(function(e) {
-        console.log(e);
-      });
-  
-}
-  const getDataPPAs = (offset)=>{
-
-    if(dataPPAs===null){
+    if(dataPPAs===null  || update){
     PPA.methods.getPPAs().call().then(function(ppaNum){
       console.log("Total PPAs:" , ppaNum);
       setTotalPPAs(ppaNum)
@@ -258,6 +195,7 @@ const handleAccountsChanged = (accounts) => {
         <td>{dataPPAs[4][i]}</td>
         <td>{dataPPAs[5][i]}</td>
       </tr>);
+      // setDataPPAs(null);
       }
     }
     setPPAs(rows)
@@ -265,8 +203,8 @@ const handleAccountsChanged = (accounts) => {
   }
 }
   
-  const getDataCPPAs = (offset)=>{
-    if(dataCPPAs===null){
+  const getDataCPPAs = (offset , update = false)=>{
+    if(dataCPPAs===null || update){
       PPA.methods.getCountOfCorpPPAByAddress().call({from:  account.current}).then(function(count){
         console.log("Total count:" , count);
         setTotalCPPAs(count)
@@ -290,11 +228,9 @@ const handleAccountsChanged = (accounts) => {
                 <td>{result[2][i]}</td>
                 <td>{result[4][i]}</td>
                 <td>{result[5][i]}</td>
-     
-                <Button variant="secondary" size="sm" data-id={result[3][i]} onClick={event => acceptCorporatePPA(event.target.dataset.id)}>Claim</Button>
+                <td><Button variant="secondary" size="sm" data-id={result[3][i]} onClick={event => acceptCorporatePPA(event.target.dataset.id)}>Claim</Button></td>
               </tr>);
             }
-            setCPPAs(rows)
           });
       });
   }
@@ -316,10 +252,71 @@ const handleAccountsChanged = (accounts) => {
     console.log(rows);
   }
   }
+
+  const createPPA = () => {
+    
+    if (open === 'PPA'){
+      if (price === ""||placeStartDay === ""||placeEndDay === ""||placeEndDay < placeStartDay||price < 1){
+
+        setError(true); 
+      }
+      else{
+       
+        PPA.methods.createPPA(price * 100, placeStartDay, placeEndDay).send({from: account.current}).on('transactionHash', (th) => {
+       
+          toast("A PPA has been succesfully submited!")
+        }).then(function(e) {
+          setDataPPAs(null);
+          getDataPPAs(currentPagePPA   * pageSize, true);
+          console.log(e);
+        }); 
+        setPrice("");
+        setPlaceStartDay("");
+        setPlaceEndDay("");
+      }
+    }
+
+    if (open === 'CPPA'){
+      if (price === ""||placeStartDay === ""||placeEndDay === ""||ID === ""||address === ""||price < 1||placeEndDay < placeStartDay){
+
+        setError(true); 
+      }
+      else{
+        
+        PPA.methods.corporatePPA(address, price * 100, placeStartDay, placeEndDay, ID, ).send({from: account.current}).on('transactionHash', (th) => {
+       
+          toast("A Corporate CPPA has been succesfully submited!")
+        }).then(function(e) {
+          setDataCPPAs(null);
+          getDataCPPAs(currentPageCPPA   * pageSize, true);
+         
+            console.log(e)
+        });
+        setAddress("");
+        setPrice("");
+        setPlaceStartDay("");
+        setPlaceEndDay("");
+        setID("");
+      }
+    }
+  }
+  const claimPPA = (id) => {
+    
+    console.log(id);
+        PPA.methods.claimPPA(id).send({from: account.current}).then(function(e) {
+          console.log(e);
+        });
+  }
+
+  const acceptCorporatePPA = (id) => {
+      PPA.methods.acceptCorporatePPA(id).send({from: account.current}).then(function(e) {
+        console.log(e);
+      });
+}
+
   useEffect(() => {
 
     getDataPPAs(currentPagePPA * pageSize);
-
     web3.eth.getAccounts().then(r=>{
       handleAccountsChanged(r);
       getDataCPPAs(currentPageCPPA * pageSize);
