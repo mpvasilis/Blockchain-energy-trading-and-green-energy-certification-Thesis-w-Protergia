@@ -97,9 +97,10 @@ function Transactions() {
       if(i < totalPurchases )  { 
       rows.push( <tr key={i}>
         <td>{data[0][i].substr(0,6)}</td>
-        <td>{data[1][i]}</td>
+        <td>{data[1][i].substr(0,6)}</td>
         <td>{data[2][i]}</td>
         <td>{data[3][i]}</td>
+        <td>{data[4][i]}</td>
       </tr>);
       }
     }
@@ -125,7 +126,7 @@ function Transactions() {
           {totalPurchases>0 ?
                 <Card>
               <CardHeader>
-                <h5 className="title">Purchased Energy</h5>
+                <h5 className="title">Purchased Energy {totalPurchases}</h5>
               </CardHeader>
               <CardBody>
               

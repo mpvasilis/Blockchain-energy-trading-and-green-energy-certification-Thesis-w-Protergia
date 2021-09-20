@@ -2,6 +2,7 @@ import React, {useEffect, useState, useRef} from "react";
 import detectEthereumProvider from '@metamask/detect-provider';
 import PropTypes from 'prop-types';
 import TablePagination from '../components/pagination/TablePagination';
+import { toast } from 'react-toastify';
 
 // reactstrap components
 import {
@@ -162,7 +163,10 @@ const handleAccountsChanged = (accounts) => {
       }
       else{
        
-        PPA.methods.createPPA(price, placeStartDay, placeEndDay).send({from: account.current}).then(function(e) {
+        PPA.methods.createPPA(price, placeStartDay, placeEndDay).send({from: account.current}).on('transactionHash', (th) => {
+       
+          toast("A PPA has been succesfully submited!")
+        }).then(function(e) {
           console.log(e);
     
         }); 
@@ -180,7 +184,10 @@ const handleAccountsChanged = (accounts) => {
       else{
         
         
-        PPA.methods.corporatePPA(address, price, placeStartDay, placeEndDay, ID, ).send({from: account.current}).then(function(e) {
+        PPA.methods.corporatePPA(address, price, placeStartDay, placeEndDay, ID, ).send({from: account.current}).on('transactionHash', (th) => {
+       
+          toast("A Corporate PPA has been succesfully submited!")
+        }).then(function(e) {
           console.log(e);
         });
         setAddress("");
@@ -260,47 +267,46 @@ const handleAccountsChanged = (accounts) => {
   
   const getDataCPPAs = (offset)=>{
     if(dataCPPAs===null){
-    PPA.methods.getCountOfCorpPPAByAddress().call({from: account.current}).then(function(count){
-      console.log("Total count:" , count);
-      setTotalCPPACount(count);
-    PPA.methods.getCorpPPAs().call().then(function(cppaNum){
-      console.log("Total CPPAs:" , cppaNum);
-      setTotalCPPAs(cppaNum)
-      setPagesCountCPPA(Math.ceil(cppaNum / pageSize));
-      
-      if(cppaNum>0)
-      PPA.methods.viewCorporatePPAlist().call()
-          .then(function(result){
+      PPA.methods.getCountOfCorpPPAByAddress().call({from:  account.current}).then(function(count){
+        console.log("Total count:" , count);
+        setTotalCPPAs(count)
+      setPagesCountCPPA(Math.ceil(count / pageSize));
+    
+      if(count>0)
+    
+  
+      PPA.methods.viewCorporatePPAlist().call({from: account.current}).then(function(result){
             setDataCPPAs(result);
             console.log(pageSize + offset);
             var rows = [];
             for (var i = offset; i < pageSize + offset ; i++) {
               if(i >= pageSize)  break;
-              if(i >= cppaNum)  break;
+              if(i >= count)  break;
               
               rows.push( <tr key={i}> 
                 <td>{result[3][i]}</td>
-                <td>{result[0][i]}</td>
-                <td>{result[1][i]}</td>
+                <td>{result[0][i].substr(0,6)}</td>
+                <td>{result[1][i].substr(0,6)}</td>
                 <td>{result[2][i]}</td>
                 <td>{result[4][i]}</td>
                 <td>{result[5][i]}</td>
-                <Button variant="secondary" size="sm" onClick={() => acceptCorporatePPA(result[3][i])}>Claim</Button>
+     
+                <Button variant="secondary" size="sm" data-id={result[3][i]} onClick={event => acceptCorporatePPA(event.target.dataset.id)}>Claim</Button>
               </tr>);
             }
             setCPPAs(rows)
           });
-    })});
+      });
   }
   else{
     let rows = [];
     for (let i = offset; i < pageSize + offset  ; i++) {
       if(i < totalCPPAs )  { 
       rows.push( <tr key={i}>
-        <td>{dataCPPAs[0][i].substr(0,6)}</td>
-        <td>{dataCPPAs[1][i]}</td>
-        <td>{dataCPPAs[2][i]}</td>
         <td>{dataCPPAs[3][i]}</td>
+        <td>{dataCPPAs[0][i].substr(0,6)}</td>
+        <td>{dataCPPAs[1][i].substr(0,6)}</td>
+        <td>{dataCPPAs[2][i]}</td>
         <td>{dataCPPAs[4][i]}</td>
         <td>{dataCPPAs[5][i]}</td>
       </tr>);
@@ -309,19 +315,15 @@ const handleAccountsChanged = (accounts) => {
     setCPPAs(rows)
     console.log(rows);
   }
-
   }
-
-  
   useEffect(() => {
 
     getDataPPAs(currentPagePPA * pageSize);
-    getDataCPPAs(currentPageCPPA * pageSize);
 
     web3.eth.getAccounts().then(r=>{
       handleAccountsChanged(r);
+      getDataCPPAs(currentPageCPPA * pageSize);
     });
-  
   }, []);
   
 
@@ -330,12 +332,12 @@ const handleAccountsChanged = (accounts) => {
       <div className="content">
         
       <Row>
-           
+        
             <Col md="7">
             {totalPPAs>0 ?
                 <Card>
               <CardHeader>
-                <h4 className="title">Open PPAs {totalPPAs}</h4>
+                <h4 className="title">Open PPAs </h4>
               </CardHeader>
               <CardBody>
                 {PPAs!==null ?
@@ -385,7 +387,7 @@ const handleAccountsChanged = (accounts) => {
                     <th>Price</th>
                     <th>StartDay</th>
                     <th>EndDay</th>
-                    <th>Status</th>
+                   
                   </tr>
                   </thead>
                   <tbody>

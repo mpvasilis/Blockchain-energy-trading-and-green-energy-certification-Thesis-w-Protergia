@@ -2,6 +2,8 @@ import React, {useEffect, useState, useRef} from "react";
 import TablePagination from '../components/pagination/TablePagination';
 import detectEthereumProvider from '@metamask/detect-provider';
 import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
+
 
 
 import {
@@ -40,9 +42,8 @@ function EnergyTrading() {
   const [priceBid, setPriceBid] = useState('');
   const account = useRef('');
   const[error, setError] = useState(false);
-  const[isDisabled, setIsDisabled] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
-  
+
   
 const signInMetamask = async() => {
   const provider = await detectEthereumProvider();
@@ -209,6 +210,7 @@ const handleAccountsChanged = (accounts) => {
 
   const addBidOrAsk = () => {
     
+
     if (open === 'bid'){
       if (energyKW === ""||priceBid === ""||energyKW < 1000000){
 
@@ -216,8 +218,15 @@ const handleAccountsChanged = (accounts) => {
       }
     else{
     
-      energyTrading.methods.energyOffer(energyKW, priceBid).send({from: account.current}).then(function(e) {
-        console.log(e);
+      energyTrading.methods.energyOffer(energyKW, priceBid).send({from: account.current}).on('transactionHash', (th) => {
+       
+        toast("Bid has been succesfully submited!")
+      }).then(function(error,e) {
+        if  (!error) {
+          console.log(e)
+      } else {
+        toast("Bid has not been submited!")
+      }
       });
       setEnergyKW("");
       setPriceBid("");
@@ -228,13 +237,23 @@ const handleAccountsChanged = (accounts) => {
         setError(true);
         
       }
-      energyTrading.methods.askEnergy(energyKW).send({from: account.current}).then(function(e) {
-        console.log(e);
+      energyTrading.methods.askEnergy(energyKW).send({from: account.current}).on('transactionHash', (th) => {
+       
+        toast("Ask has been succesfully submited!")
+      }).then(function(error, e) {
+        if  (!error) {
+            console.log(e)
+    } else {
+      toast("Ask has not been submited!")
+    }
+        
       });
       setEnergyKW("");
     }
   }
 
+
+  
   useEffect(() => {
 
     getDataAsks(currentPage * pageSize);

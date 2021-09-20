@@ -3,6 +3,7 @@ import detectEthereumProvider from '@metamask/detect-provider';
 import 'bootstrap';
 import { Button } from 'reactstrap';
 import "assets/css/black-dashboard-react.css";
+import { toast } from 'react-toastify';
 
 // reactstrap components
 import {
@@ -40,6 +41,7 @@ function Devices() {
   const [input, setInput] = useState(''); 
   const account = useRef('');
   const [error, setError] = useState(false);
+  const [deviceAdded, setDeviceAdded] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
    const [accounts, setAccounts] = useState([]);
    
@@ -112,8 +114,12 @@ function Devices() {
           setError(true);
         }
         else
-        energyTrading.methods.addDevice(input).send({from: account.current}).then(function(e){
+        energyTrading.methods.addDevice(input).send({from: account.current}).on('transactionHash', (th) => {
+       
+          toast("A device has been succesfully added!")
+        }).then(function(e){
           console.error(e);
+         setDeviceAdded(true)
         })
         setInput("");
       }
