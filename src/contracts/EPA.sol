@@ -149,4 +149,37 @@ contract EPA {
         }
         return(prosumers, consumers, energies, prices, ids);
     }
+
+    function getCountOfClaimedEPAByAddress() public view returns(uint){
+        address currentAddress = msg.sender;
+        uint count = 0;
+        for(uint i = 0; i<listOfclaimedEPAs.length; i++){
+            if((listOfclaimedEPAs[i].prosumer == currentAddress) || (listOfclaimedEPAs[i].consumer == currentAddress)){
+                count++;
+            }
+        }
+        return count;
+    }
+
+    function viewCorporatePPAlist() public view returns(address[] memory, address[] memory, uint[] memory, uint[] memory, uint[] memory){
+        uint k = 0;
+        uint cnt = getCountOfClaimedEPAByAddress();
+        address[] memory prosumers_ = new address[](cnt);
+        address[] memory consumers_ = new address[](cnt);
+        uint[] memory energies_ = new uint[](cnt);
+        uint[] memory prices_ = new uint[](cnt);
+        uint[] memory ids_ = new uint[](cnt);
+
+        for(uint i = 0; i < listOfclaimedEPAs.length; i++){
+            if((listOfclaimedEPAs[i].prosumer == msg.sender) || (listOfclaimedEPAs[i].consumer == msg.sender)){
+                prosumers_[k] = listOfclaimedEPAs[i].prosumer;
+                consumers_[k] = listOfclaimedEPAs[i].consumer;
+                energies_[k] = listOfclaimedEPAs[i].totalEnergy;
+                prices_[k] = listOfclaimedEPAs[i].totalPrice;
+                ids_[k] = listOfclaimedEPAs[i].id;
+                k++;
+            }
+        }
+        return(prosumers_, consumers_, energies_, prices_, ids_);
+    }
 }
