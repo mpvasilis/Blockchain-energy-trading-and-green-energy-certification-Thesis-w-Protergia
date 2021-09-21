@@ -194,16 +194,17 @@ const handleAccountsChanged = (accounts) => {
         <td>{dataPPAs[3][i]}</td>
         <td>{dataPPAs[4][i]}</td>
         <td>{dataPPAs[5][i]}</td>
+        <td> <Button variant="secondary" size="sm" data-id={dataPPAs[2][i]} onClick={event => claimPPA(event.target.dataset.id)}>Claim</Button></td>
+
       </tr>);
-      
       }
     }
     setPPAs(rows)
     console.log(rows);
   }
 }
-  
   const getDataCPPAs = (offset , update = false)=>{
+
     if(dataCPPAs===null || update){
       PPA.methods.getCountOfCorpPPAByAddress().call({from:  account.current}).then(function(count){
         console.log("Total count:" , count);
@@ -212,13 +213,12 @@ const handleAccountsChanged = (accounts) => {
     
       if(count>0)
     
-  
       PPA.methods.viewCorporatePPAlist().call({from: account.current}).then(function(result){
             setDataCPPAs(result);
             console.log(pageSize + offset);
             var rows = [];
             for (var i = offset; i < pageSize + offset ; i++) {
-              if(i >= pageSize)  break;
+              // if(i >= pageSize)  break;
               if(i >= count)  break;
               
               rows.push( <tr key={i}> 
@@ -246,6 +246,8 @@ const handleAccountsChanged = (accounts) => {
         <td>{dataCPPAs[2][i]}</td>
         <td>{dataCPPAs[4][i]}</td>
         <td>{dataCPPAs[5][i]}</td>
+        <td><Button variant="secondary" size="sm" data-id={dataCPPAs[3][i]} onClick={event => acceptCorporatePPA(event.target.dataset.id)}>Claim</Button></td>
+
       </tr>);
       }
     }
