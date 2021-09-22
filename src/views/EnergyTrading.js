@@ -233,7 +233,7 @@ const handleAccountsChanged = (accounts) => {
       setPriceBid("");
     }
     }else{
-      if (energyKW === ""||energyKW < 1000000){
+      if (energyKW === ""||energyKW > 1000000){
 
         setError(true);
         

@@ -28,23 +28,19 @@ const web3 = new Web3(Web3.givenProvider || "wss://ropsten.infura.io/ws/v3/5f552
 
 var contractAddress = '0xf204b9E3f564ef0F5d827B50A8879D058FA191A9' ;
 var abi = [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"askEnergyNotifier","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"ownerOfDevice","type":"address"},{"indexed":false,"internalType":"uint256","name":"date","type":"uint256"},{"indexed":false,"internalType":"string","name":"id","type":"string"}],"name":"deviceAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"ownerOfDevice","type":"address"},{"indexed":false,"internalType":"uint256","name":"date","type":"uint256"},{"indexed":false,"internalType":"string","name":"id","type":"string"}],"name":"deviceUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"seller","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"offerEnergyNotifier","type":"event"},{"constant":false,"inputs":[{"internalType":"string","name":"typeOfDevice","type":"string"}],"name":"addDevice","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_energy","type":"uint256"}],"name":"askEnergy","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_energy","type":"uint256"},{"internalType":"uint256","name":"_eprice","type":"uint256"}],"name":"energyOffer","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getAsksByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getBidsByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfAsks","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfBids","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfPurchases","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"deviceID","type":"address"}],"name":"getDeviceByAddress","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"string","name":"","type":"string"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getPurchaseByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"ownerOfDevice","type":"address"},{"internalType":"string","name":"typeOfDevice","type":"string"}],"name":"updateDevice","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"viewAllAsks","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"viewAllBids","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"viewAllEnergyPurchases","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"}] ; 
-const energyTrading = new web3.eth.Contract(abi, contractAddress);
+const deviceRegistry = new web3.eth.Contract(abi, contractAddress);
 
 
 function Devices() {
   const [open, setOpen] = useState('add');
-  const [totalAsks, setTotalAsks] = useState(0);
-  const [asks, setAsks] = useState(null);
-  const [totalBids, setTotalBids] = useState(0);
-  const [bids, setBids] = useState(null);
-  const [battery, setBattery] = useState(0);
+  const [address, setAddress] = useState(0);
   const [input, setInput] = useState(''); 
   const account = useRef('');
   const [error, setError] = useState(false);
   const [deviceAdded, setDeviceAdded] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
    const [accounts, setAccounts] = useState([]);
-   
+   const [id, setId] = useState(0);
 
    
 
@@ -106,26 +102,30 @@ function Devices() {
 
       }, []);
    
-
-      const addDevice=()=>{
-        
-        if (input == ""){
-
-          setError(true);
-        }
-        else
-        energyTrading.methods.addDevice(input).send({from: account.current}).on('transactionHash', (th) => {
-       
-          toast("A device has been succesfully added!")
-        }).then(function(e){
-          console.error(e);
-         setDeviceAdded(true)
-        })
-        setInput("");
-      }
-      
-     
     
+       const addDevice= () =>{
+
+        deviceRegistry.methods.getDeviceByAddress(account.current).call({from: account.current}).then(function(result){
+
+          console.log(typeof result);
+          console.log("result:" , result);
+          console.log(Object.values(result).length);
+          
+        if (Object.values(result).length > 0){
+          
+            toast("This device has been already added!");
+        }
+         else{
+
+         deviceRegistry.methods.addDevice(input).send({from: account.current}).on('transactionHash', (th) => {
+       
+            toast("A device has been succesfully added!")
+            
+        })
+        } 
+      }
+        )}
+     
   return (
     <>
       <div className="content">
@@ -157,18 +157,18 @@ function Devices() {
                                  error && <div style={{color: `red`}}>Please enter a valid ID</div>
                                }
 
-      < div class="form-group  col-md-6 "><br></br>
+      < div class="form-group  col-md-13 "><br></br>
      
-      <select id="inpurDevices" class="form-control">
+      <select id="inpurDevices" class="form-control ">
       
-                    <option selected>Select Devices</option>
+                    <option selected >Select Devices</option>
                     <option value="1">Wind</option>
                      <option value="2">Biomass</option>
                      <option value="3">Hydo turbine</option>
                      <option value="4">Solar Thermal</option>
                      <option value="5">PV</option>
                      <option value="6">EV</option>
-                     <option value="7">Battery (multiple devices)</option>
+                     <option value="7">Battery</option>
                     </select>
                     
              </div>
