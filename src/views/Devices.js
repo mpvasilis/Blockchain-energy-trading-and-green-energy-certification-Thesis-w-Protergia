@@ -111,9 +111,10 @@ function Devices() {
           console.log("result:" , result);
           console.log(Object.values(result).length);
           
-        if (Object.values(result).length > 0){
+        if (result.length > 0){
           
             toast("This device has been already added!");
+            
         }
          else{
 
