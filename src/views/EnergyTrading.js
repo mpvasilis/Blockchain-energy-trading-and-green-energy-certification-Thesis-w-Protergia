@@ -94,10 +94,6 @@ const handleAccountsChanged = (accounts) => {
   }else if(accounts[0] !== account.current){
     account.current = accounts[0];
     setIsConnected(true)
-    console.log('Current addr: ', account.current);
-  }
-  console.log("account current:", account.current);
-
     energyTrading.methods.getDeviceByAddress(account.current).call({from: account.current}).then(function(result){
 
         // console.log("Object.values(result).length:", Object.values(result).length);
@@ -112,6 +108,11 @@ const handleAccountsChanged = (accounts) => {
         } 
         
       });
+    console.log('Current addr: ', account.current);
+  }
+  console.log("account current:", account.current);
+
+    
 }
   
   const handlePageClick = (e, page) => {
