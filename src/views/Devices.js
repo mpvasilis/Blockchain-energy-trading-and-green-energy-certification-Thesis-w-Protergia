@@ -4,6 +4,7 @@ import 'bootstrap';
 import { Button } from 'reactstrap';
 import "assets/css/black-dashboard-react.css";
 import { toast } from 'react-toastify';
+import PropTypes from 'prop-types';
 
 // reactstrap components
 import {
@@ -106,13 +107,14 @@ function Devices() {
        const addDevice= () =>{
 
         deviceRegistry.methods.getDeviceByAddress(account.current).call({from: account.current}).then(function(result){
-
+          
           console.log(typeof result);
           console.log("result:" , result);
-          console.log(Object.values(result).length);
-          
-        if (result.length > 0){
-          
+          console.log("Object.values(result)[0]:", Object.values(result)[0])
+      
+        if (account.current ===  Object.values(result)[0]){
+
+
             toast("This device has been already added!");
             
         }
@@ -120,12 +122,10 @@ function Devices() {
 
          deviceRegistry.methods.addDevice(input).send({from: account.current}).on('transactionHash', (th) => {
        
-            toast("A device has been succesfully added!")
-            
-        })
-        } 
-      }
-        )}
+            toast("A device has been succesfully added!")   
+        })} 
+       
+      })}
      
   return (
     <>

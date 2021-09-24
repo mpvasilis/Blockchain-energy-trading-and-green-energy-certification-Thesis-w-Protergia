@@ -100,7 +100,9 @@ const handleAccountsChanged = (accounts) => {
 
     energyTrading.methods.getDeviceByAddress(account.current).call({from: account.current}).then(function(result){
 
-        if (result.length > 0){
+        // console.log("Object.values(result).length:", Object.values(result).length);
+
+        if (account.current ==  Object.values(result)[0]){
           setAlert(false);
           setDisable(false);
         }
@@ -108,6 +110,7 @@ const handleAccountsChanged = (accounts) => {
           setAlert(true);
           setDisable(true);
         } 
+        
       });
 }
   
