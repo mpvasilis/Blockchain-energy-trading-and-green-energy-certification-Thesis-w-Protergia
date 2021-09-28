@@ -8,6 +8,7 @@ import TableList from "views/TableList.js";
 import Typography from "views/Typography.js";
 import EnergyTrading from "views/EnergyTrading.js";
 import Devices from "./views/Devices";
+import PPAs from "./views/PPAs";
 import Transactions from "./views/Transactions";
 
 var routes = [
@@ -48,7 +49,7 @@ var routes = [
     name: "PPAs",
     rtlName: "",
     icon: "tim-icons icon-chart-pie-36",
-    component: Dashboard,
+    component: PPAs,
     layout: "/panel",
   }
 ];

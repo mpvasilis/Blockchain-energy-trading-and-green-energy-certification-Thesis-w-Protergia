@@ -10,7 +10,7 @@ contract producerRegistry {
     // map address to bool "is a registered producer"
     mapping(address => bool) producers;
     
-    modifier onlyRegisteredProducers {
+    modifier onlyRegisteredProducers { 
         require(producers[msg.sender], "You must be a current Producer");
         _;
     }
