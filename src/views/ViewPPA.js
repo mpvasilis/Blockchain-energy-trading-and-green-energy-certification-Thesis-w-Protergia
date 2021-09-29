@@ -3,9 +3,11 @@ import detectEthereumProvider from '@metamask/detect-provider';
 import PropTypes from 'prop-types';
 import TablePagination from '../components/pagination/TablePagination';
 import { toast } from 'react-toastify';
-import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet,Image } from '@react-pdf/renderer';
 import ReactPDF from '@react-pdf/renderer';
-// reactstrap components
+import { PDFViewer } from '@react-pdf/renderer';
+import { useParams } from 'react-router-dom';
+import { Checkmark } from 'react-checkmark'
 import {
   Button,
   Card,
@@ -27,341 +29,44 @@ var abi = [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address"
 const PPA = new web3.eth.Contract(abi, contractAddress);
 
 function ViewPPA() {
-  const [open, setOpen] = useState('PPA');
-
-  const [totalBids, setTotalBids] = useState(0);
-  const [bids, setBids] = useState(null);
-  const [dataPPAs, setDataPPAs] = useState(null);
-  const [dataCPPAs, setDataCPPAs] = useState(null);
-  const [currentPagePPA, setCurrentPagePPA] = useState(0);
-  const [currentPageCPPA, setCurrentPageCPPA] = useState(0);
-  const pageSize = 10;
-  const [totalPPAs, setTotalPPAs] = useState(0);
-  const [PPAs, setPPAs] = useState(null);
-  const [totalCPPAs, setTotalCPPAs] = useState(0);
-  const [totalCPPACount, setTotalCPPACount] = useState(0);
-  const [CPPAs, setCPPAs] = useState(null);
-  const [pagesCountPPA, setPagesCountPPA] = useState(0);
-  const [pagesCountCPPA, setPagesCountCPPA] = useState(0);
+  let { id } = useParams();
+  const [renderPDF, setrenderPDF] = useState(false);
+  const [producer, setproducer] = useState("");
+  const [consumer, setconsumer] = useState("");
+  const [date, setdate] = useState("");
 
 
-  const [price, setPrice] = useState('');
-  // const [priceBid, setPriceBid] = useState(0);
-  const [placeStartDay, setPlaceStartDay] = useState('');
-  const [placeEndDay, setPlaceEndDay] = useState('');
-  const [ID, setID] = useState('');
-  const [address, setAddress] = useState('');
-  const account = useRef('');
-  const[error, setError] = useState(false);
-  const[isDisabled, setIsDisabled] = useState(false);
-  const [isConnected, setIsConnected] = useState(false);
-
-  const handlePageClickPPA = (e, page) => {
-    console.log(page);
-    e.preventDefault();
-    setCurrentPagePPA(page);
-    console.log(page);
-    getDataPPAs(page * pageSize);
-    console.log(page);
-  };
-
-  const handlePreviousClickPPA= e => {
-    const _currentPagePPA = currentPagePPA - 1 ;
-    e.preventDefault();
-    setCurrentPagePPA(_currentPagePPA);
-    getDataPPAs(_currentPagePPA * pageSize);
-    console.log(_currentPagePPA);
-  };
-
-  const handleNextClickPPA= e => {
-    const _currentPagePPA = currentPagePPA + 1 ;
-    e.preventDefault();
-    setCurrentPagePPA(_currentPagePPA);
-    getDataPPAs(_currentPagePPA  * pageSize);
-    console.log(_currentPagePPA);
-
-  };
-  const handlePageClickCPPA = (e, page) => {
-    console.log(page);
-    e.preventDefault();
-    setCurrentPageCPPA(page);
-    console.log(page);
-    getDataCPPAs(page * pageSize);
-    console.log(page);
-  };
-
-  const handlePreviousClickCPPA= e => {
-    const _currentPageCPPA = currentPageCPPA - 1 ;
-    e.preventDefault();
-    setCurrentPageCPPA(_currentPageCPPA);
-    getDataCPPAs(_currentPageCPPA * pageSize);
-    console.log(_currentPageCPPA);
-  };
-
-  const handleNextClickCPPA= e => {
-    const _currentPageCPPA = currentPageCPPA + 1 ;
-    e.preventDefault();
-    setCurrentPageCPPA(_currentPageCPPA);
-    getDataCPPAs(_currentPageCPPA  * pageSize);
-    console.log(_currentPageCPPA);
-
-  };
-
-const signInMetamask = async() => {
-  const provider = await detectEthereumProvider();
-
-  if(provider !== window.ethereum) {
-    console.error('Do you have multiple wallets installed?');
-  }
-
-  if(!provider) {
-    console.error('Metamask not found');
-    return;
-  }
-
-  provider.on('accountsChanged', handleAccountsChanged);
-
-  provider.on('disconnect', () => {
-    console.log('disconnect');
-    account.current = '';
-  });
-
-  provider.on('chainIdChanged', chainId => {
-    console.log('chainIdChanged', chainId);
-  });
-
-  provider.request({method: 'eth_requestAccounts' }).then(async params => {
-    handleAccountsChanged(params);
-  }).catch(err => {
-    if(err.code === 4001){
-      console.error('Please connect to Metamask.');
-    }else {
-      console.error(err);
-    }
-  })
-};
-
-const handleAccountsChanged = (accounts) => {
-  console.log("ACCS: ", accounts);
-  if(accounts.length === 0) {
-    setIsConnected(false)
-    console.log("connect to metamsk");
-  }else if(accounts[0] !== account.current){
-    account.current = accounts[0];
-    setIsConnected(true)
-    console.log('Current addr: ', account.current);
-  }
-}
-
-
-  const getDataPPAs = (offset, update = false)=>{
-
-    if(dataPPAs===null  || update){
-    PPA.methods.getPPAs().call().then(function(ppaNum){
-      console.log("Total PPAs:" , ppaNum);
-      setTotalPPAs(ppaNum)
-      setPagesCountPPA(Math.ceil(ppaNum / pageSize));
-
-      if(ppaNum>0)
-      PPA.methods.viewAllPPAs().call()
-          .then(function(result){
-            setDataPPAs(result);
-            console.log(pageSize + offset);
-            var rows = [];
-            for (var i = offset; i < pageSize + offset ; i++) {
-              // if(i >= pageSize)  break;
-              if(i >= ppaNum)  break;
-              rows.push( <tr key={i}>
-                <td>{result[2][i]}</td>
-                <td>{result[0][i].substr(0,6)}</td>
-                <td>{result[1][i]}</td>
-                <td>{result[3][i]}</td>
-                <td>{result[4][i]}</td>
-                <td>{result[5][i]}</td>
-                <td> <Button variant="secondary" size="sm" data-id={result[2][i]} onClick={event => claimPPA(event.target.dataset.id)}>Claim</Button></td>
-              </tr>);
-            }
-            setPPAs(rows)
-          });
-    });
-  }else{
-    let rows = [];
-    for (let i = offset; i < pageSize + offset  ; i++) {
-      if(i < totalPPAs )  {
-      rows.push( <tr key={i}>
-        <td>{dataPPAs[2][i]}</td>
-        <td>{dataPPAs[0][i].substr(0,6)}</td>
-        <td>{dataPPAs[1][i]}</td>
-        <td>{dataPPAs[3][i]}</td>
-        <td>{dataPPAs[4][i]}</td>
-        <td>{dataPPAs[5][i]}</td>
-        <td> <Button variant="secondary" size="sm" data-id={dataPPAs[2][i]} onClick={event => claimPPA(event.target.dataset.id)}>Claim</Button></td>
-
-      </tr>);
-      }
-    }
-    setPPAs(rows)
-    console.log(rows);
-  }
-}
-  const getDataCPPAs = (offset , update = false)=>{
-
-    if(dataCPPAs===null || update){
-      PPA.methods.getCountOfCorpPPAByAddress().call({from:  account.current}).then(function(count){
-        console.log("Total count:" , count);
-        setTotalCPPAs(count)
-      setPagesCountCPPA(Math.ceil(count / pageSize));
-
-      if(count>0)
-
-      PPA.methods.viewCorporatePPAlist().call({from: account.current}).then(function(result){
-            setDataCPPAs(result);
-            console.log(pageSize + offset);
-            var rows = [];
-            for (var i = offset; i < pageSize + offset ; i++) {
-              // if(i >= pageSize)  break;
-              if(i >= count)  break;
-
-              rows.push( <tr key={i}>
-                <td>{result[3][i]}</td>
-                <td>{result[0][i].substr(0,6)}</td>
-                <td>{result[1][i].substr(0,6)}</td>
-                <td>{result[2][i]}</td>
-                <td>{result[4][i]}</td>
-                <td>{result[5][i]}</td>
-                <td><Button variant="secondary" size="sm" data-id={result[3][i]} onClick={event => acceptCorporatePPA(event.target.dataset.id)}>Claim</Button></td>
-              </tr>);
-            }
-            setCPPAs(rows)
-          });
-      });
-  }
-  else{
-    let rows = [];
-    for (let i = offset; i < pageSize + offset  ; i++) {
-      if(i < totalCPPAs )  {
-      rows.push( <tr key={i}>
-        <td>{dataCPPAs[3][i]}</td>
-        <td>{dataCPPAs[0][i].substr(0,6)}</td>
-        <td>{dataCPPAs[1][i].substr(0,6)}</td>
-        <td>{dataCPPAs[2][i]}</td>
-        <td>{dataCPPAs[4][i]}</td>
-        <td>{dataCPPAs[5][i]}</td>
-        <td><Button variant="secondary" size="sm" data-id={dataCPPAs[3][i]} onClick={event => acceptCorporatePPA(event.target.dataset.id)}>Claim</Button></td>
-
-      </tr>);
-      }
-    }
-    setCPPAs(rows)
-    console.log(rows);
-  }
-  }
-
-  const createPPA = () => {
-
-    if (open === 'PPA'){
-      if (price === ""||placeStartDay === ""||placeEndDay === ""||placeEndDay < placeStartDay||price < 1){
-
-        setError(true);
-      }
-      else{
-
-        PPA.methods.createPPA(price * 100, placeStartDay, placeEndDay).send({from: account.current}).on('transactionHash', (th) => {
-
-          toast("A PPA has been succesfully submited!")
-        }).then(function(e) {
-          setDataPPAs(null);
-          getDataPPAs(currentPagePPA   * pageSize, true);
-          console.log(e);
-        });
-        setPrice("");
-        setPlaceStartDay("");
-        setPlaceEndDay("");
-      }
-    }
-
-    if (open === 'CPPA'){
-      if (price === ""||placeStartDay === ""||placeEndDay === ""||ID === ""||address === ""||price < 1||placeEndDay < placeStartDay){
-
-        setError(true);
-      }
-      else{
-
-        PPA.methods.corporatePPA(address, price * 100, placeStartDay, placeEndDay, ID, ).send({from: account.current}).on('transactionHash', (th) => {
-
-          toast("A Corporate CPPA has been succesfully submited!")
-        }).then(function(e) {
-          setDataCPPAs(null);
-          getDataCPPAs(currentPageCPPA   * pageSize, true);
-
-            console.log(e)
-        });
-        setAddress("");
-        setPrice("");
-        setPlaceStartDay("");
-        setPlaceEndDay("");
-        setID("");
-      }
-    }
-  }
-
-  const styles = StyleSheet.create({
-    page: {
-      flexDirection: 'row',
-      backgroundColor: '#E4E4E4'
-    },
-    section: {
-      margin: 10,
-      padding: 10,
-      flexGrow: 1
-    }
-  });
-
-
-
-  const claimPPA = (id) => {
-    console.log(id);
-    const MyDocument = () => (
-        <Document>
-          <Page size="A4" style={styles.page}>
-            <View style={styles.section}>
-              <Text>Section #1</Text>
-            </View>
-            <View style={styles.section}>
-              <Text>Section #2</Text>
-            </View>
-          </Page>
-        </Document>
-    );
-    return MyDocument;
-
-    PPA.methods.claimPPA(id).send({from: account.current}).then(function(e) {
-          console.log(e);
-
-        });
-  }
-
-  const acceptCorporatePPA = (id) => {
-      PPA.methods.acceptCorporatePPA(id).send({from: account.current}).then(function(e) {
-        console.log(e);
-      });
-}
 
   useEffect(() => {
+    PPA.methods.getApprovedPPAByID(id).call().then(function(result){
+      console.log(result);
+      setproducer(result[0]);
+      setconsumer(result[1]);
+      setdate(result[3]);
+      setrenderPDF(true);
 
-    getDataPPAs(currentPagePPA * pageSize);
-    web3.eth.getAccounts().then(r=>{
-      handleAccountsChanged(r);
-      getDataCPPAs(currentPageCPPA * pageSize);
     });
   }, []);
 
 
+
+
+
+
   return (
-    <>
+      <>      <div className="content" style={{ margin: "auto", width: "50%"}}>
 
+        {renderPDF ? <>
+          <br/>
+          <Checkmark size='xxLarge' /><br/>
+          <h2 style={{textAlign:"center"}}>This is a valid PPA.</h2>
+          <p>Seller: {producer}</p>
+          <p>Buyer: {consumer}</p>
+          <p>Date: {date}</p>
+        </>:<p>Checking PPA status</p>}
+      </div>
+      </>
 
-    </>
   );
 }
 
