@@ -14,6 +14,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ThemeContextWrapper from "./components/ThemeWrapper/ThemeWrapper";
 import BackgroundColorWrapper from "./components/BackgroundColorWrapper/BackgroundColorWrapper";
+import ReceiptPDF from "./views/ReceiptPDF";
+import ViewPPA from "./views/ViewPPA";
 
 ReactDOM.render(
   <ThemeContextWrapper>
@@ -21,7 +23,9 @@ ReactDOM.render(
       <BrowserRouter>
         <Switch>
           <Route path="/panel" render={(props) => <AdminLayout {...props} />} />
-          <Redirect from="/" to="/panel/dashboard" />
+          <Route path="/receipt/:id" render={(props) => <ReceiptPDF {...props} />} />
+          <Route path="/viewPPA/:id" render={(props) => <ViewPPA {...props} />} />
+            <Redirect from="/" to="/panel/dashboard" />
         </Switch>
       </BrowserRouter>
       <ToastContainer />

@@ -3,7 +3,8 @@ import detectEthereumProvider from '@metamask/detect-provider';
 import PropTypes from 'prop-types';
 import TablePagination from '../components/pagination/TablePagination';
 import { toast } from 'react-toastify';
-
+import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
+import ReactPDF from '@react-pdf/renderer';
 // reactstrap components
 import {
   Button,
@@ -25,7 +26,7 @@ var contractAddress = '0xAF7f02C05Fe4bb1D8Cc392063fEE2415962F248c' ;
 var abi = [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"producer","type":"address"},{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"},{"indexed":false,"internalType":"uint32","name":"agreedPrice","type":"uint32"}],"name":"acceptedCorpPPA","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"producer","type":"address"},{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":false,"internalType":"uint64","name":"energy","type":"uint64"},{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"}],"name":"availableEnergyNotification","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"ppaBuyer","type":"address"}],"name":"buyerDeregistered","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"ppaBuyer","type":"address"}],"name":"buyerRegistered","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"producer","type":"address"},{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":false,"internalType":"uint32","name":"price","type":"uint32"},{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"}],"name":"createdCorpPPA","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"producer","type":"address"},{"indexed":false,"internalType":"uint32","name":"price","type":"uint32"},{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"}],"name":"createdPPA","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"producer","type":"address"},{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":false,"internalType":"uint256","name":"startDay","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"endDay","type":"uint256"},{"indexed":false,"internalType":"enum PPA.Status","name":"status","type":"uint8"}],"name":"expiredPPA","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"producer","type":"address"}],"name":"producerDeregistered","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"producer","type":"address"}],"name":"producerRegistered","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":true,"internalType":"address","name":"producer","type":"address"},{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"}],"name":"purchasedPPA","type":"event"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"acceptCorporatePPA","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"_buyer","type":"address"},{"internalType":"uint64","name":"_energy","type":"uint64"},{"internalType":"uint256","name":"_idOfMatchPPA","type":"uint256"}],"name":"availableKwhs","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_idOfPPA","type":"uint256"}],"name":"buyPPAKwhs","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"claimAuctionPPA","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"claimPPA","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"_buyer","type":"address"},{"internalType":"uint32","name":"_agreedKwhPrice","type":"uint32"},{"internalType":"uint256","name":"_startDay","type":"uint256"},{"internalType":"uint256","name":"_endDay","type":"uint256"},{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"corporatePPA","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_kwhPrice","type":"uint32"},{"internalType":"uint256","name":"_startDay","type":"uint256"},{"internalType":"uint256","name":"_endDay","type":"uint256"}],"name":"createPPA","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"abuyer","type":"address"}],"name":"deregisterPPABuyer","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"deregisterProducer","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_idOfContract","type":"uint256"},{"internalType":"uint64","name":"_buyEnergy","type":"uint64"}],"name":"energyTradingPPA","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"getApprovedPPAByID","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"},{"internalType":"uint32","name":"","type":"uint32"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_idx","type":"uint256"}],"name":"getApprovedPPAByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"},{"internalType":"uint32","name":"","type":"uint32"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getApprovedPPAs","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getAvKwhs","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_idx","type":"uint256"}],"name":"getAvailableEnergyByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"},{"internalType":"uint64","name":"","type":"uint64"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCorpPPAs","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_idx","type":"uint256"}],"name":"getCorporatePPAByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"},{"internalType":"uint32","name":"","type":"uint32"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfCorpPPAByAddress","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_idx","type":"uint256"}],"name":"getPPAByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"},{"internalType":"uint32","name":"","type":"uint32"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getPPAs","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getPurchases","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_idx","type":"uint256"}],"name":"getPurchasesByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"},{"internalType":"uint64","name":"","type":"uint64"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"killPPA","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"abuyer","type":"address"}],"name":"registerPPABuyer","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"registerProducer","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"viewAllPPAs","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint32[]","name":"","type":"uint32[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"viewAllpurchases","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint64[]","name":"","type":"uint64[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"viewApprovalPPAs","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint32[]","name":"","type":"uint32[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"viewAvailableKwhs","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint64[]","name":"","type":"uint64[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"viewCorporatePPAlist","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint32[]","name":"","type":"uint32[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"}] ;
 const PPA = new web3.eth.Contract(abi, contractAddress);
 
-function PPAs() {
+function ViewPPA() {
   const [open, setOpen] = useState('PPA');
 
   const [totalBids, setTotalBids] = useState(0);
@@ -190,7 +191,7 @@ const handleAccountsChanged = (accounts) => {
       rows.push( <tr key={i}>
         <td>{dataPPAs[2][i]}</td>
         <td>{dataPPAs[0][i].substr(0,6)}</td>
-        <td>{dataPPAs[1][i]/100}</td>
+        <td>{dataPPAs[1][i]}</td>
         <td>{dataPPAs[3][i]}</td>
         <td>{dataPPAs[4][i]}</td>
         <td>{dataPPAs[5][i]}</td>
@@ -225,7 +226,7 @@ const handleAccountsChanged = (accounts) => {
                 <td>{result[3][i]}</td>
                 <td>{result[0][i].substr(0,6)}</td>
                 <td>{result[1][i].substr(0,6)}</td>
-                <td>{result[2][i]/100}</td>
+                <td>{result[2][i]}</td>
                 <td>{result[4][i]}</td>
                 <td>{result[5][i]}</td>
                 <td><Button variant="secondary" size="sm" data-id={result[3][i]} onClick={event => acceptCorporatePPA(event.target.dataset.id)}>Claim</Button></td>
@@ -303,14 +304,40 @@ const handleAccountsChanged = (accounts) => {
       }
     }
   }
-  const claimPPA = (id) => {
 
+  const styles = StyleSheet.create({
+    page: {
+      flexDirection: 'row',
+      backgroundColor: '#E4E4E4'
+    },
+    section: {
+      margin: 10,
+      padding: 10,
+      flexGrow: 1
+    }
+  });
+
+
+
+  const claimPPA = (id) => {
     console.log(id);
-        PPA.methods.claimPPA(id).send({from: account.current}).then(function(e) {
+    const MyDocument = () => (
+        <Document>
+          <Page size="A4" style={styles.page}>
+            <View style={styles.section}>
+              <Text>Section #1</Text>
+            </View>
+            <View style={styles.section}>
+              <Text>Section #2</Text>
+            </View>
+          </Page>
+        </Document>
+    );
+    return MyDocument;
+
+    PPA.methods.claimPPA(id).send({from: account.current}).then(function(e) {
           console.log(e);
-          toast("Claimed PPA successfully!")
-          const newWindow = window.open("/receipt/"+id, '_blank', 'noopener,noreferrer')
-          if (newWindow) newWindow.opener = null
+
         });
   }
 
@@ -332,218 +359,12 @@ const handleAccountsChanged = (accounts) => {
 
   return (
     <>
-      <div className="content">
-
-      <Row>
-
-            <Col md="7">
-            {totalPPAs>0 ?
-                <Card>
-              <CardHeader>
-                <h4 className="title">Open PPAs </h4>
-              </CardHeader>
-              <CardBody>
-                {PPAs!==null ?
-                  <Table className="tablesorter" responsive>
-                      <thead className="text-primary">
-                  <tr>
-                    <th>ID</th>
-                    <th>Address</th>
-                    <th>Price</th>
-                    <th>StartDay</th>
-                   <th>EndDay</th>
-                   <th>Status</th>
-                  </tr>
-
-                  </thead>
-                  <tbody>
-                  {PPAs}
-                  </tbody>
-
-                </Table> : <></>}
-                <TablePagination
-                  pagesCount={pagesCountPPA}
-                  currentPage={currentPagePPA}
-                  handlePageClick={handlePageClickPPA}
-                  handlePreviousClick={handlePreviousClickPPA}
-                  handleNextClick={handleNextClickPPA}
-                />
-              </CardBody>
-              <CardFooter>
-
-              </CardFooter>
-            </Card> : <></>}
-
-          {totalCPPAs>0 ?
-                <Card>
-              <CardHeader>
-                <h4 className="title">Open Corporate PPAs</h4>
-              </CardHeader>
-              <CardBody>
-                {CPPAs!==null ?
-                  <Table className="tablesorter" responsive>
-                      <thead className="text-primary">
-                  <tr>
-                    <th>ID</th>
-                    <th>Producer Address</th>
-                    <th>Buyer Address</th>
-                    <th>Price</th>
-                    <th>StartDay</th>
-                    <th>EndDay</th>
-
-                  </tr>
-                  </thead>
-                  <tbody>
-                  {CPPAs}
-                  </tbody>
-                </Table> : <></>}
-                <TablePagination
-                  pagesCount={pagesCountCPPA}
-                  currentPage={currentPageCPPA}
-                  handlePageClick={handlePageClickCPPA}
-                  handlePreviousClick={handlePreviousClickCPPA}
-                  handleNextClick={handleNextClickCPPA}
-                />
-              </CardBody>
-              <CardFooter>
-
-              </CardFooter>
-            </Card> : <></>}
 
 
-
-            </Col>
-            <Col md="5">
-            <Card className="card-user">
-              <CardBody>
-
-              <div>
-                  {isConnected
-                  ? <>  <div className="author">
-                  <div className="block block-one" />
-                  <div className="block block-two" />
-                  <div className="block block-three" />
-                  <div className="block block-four" />
-                  <p className="description">Create a PPA</p>
-                  <br/>
-                  <Button variant="primary" size="lg" onClick={()=>{setOpen('PPA')}}>
-                    Create PPA
-                  </Button>{' '}
-                  <Button variant="secondary" size="lg" onClick={()=>{setOpen('CPPA')}}>
-                    Create Corporate PPA
-                  </Button>
-                </div>
-                <Row>
-                  <Col className="pr-md-1 form"  md="11"  >
-                    <FormGroup>
-                      <label>{open==='CPPA'? 'CPPA':"PPA"} Price (EUR)</label>
-                      <Input
-                          value = {price}
-                          placeholder="Enter Price(EUR)"
-                          type="text"
-                          onChange={event => setPrice(event.target.value)}
-                      />
-
-                    </FormGroup>
-                    <FormGroup style={{display:(open==='CPPA'? 'none':"block")}} >
-                      <label>Start Day</label>
-                      <Input
-                           value = {placeStartDay}
-                          placeholder="Start Day"
-                          type="text"
-                          onChange={event => setPlaceStartDay(event.target.value)}
-                      />
-                    </FormGroup>
-                    <FormGroup style={{display:(open==='CPPA'? 'none':"block")}} >
-                      <label>End Day</label>
-                      <Input
-                           value = {placeEndDay}
-                          placeholder="End Day"
-                          type="text"
-                          onChange={event => setPlaceEndDay(event.target.value)}
-                      />
-                    </FormGroup>
-                    <FormGroup style={{display:(open==='PPA'? 'none':"block")}} >
-                      <label>Start Day</label>
-                      <Input
-                          value = {placeStartDay}
-                          placeholder="Start Day"
-                          type="text"
-                          onChange={event => setPlaceStartDay(event.target.value)}
-                      />
-                    </FormGroup>
-                    <FormGroup style={{display:(open==='PPA'? 'none':"block")}} >
-                      <label>End Day</label>
-                      <Input
-                          value = {placeEndDay}
-                          placeholder="End Day"
-                          type="text"
-                          onChange={event => setPlaceEndDay(event.target.value)}
-                      />
-                    </FormGroup>
-                    <FormGroup style={{display:(open==='PPA'? 'none':"block")}} >
-                      <label>ID</label>
-                      <Input
-                          value = {ID}
-                          placeholder="ID"
-                          type="text"
-                          onChange={event => setID(event.target.value)}
-                      />
-                    </FormGroup>
-                    <FormGroup style={{display:(open==='PPA'? 'none':"block")}} >
-                      <label>Address</label>
-                      <Input
-                          value = {address}
-                          placeholder="Address"
-                          type="text"
-                          onChange={event => setAddress(event.target.value)}
-                      />
-                    </FormGroup>
-                    <FormGroup>
-                    {
-                        error && <div style={{color: `red`}}>Not valid details</div>
-                      }
-                    <Button variant="secondary" size="lg" onClick={() => createPPA()}>
-                      Create {open==='CPPA'? 'CPPA':"PPA"}
-                    </Button>
-
-
-
-                  </FormGroup>
-          </Col>
-
-
-                </Row>
-
-</>
-                  :<div className="author">
-                  <div className="block block-one" />
-                  <div className="block block-two" />
-                  <div className="block block-three" />
-                  <div className="block block-four" />
-                   <p className="description">Connect your wallet to create a new PPA</p>
-                     < Button className="btn-fill" variant="primary"  size="lg"  color="secondary" type="button" onClick= { signInMetamask }>
-                  <img src={"https://docs.metamask.io/metamask-fox.svg"} style={{"height": "30px"}}></img>{"  "} Connect Wallet
-                  </Button>
-
-             </div>
-                }
-</div>
-              </CardBody>
-              <CardFooter>
-              </CardFooter>
-            </Card>
-          </Col>
-          </Row>
-
-
-
-
-      </div>
     </>
   );
 }
 
 
 
-export default PPAs;
+export default ViewPPA;
