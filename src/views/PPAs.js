@@ -3,6 +3,7 @@ import detectEthereumProvider from '@metamask/detect-provider';
 import PropTypes from 'prop-types';
 import TablePagination from '../components/pagination/TablePagination';
 import { toast } from 'react-toastify';
+import moment from 'moment';
 
 // reactstrap components
 import {
@@ -173,9 +174,9 @@ const handleAccountsChanged = (accounts) => {
               rows.push( <tr key={i}>
                 <td>{result[2][i]}</td>
                 <td>{result[0][i].substr(0,6)}</td>
-                <td>{result[1][i]}</td>
-                <td>{result[3][i]}</td>
-                <td>{result[4][i]}</td>
+                <td>{result[1][i]/100}</td>
+                <td>{moment.unix(result[3][i]).format("DD/MM/YYYY")}</td>
+                <td>{moment.unix(result[4][i]).format("DD/MM/YYYY")}</td>
                 <td>{result[5][i]}</td>
                 <td> <Button variant="secondary" size="sm" data-id={result[2][i]} onClick={event => claimPPA(event.target.dataset.id)}>Claim</Button></td>
               </tr>);
@@ -190,9 +191,9 @@ const handleAccountsChanged = (accounts) => {
       rows.push( <tr key={i}>
         <td>{dataPPAs[2][i]}</td>
         <td>{dataPPAs[0][i].substr(0,6)}</td>
-        <td>{dataPPAs[1][i]}</td>
-        <td>{dataPPAs[3][i]}</td>
-        <td>{dataPPAs[4][i]}</td>
+        <td>{dataPPAs[1][i]/100}</td>
+        <td>{moment.unix(dataPPAs[3][i]).format("DD/MM/YYYY")}</td>
+        <td>{moment.unix(dataPPAs[4][i]).format("DD/MM/YYYY")}</td>
         <td>{dataPPAs[5][i]}</td>
         <td> <Button variant="secondary" size="sm" data-id={dataPPAs[2][i]} onClick={event => claimPPA(event.target.dataset.id)}>Claim</Button></td>
 
@@ -225,9 +226,9 @@ const handleAccountsChanged = (accounts) => {
                 <td>{result[3][i]}</td>
                 <td>{result[0][i].substr(0,6)}</td>
                 <td>{result[1][i].substr(0,6)}</td>
-                <td>{result[2][i]}</td>
-                <td>{result[4][i]}</td>
-                <td>{result[5][i]}</td>
+                <td>{result[2][i]/100}</td>
+                <td>{moment.unix(result[4][i]).format("DD/MM/YYYY")}</td>
+                <td>{moment.unix(result[5][i]).format("DD/MM/YYYY")}</td>
                 <td><Button variant="secondary" size="sm" data-id={result[3][i]} onClick={event => acceptCorporatePPA(event.target.dataset.id)}>Claim</Button></td>
               </tr>);
             }
@@ -243,9 +244,9 @@ const handleAccountsChanged = (accounts) => {
         <td>{dataCPPAs[3][i]}</td>
         <td>{dataCPPAs[0][i].substr(0,6)}</td>
         <td>{dataCPPAs[1][i].substr(0,6)}</td>
-        <td>{dataCPPAs[2][i]}</td>
-        <td>{dataCPPAs[4][i]}</td>
-        <td>{dataCPPAs[5][i]}</td>
+        <td>{dataCPPAs[2][i]/100}</td>
+        <td>{moment.unix(dataCPPAs[4][i]).format("DD/MM/YYYY")}</td>
+        <td>{moment.unix(dataCPPAs[5][i]).format("DD/MM/YYYY")}</td>
         <td><Button variant="secondary" size="sm" data-id={dataCPPAs[3][i]} onClick={event => acceptCorporatePPA(event.target.dataset.id)}>Claim</Button></td>
 
       </tr>);

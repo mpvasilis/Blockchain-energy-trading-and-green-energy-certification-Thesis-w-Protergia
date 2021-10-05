@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import TablePagination from '../components/pagination/TablePagination';
 import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 import PropTypes from "prop-types";
+import moment from 'moment';
 
 // reactstrap components
 import {
@@ -62,7 +63,19 @@ function Transactions() {
      getData(_currentPage  * pageSize);
      console.log(_currentPage);
   };
-  
+
+  // const timeConverter = (UNIX_timestamp) => {
+  //   var a = new Date(UNIX_timestamp * 1000);
+  //   var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  //   var year = a.getFullYear();
+  //   var month = months[a.getMonth()];
+  //   var date = a.getDate();
+  //   var time = date + '/ ' + month + '/ ' + year  ;
+  //   return time;
+  // }
+  // console.log("Time:", timeConverter());
+
+
   const getData = (offset)=>{
 
     if(data===null){
@@ -76,6 +89,7 @@ function Transactions() {
             setData(result);
             console.log(pageSize + offset);
             var rows = [];
+
             for (var i = offset; i < pageSize + offset  ; i++) {
               if(i >= pageSize)  break;
               if(i >= total)  break;
@@ -83,10 +97,11 @@ function Transactions() {
               rows.push( <tr key={i}>
                 <td>{result[0][i].substr(0,6)}</td>
                 <td>{result[1][i].substr(0,6)}</td>
-                <td>{result[2][i]}</td>
-                <td>{result[3][i]}</td>
-                <td>{result[4][i]}</td>
+                <td>{result[2][i]/1000000}</td>
+                <td>{result[3][i]/100}</td>
+                <td>{moment(moment.unix(result[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
               </tr>);
+            console.log(moment(result[4][i]))
             }
             setPurchases(rows)
           });
@@ -98,9 +113,9 @@ function Transactions() {
       rows.push( <tr key={i}>
         <td>{data[0][i].substr(0,6)}</td>
         <td>{data[1][i].substr(0,6)}</td>
-        <td>{data[2][i]}</td>
-        <td>{data[3][i]}</td>
-        <td>{data[4][i]}</td>
+        <td>{data[2][i]/1000000}</td>
+        <td>{data[3][i]/100}</td>
+        <td>{moment(moment.unix(data[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
       </tr>);
       }
     }
