@@ -3,6 +3,7 @@ import detectEthereumProvider from '@metamask/detect-provider';
 import PropTypes from 'prop-types';
 import TablePagination from '../components/pagination/TablePagination';
 import { toast } from 'react-toastify';
+import moment from 'moment';
 
 // reactstrap components
 import {
