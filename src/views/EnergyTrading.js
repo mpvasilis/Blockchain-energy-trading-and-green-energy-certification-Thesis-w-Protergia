@@ -166,7 +166,7 @@ const handleAccountsChanged = (accounts) => {
                <td>{result[0][i].substr(0,6)}</td>
                 <td>{moment(moment.unix(result[1][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
                 <td>{result[2][i]/1000000}</td>
-                <td>{result[3][i]}</td>
+                <td>{result[3][i]/100}</td>
               </tr>);
             }
             setAsks(rows)
@@ -181,7 +181,7 @@ const handleAccountsChanged = (accounts) => {
        <td>{dataAsks[0][i].substr(0,6)}</td>
         <td>{moment(moment.unix(dataAsks[1][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
         <td>{dataAsks[2][i]/1000000}</td>
-        <td>{dataAsks[3][i]}</td>
+        <td>{dataAsks[3][i]/100}</td>
       </tr>);
       setDataAsks(null);
       }
@@ -215,7 +215,7 @@ const handleAccountsChanged = (accounts) => {
                   <td>{result[0][i].substr(0,6)}</td>
                   <td>{moment(moment.unix(result[1][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
                   <td>{result[2][i]/1000000}</td>
-                  <td>{result[3][i]}</td>
+                  <td>{result[3][i]/100}</td>
                 </tr>); 
               }
               setBids(rows)
@@ -230,7 +230,7 @@ const handleAccountsChanged = (accounts) => {
          <td>{dataBids[0][i].substr(0,6)}</td>
         <td>{moment(moment.unix(dataBids[1][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
         <td>{dataBids[2][i]/1000000}</td>
-        <td>{dataBids[3][i]}</td>
+        <td>{dataBids[3][i]/100}</td>
       </tr>);
     
       }
