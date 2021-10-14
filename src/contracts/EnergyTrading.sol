@@ -99,7 +99,7 @@ contract EnergyTrading is deviceRegistry, EPA {
 
     mapping(address => uint) bids;
     bid[] listOfBids;
-    uint nextNumberOfBid;                                    
+    uint nextNumberOfBid;
 
     //@notice Create energy offer 
     //@dev There is a minimum energy requirement 
