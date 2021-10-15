@@ -3,6 +3,8 @@ import TablePagination from '../components/pagination/TablePagination';
 import detectEthereumProvider from '@metamask/detect-provider';
 import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
+import moment from 'moment';
+
 
 
 
@@ -161,10 +163,10 @@ const handleAccountsChanged = (accounts) => {
             for (var i = offset; i < pageSize + offset  ; i++) {
               if(i >= askNum)  break;
               rows.push( <tr key={i}>
-                <td>{result[0][i].substr(0,6)}</td>
-                <td>{result[1][i]}</td>
-                <td>{result[2][i]}</td>
-                <td>{result[3][i]}</td>
+               <td>{result[0][i].substr(0,6)}</td>
+                <td>{moment(moment.unix(result[1][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
+                <td>{result[2][i]/1000000}</td>
+                <td>{result[3][i]/100}</td>
               </tr>);
             }
             setAsks(rows)
@@ -176,10 +178,10 @@ const handleAccountsChanged = (accounts) => {
     for (let i = offset; i < pageSize + offset  ; i++) {
       if(i < totalAsks )  { 
       rows.push( <tr key={i}>
-        <td>{dataAsks[0][i].substr(0,6)}</td>
-        <td>{dataAsks[1][i]}</td>
-        <td>{dataAsks[2][i]}</td>
-        <td>{dataAsks[3][i]}</td>
+       <td>{dataAsks[0][i].substr(0,6)}</td>
+        <td>{moment(moment.unix(dataAsks[1][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
+        <td>{dataAsks[2][i]/1000000}</td>
+        <td>{dataAsks[3][i]/100}</td>
       </tr>);
       setDataAsks(null);
       }
@@ -211,9 +213,9 @@ const handleAccountsChanged = (accounts) => {
                 if(i >=  bidNum)  break;
                 rows.push( <tr key={i}>
                   <td>{result[0][i].substr(0,6)}</td>
-                  <td>{result[1][i]}</td>
-                  <td>{result[2][i]}</td>
-                  <td>{result[3][i]}</td>
+                  <td>{moment(moment.unix(result[1][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
+                  <td>{result[2][i]/1000000}</td>
+                  <td>{result[3][i]/100}</td>
                 </tr>); 
               }
               setBids(rows)
@@ -225,10 +227,10 @@ const handleAccountsChanged = (accounts) => {
     for (let i = offset; i < pageSize + offset  ; i++) {
       if(i < totalBids )  { 
       rows.push( <tr key={i}>
-        <td>{dataBids[0][i].substr(0,6)}</td>
-        <td>{dataBids[1][i]}</td>
-        <td>{dataBids[2][i]}</td>
-        <td>{dataBids[3][i]}</td>
+         <td>{dataBids[0][i].substr(0,6)}</td>
+        <td>{moment(moment.unix(dataBids[1][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
+        <td>{dataBids[2][i]/1000000}</td>
+        <td>{dataBids[3][i]/100}</td>
       </tr>);
     
       }

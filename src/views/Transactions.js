@@ -2,6 +2,8 @@ import React, {useEffect, useState} from "react";
 import TablePagination from '../components/pagination/TablePagination';
 import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 import PropTypes from "prop-types";
+import moment from 'moment';
+
 
 // reactstrap components
 import {
@@ -81,11 +83,11 @@ function Transactions() {
               if(i >= total)  break;
 
               rows.push( <tr key={i}>
-                <td>{result[0][i].substr(0,6)}</td>
+                 <td>{result[0][i].substr(0,6)}</td>
                 <td>{result[1][i].substr(0,6)}</td>
-                <td>{result[2][i]}</td>
+                <td>{result[2][i]/1000000}</td>
                 <td>{result[3][i]/100}</td>
-                <td>{result[4][i]}</td>
+                <td>{moment(moment.unix(result[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
               </tr>);
             }
             setPurchases(rows)
@@ -98,9 +100,9 @@ function Transactions() {
       rows.push( <tr key={i}>
         <td>{data[0][i].substr(0,6)}</td>
         <td>{data[1][i].substr(0,6)}</td>
-        <td>{data[2][i]}</td>
+        <td>{data[2][i]/1000000}</td>
         <td>{data[3][i]/100}</td>
-        <td>{data[4][i]}</td>
+        <td>{moment(moment.unix(data[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
       </tr>);
       }
     }

@@ -10,7 +10,7 @@ import Sidebar from "components/Sidebar/Sidebar.js";
 
 import routes from "routes.js";
 
-import logo from "assets/img/react-logo.png";
+import logo from "assets/img/photo_logo.png";
 import { BackgroundColorContext } from "contexts/BackgroundColorContext";
 
 var ps;
@@ -91,9 +91,12 @@ function Admin(props) {
             <Sidebar
               routes={routes}
               logo={{
-                outterLink: "#",
+                // outterLink: "#",
                 text: "Decentralized Energy",
-                imgSrc: "https://www.protergia.gr/sites/all/themes/protergia_bootstrap/images/logo.png",
+                // imgSrc:"./src/assets/img/photo_logo.png",
+                // imgSrc: "https://www.protergia.gr/sites/all/themes/protergia_bootstrap/images/logo.png",
+                imgSrc: logo ,
+               
               }}
               toggleSidebar={toggleSidebar}
             />
