@@ -3,8 +3,10 @@ import detectEthereumProvider from '@metamask/detect-provider';
 import 'bootstrap';
 import { Button } from 'reactstrap';
 import "assets/css/black-dashboard-react.css";
+// import "assets/scss/black-dashboard-react/_loading.scss";
 import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
+
 
 // reactstrap components
 import {
@@ -40,9 +42,10 @@ function Devices() {
   const [error, setError] = useState(false);
   const [deviceAdded, setDeviceAdded] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
-   const [accounts, setAccounts] = useState([]);
-   const [id, setId] = useState(0);
-
+  const [accounts, setAccounts] = useState([]);
+  const [id, setId] = useState(0);
+  const [isLoading,setIsLoading]= useState(true);
+  
    
 
    
@@ -95,16 +98,31 @@ function Devices() {
       console.log('Current addr: ', account.current);
     }
   }
+
+  const handleButton = async () => {
+    setIsLoading(true);
+
+     await web3.deviceRegistry.methods.addDevice(input).send({from: account.current}).then(function(receipt){
+      setIsLoading(false);
+     
+    })
+    
+  }
   
   useEffect(() => {
+
     web3.eth.getAccounts().then(r=>{
       handleAccountsChanged(r);
     });
-
       }, []);
-   
-    
+
        const addDevice= () =>{
+  
+          if (input === "" || input < 0 ){
+            
+            setError(true);
+        }
+        else{
 
         deviceRegistry.methods.getDeviceByAddress(account.current).call({from: account.current}).then(function(result){
           
@@ -114,9 +132,7 @@ function Devices() {
       
         if (account.current ===  Object.values(result)[0]){
 
-
-            toast("This device has been already added!");
-            
+            toast("This device has been already added!"); 
         }
          else{
 
@@ -126,6 +142,10 @@ function Devices() {
         })} 
        
       })}
+      setInput("");
+    }
+
+   
      
   return (
     <>
@@ -149,7 +169,7 @@ function Devices() {
                              <FormGroup>
                              <Input
                                    value = {setInput}
-                                   placeholder="Enter your ID"
+                                   placeholder="Enter owners ID"
                                    type="text"
                                    value={input}
                                    onInput={e => setInput(e.target.value)}
@@ -162,7 +182,7 @@ function Devices() {
      
       <select id="inpurDevices" class="form-control ">
       
-                    <option selected >Select Devices</option>
+                    <option selected >Select Type of Device</option>
                     <option value="1">Wind</option>
                      <option value="2">Biomass</option>
                      <option value="3">Hydo turbine</option>
@@ -173,10 +193,15 @@ function Devices() {
                     </select>
                     
              </div>
-             
+             {/* <div class="lds-hourglass"> </div> */}
+             {/* onClick={() => handleButton()}   */}
+               <Button variant="primary" size="lg" onClick={addDevice} > Add Device </Button>{' '}
+               {/* {isLoading ? "Loading" : addDevice} */}
+
                
-               <Button variant="primary" size="lg" onClick={addDevice}  > Add Device  </Button>{' '}
-                               
+               
+               
+                            
                              </FormGroup>
                              </Col>
                              </Row>
@@ -195,10 +220,11 @@ function Devices() {
                        
                  </div>   
                     }
-    </div> 
+        </div> 
                 </CardBody>
                 </Card>
                 </Col>
+                
       </div>
     </>
   );

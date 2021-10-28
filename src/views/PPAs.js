@@ -53,6 +53,13 @@ function PPAs() {
   const [address, setAddress] = useState('');
   const account = useRef('');
   const[error, setError] = useState(false);
+  const[errorP, setErrorP] = useState(false);
+  const[errorS, setErrorS] = useState(false);
+  const[errorE, setErrorE] = useState(false);
+  const[errorI, setErrorI] = useState(false);
+  const[errorA, setErrorA] = useState(false);
+
+
   const[isDisabled, setIsDisabled] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
 
@@ -258,11 +265,29 @@ const handleAccountsChanged = (accounts) => {
 
   const createPPA = () => {
 
+    const re = /^[0-9\b]+$/;
+
     if (open === 'PPA'){
-      if (price === ""||placeStartDay === ""||placeEndDay === ""||placeEndDay < placeStartDay||price < 1){
+      if (price === ""||placeStartDay === "" || placeEndDay === ""  ){
 
         setError(true);
+        
       }
+      else if ( price < 1 ){
+
+        setErrorP(true);
+      }
+        
+     else if (placeStartDay.length !== 10 ){
+
+        setErrorS(true)
+     }
+       
+     else  if (placeEndDay.length !== 10 ){
+      
+          setErrorE(true) 
+     }
+    
       else{
 
         PPA.methods.createPPA(price * 100, placeStartDay, placeEndDay).send({from: account.current}).on('transactionHash', (th) => {
@@ -280,9 +305,31 @@ const handleAccountsChanged = (accounts) => {
     }
 
     if (open === 'CPPA'){
-      if (price === ""||placeStartDay === ""||placeEndDay === ""||ID === ""||address === ""||price < 1||placeEndDay < placeStartDay){
+
+      if (price === ""||placeStartDay === "" || placeEndDay === "" || ID === "" ||address === ""){
 
         setError(true);
+        
+      }
+      else if (price < 1  ){
+
+        setErrorP(true);
+      }
+      else if (placeStartDay.length !== 10){
+
+        setErrorS(true)
+      }
+      else if (placeEndDay.length !== 10){
+      
+        setErrorE(true)
+      }
+      else if (ID < 0){
+
+        setErrorI(true)
+      }
+      else if (address.length !== 42){
+
+        setErrorA(true)
       }
       else{
 
@@ -442,7 +489,11 @@ const handleAccountsChanged = (accounts) => {
                           placeholder="Enter Price(EUR)"
                           type="text"
                           onChange={event => setPrice(event.target.value)}
+                          
                       />
+                      {
+                        errorP && <div style={{color: `red`}}>Set a valid Price</div>
+                      }
 
                     </FormGroup>
                     <FormGroup style={{display:(open==='CPPA'? 'none':"block")}} >
@@ -453,6 +504,9 @@ const handleAccountsChanged = (accounts) => {
                           type="text"
                           onChange={event => setPlaceStartDay(event.target.value)}
                       />
+                       {
+                        errorS && <div style={{color: `red`}}>Set a valid Start day</div>
+                      }
                     </FormGroup>
                     <FormGroup style={{display:(open==='CPPA'? 'none':"block")}} >
                       <label>End Day</label>
@@ -462,7 +516,11 @@ const handleAccountsChanged = (accounts) => {
                           type="text"
                           onChange={event => setPlaceEndDay(event.target.value)}
                       />
+                      {
+                        errorE && <div style={{color: `red`}}>Set a valid End day</div>
+                      }
                     </FormGroup>
+                    
                     <FormGroup style={{display:(open==='PPA'? 'none':"block")}} >
                       <label>Start Day</label>
                       <Input
@@ -472,6 +530,9 @@ const handleAccountsChanged = (accounts) => {
                           onChange={event => setPlaceStartDay(event.target.value)}
                       />
                     </FormGroup>
+                    {
+                        errorS && <div style={{color: `red`}}>Set a valid Start day</div>
+                      }
                     <FormGroup style={{display:(open==='PPA'? 'none':"block")}} >
                       <label>End Day</label>
                       <Input
@@ -480,6 +541,9 @@ const handleAccountsChanged = (accounts) => {
                           type="text"
                           onChange={event => setPlaceEndDay(event.target.value)}
                       />
+                      {
+                        errorE && <div style={{color: `red`}}>Set a valid End day</div>
+                      }
                     </FormGroup>
                     <FormGroup style={{display:(open==='PPA'? 'none':"block")}} >
                       <label>ID</label>
@@ -489,6 +553,9 @@ const handleAccountsChanged = (accounts) => {
                           type="text"
                           onChange={event => setID(event.target.value)}
                       />
+                      {
+                        errorI && <div style={{color: `red`}}>Set a valid ID</div>
+                      }
                     </FormGroup>
                     <FormGroup style={{display:(open==='PPA'? 'none':"block")}} >
                       <label>Address</label>
@@ -498,11 +565,15 @@ const handleAccountsChanged = (accounts) => {
                           type="text"
                           onChange={event => setAddress(event.target.value)}
                       />
-                    </FormGroup>
-                    <FormGroup>
-                    {
-                        error && <div style={{color: `red`}}>Not valid details</div>
+                       {
+                        errorA && <div style={{color: `red`}}>Set a valid address</div>
                       }
+                    </FormGroup>
+                    {
+                        error && <div style={{color: `red`}}>Fill all the blanks</div>
+                      }
+                    <FormGroup>
+                    
                     <Button variant="secondary" size="lg" onClick={() => createPPA()}>
                       Create {open==='CPPA'? 'CPPA':"PPA"}
                     </Button>

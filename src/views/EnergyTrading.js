@@ -22,6 +22,7 @@ import {
   Col, Table,
 } from "reactstrap";
 import Web3 from 'web3';
+import { isNumericLiteral } from "typescript";
 const web3 = new Web3(Web3.givenProvider || "wss://ropsten.infura.io/ws/v3/5f552c63b2834a588871339fd81f7943");
 
 var contractAddress = '0xf204b9E3f564ef0F5d827B50A8879D058FA191A9' ;
@@ -49,10 +50,13 @@ function EnergyTrading() {
   const [priceBid, setPriceBid] = useState('');
   const account = useRef('');
   const[error, setError] = useState(false);
+  const[errorE, setErrorE] = useState(false);
+  const[errorP, setErrorP] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [disable, setDisable] = useState(false);
   const[alert, setAlert] = useState(false);
   
+ 
 const signInMetamask = async() => {
   const provider = await detectEthereumProvider();
 
@@ -241,15 +245,22 @@ const handleAccountsChanged = (accounts) => {
   }
 
   const addBidOrAsk = () => {
-
-     
     
+    const re = /^[0-9\b]+$/;
+  
     if (open === 'bid'){
-      
-      if (energyKW === ""||priceBid === ""||energyKW < 1){
-
+    
+      if (energyKW === "" || priceBid === ""){
+        
         setError(true);
-
+    }
+       else if ( energyKW < 1){
+      
+        setErrorE(true)  
+      }
+      else if ( priceBid < 0){
+      
+        setErrorP(true)  
       }
     else{
     
@@ -266,11 +277,12 @@ const handleAccountsChanged = (accounts) => {
       setPriceBid("");
     }
     }else{
-      if (energyKW === ""||energyKW > 1000000){
+      
+      if (energyKW === ""||energyKW > 1000000 ||  energyKW != re || energyKW < 1){
 
-        setError(true);
+        setErrorE(true);
         
-      }
+      }else{
       energyTrading.methods.askEnergy(energyKW * 1000000).send({from: account.current}).on('transactionHash', (th) => {
        
         toast("Ask has been succesfully submited!")
@@ -282,6 +294,7 @@ const handleAccountsChanged = (accounts) => {
       });
       setEnergyKW("");
     }
+  }
     
   }
  
@@ -414,6 +427,9 @@ const handleAccountsChanged = (accounts) => {
                           type="text"
                           onChange={event => setEnergyKW(event.target.value)}
                       />
+                       {
+                        errorE && <div style={{color: `red`}}>Please enter a valid amount of KWHs</div>
+                      }
                     </FormGroup>
                     <FormGroup style={{display:(open==='ask'? 'none':"block")}} >
                       <label>Price (EUR)</label>
@@ -423,11 +439,17 @@ const handleAccountsChanged = (accounts) => {
                           type="text"
                           onChange={event => setPriceBid(event.target.value)}
                       />
+                      {
+                        errorP && <div style={{color: `red`} }>Please enter a valid amount of price</div>
+                      }
                     </FormGroup>
+                    
                     <FormGroup>
                     {
-                        error && <div style={{color: `red`}}>Please enter a valid amount of price or KWHs</div>
+                        error && <div style={{color: `red`}}>Please fill all the blanks</div>
                       }
+                      
+                      
                     <Button  variant="secondary" size="lg" disabled={disable} onClick={() => addBidOrAsk()}>
                       Place {open==='ask'? 'Ask':"Bid"}
                     </Button>

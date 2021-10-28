@@ -32,6 +32,7 @@
     "react-router-dom": "5.2.0",
     "react-scripts": "4.0.1",
     "react-select": "^4.3.1",
+    "react-theme": "^0.1.4",
     "react-toastify": "^8.0.2",
     "reactstrap": "8.7.1",
     "truffle": "^5.1.54",
