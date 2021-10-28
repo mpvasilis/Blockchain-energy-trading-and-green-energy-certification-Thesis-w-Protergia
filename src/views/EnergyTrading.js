@@ -253,7 +253,7 @@ const handleAccountsChanged = (accounts) => {
       if (energyKW === "" || priceBid === ""){
         
         setError(true);
-    }
+    }  
        else if ( energyKW < 1){
       
         setErrorE(true)  
@@ -265,7 +265,9 @@ const handleAccountsChanged = (accounts) => {
     else{
     
       energyTrading.methods.energyOffer(energyKW * 1000000, priceBid * 100).send({from: account.current}).on('transactionHash', (th) => {
-       
+
+        
+
         toast("Bid has been succesfully submited!")
       }).then(function(e) {
 
@@ -275,6 +277,9 @@ const handleAccountsChanged = (accounts) => {
       });
       setEnergyKW("");
       setPriceBid("");
+      setErrorE(false);
+      setErrorP(false);
+      setError(false);
     }
     }else{
       
@@ -293,6 +298,8 @@ const handleAccountsChanged = (accounts) => {
             console.log(e)
       });
       setEnergyKW("");
+      setErrorE(false);
+      setError(false);
     }
   }
     
@@ -450,9 +457,10 @@ const handleAccountsChanged = (accounts) => {
                       }
                       
                       
-                    <Button  variant="secondary" size="lg" disabled={disable} onClick={() => addBidOrAsk()}>
+                    <Button  variant="secondary" size="lg" disabled={disable}  onClick={() => addBidOrAsk()}>  
                       Place {open==='ask'? 'Ask':"Bid"}
                     </Button>
+                    
                   </FormGroup>
                  { alert && <div class="alert alert-warning" size= "lg" role="alert">
                   You must add a device first!

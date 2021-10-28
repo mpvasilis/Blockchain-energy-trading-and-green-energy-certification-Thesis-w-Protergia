@@ -143,6 +143,7 @@ function Devices() {
        
       })}
       setInput("");
+      setError(false);
     }
 
    

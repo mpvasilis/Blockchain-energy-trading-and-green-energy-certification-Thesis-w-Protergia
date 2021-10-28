@@ -301,6 +301,10 @@ const handleAccountsChanged = (accounts) => {
         setPrice("");
         setPlaceStartDay("");
         setPlaceEndDay("");
+        setErrorP(false);
+        setError(false);
+        setErrorS(false);
+        setErrorE(false);
       }
     }
 
@@ -347,6 +351,12 @@ const handleAccountsChanged = (accounts) => {
         setPlaceStartDay("");
         setPlaceEndDay("");
         setID("");
+        setError(false);
+        setErrorP(false);
+        setErrorS(false);
+        setErrorE(false);
+        setErrorI(false);
+        setErrorA(false);
       }
     }
   }
