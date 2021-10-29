@@ -526,6 +526,7 @@ const handleAccountsChanged = (accounts) => {
                         errorS && <div style={{color: `red`}}>Set a valid Start day</div>
                       }
                     </FormGroup>
+
                     <FormGroup style={{display:(open==='CPPA'? 'none':"block")}} >
                       <label>End Day</label>
                       <Input
@@ -547,10 +548,11 @@ const handleAccountsChanged = (accounts) => {
                           type="text"
                           onChange={event => setPlaceStartDay(event.target.value)}
                       />
-                    </FormGroup>
-                    {
+                       {
                         errorS && <div style={{color: `red`}}>Set a valid Start day</div>
                       }
+                    </FormGroup>
+                   
                     <FormGroup style={{display:(open==='PPA'? 'none':"block")}} >
                       <label>End Day</label>
                       <Input
