@@ -29,10 +29,10 @@ function Footer() {
         <div className="copyright">
           © {new Date().getFullYear()} {" "}
           <a
-            href="https://protergia.gr"
+            href="http://gridustry.com/"
             target="_blank"
           >
-            Protergia
+            Powered by Gridustry
           </a>{" "}
         </div>
       </Container>

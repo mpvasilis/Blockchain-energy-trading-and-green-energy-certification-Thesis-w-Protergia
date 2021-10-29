@@ -270,7 +270,7 @@ const handleAccountsChanged = (accounts) => {
 
   const createPPA = () => {
 
-    const re = /^[0-9\b]+$/;
+    
 
     if (open === 'PPA'){
       if (price === ""||placeStartDay === "" || placeEndDay === ""  ){
@@ -506,11 +506,11 @@ const handleAccountsChanged = (accounts) => {
                     <FormGroup style={{display:(open==='CPPA'? 'none':"block")}} >
                       <label>Start Day</label>
                       <Input
-                           value = {placeStartDay}
+                          value = {placeStartDay}
                           placeholder="Start Day"
                           type="text"
-                          onChange={event => setPlaceStartDay(event.target.value)}
-                      />
+                          onChange={event => setPlaceStartDay(event.target.value)}  
+                      />    
                        {
                         errorS && <div style={{color: `red`}}>Set a valid Start day</div>
                       }
