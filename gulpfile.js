@@ -19,7 +19,7 @@ gulp.task("licenses", async function () {
       gap.prependText(`<!--
 
 =========================================================
-* Protergia Decentralized Energy
+* Protgergia Decentralized Energy
 =========================================================
 
 * Coded by Creative Tim
