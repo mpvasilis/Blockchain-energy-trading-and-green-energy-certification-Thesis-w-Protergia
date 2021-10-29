@@ -182,14 +182,14 @@ contract Marketplace {
                     amount = amount - energyPurchased;
                     ID.increment();
                     uint currentID = ID.current();
-                    index = easks[currentID];
-                    index = listOfEnergyAsks.length;
-                    easks[currentID] = idx;
-                    listOfEnergyAsks.push(eAsk({
-                        buyer: currentAddr,
-                        idOfAsk: currentID,
+                    index = ebids[currentID];
+                    index = listOfEnergyBids.length;
+                    ebids[currentID] = idx;
+                    listOfEnergyBids.push(eBid({
+                        seller: currentAddr,
+                        idOfBid: currentID,
                         energy: amount,
-                        price: listOfEnergyAsks[i].price,
+                        eprice: listOfEnergyAsks[i].price,
                         timestamp: block.timestamp
                     }));
 
