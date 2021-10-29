@@ -117,6 +117,7 @@ contract Marketplace {
                         price: listOfEnergyBids[i].eprice,
                         timestamp: block.timestamp
                     }));
+                    emit onAskEnergy(currentAddr, block.timestamp, listOfEnergyBids[i].eprice, amount);
 
                     isEnergyPurchased = true;
 
