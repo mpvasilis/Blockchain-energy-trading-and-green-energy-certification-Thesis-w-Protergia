@@ -7,7 +7,6 @@ contract Marketplace {
 
     using Counters for Counters.Counter;
     Counters.Counter private ID;
-    ID.increment();
     uint currentID = ID.current();
 
     event onBidEnergy(address indexed seller, uint indexed day, uint indexed price, uint energy);
@@ -63,6 +62,7 @@ contract Marketplace {
         require(_eprice >= cent, "Price in 'cent', for example 1.5dollars/kwh = 150cents/kwh");
         address currentAddr = msg.sender;
         uint idx = ebids[currentID];
+        ID.increment();
         idx = listOfEnergyBids.length;
         ebids[currentID] = idx;
         listOfEnergyBids.push(eBid({
@@ -78,6 +78,10 @@ contract Marketplace {
     function energyAsk(uint _energy, uint _price) public {
         require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh(in whs), for instance 5.6kwhs = 5600whs");
         address currentAddr = msg.sender;
+        uint idx = easks[currentID];
+        ID.increment();
+        idx = listOfEnergyAsks.length;
+        easks[currentID] = idx;
         listOfEnergyAsks.push(eAsk({
             buyer: currentAddr,
             idOfAsk: currentID,
@@ -104,6 +108,7 @@ contract Marketplace {
                     _price = energyPurchased*listOfEnergyBids[i].eprice;
                     amount = amount-energyPurchased;
 
+                    ID.increment();
                     index = easks[currentID];
                     index = listOfEnergyAsks.length;
                     easks[currentID] = idx;
@@ -177,7 +182,8 @@ contract Marketplace {
                     energyPurchased = listOfEnergyAsks[i].energy;
                     _price = energyPurchased*listOfEnergyAsks[i].price;
                     amount = amount - energyPurchased;
-                    
+
+                    ID.increment();
                     index = ebids[currentID];
                     index = listOfEnergyBids.length;
                     ebids[currentID] = idx;
