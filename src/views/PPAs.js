@@ -43,10 +43,8 @@ function PPAs() {
   const [CPPAs, setCPPAs] = useState(null);
   const [pagesCountPPA, setPagesCountPPA] = useState(0);
   const [pagesCountCPPA, setPagesCountCPPA] = useState(0);
-
-
   const [price, setPrice] = useState('');
-  // const [priceBid, setPriceBid] = useState(0);
+
   const [placeStartDay, setPlaceStartDay] = useState('');
   const [placeEndDay, setPlaceEndDay] = useState('');
   const [ID, setID] = useState('');
@@ -159,7 +157,6 @@ const handleAccountsChanged = (accounts) => {
     console.log('Current addr: ', account.current);
   }
 }
-
 
   const getDataPPAs = (offset, update = false)=>{
 
@@ -284,18 +281,15 @@ const handleAccountsChanged = (accounts) => {
       else if ( price < 1 || isNumeric(price) === false){
 
         setErrorP(true);
-      }
-        
-     else if (placeStartDay.length !== 10 || isNumeric(placeStartDay) === false){
+      }        
+      else if (placeStartDay.length !== 10 || isNumeric(placeStartDay) === false){
 
         setErrorS(true)
      }
-       
      else  if (placeEndDay.length !== 10 || isNumeric(placeEndDay) === false){
       
           setErrorE(true) 
      }
-    
       else{
 
         PPA.methods.createPPA(price * 100, placeStartDay, placeEndDay).send({from: account.current}).on('transactionHash', (th) => {
@@ -394,13 +388,11 @@ const handleAccountsChanged = (accounts) => {
     });
   }, []);
 
-
   return (
     <>
       <div className="content">
 
       <Row>
-
             <Col md="7">
             {totalPPAs>0 ?
                 <Card>
@@ -475,13 +467,10 @@ const handleAccountsChanged = (accounts) => {
               </CardFooter>
             </Card> : <></>}
 
-
-
             </Col>
             <Col md="5">
             <Card className="card-user">
               <CardBody>
-
               <div>
                   {isConnected
                   ? <>  <div className="author">
@@ -598,12 +587,8 @@ const handleAccountsChanged = (accounts) => {
                       Create {open==='CPPA'? 'CPPA':"PPA"}
                     </Button>
 
-
-
                   </FormGroup>
           </Col>
-
-
                 </Row>
 
 </>
@@ -626,10 +611,6 @@ const handleAccountsChanged = (accounts) => {
             </Card>
           </Col>
           </Row>
-
-
-
-
       </div>
     </>
   );

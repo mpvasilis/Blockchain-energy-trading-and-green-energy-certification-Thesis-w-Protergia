@@ -30,10 +30,6 @@ var abi =  [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address
 // const deviceRegistry = new web3.eth.Contract(abi, contractAddress);
 const energyTrading = new web3.eth.Contract(abi, contractAddress);
 
-
-
-
-
 function EnergyTrading() {
   const [open, setOpen] = useState('bid');
   const [totalAsks, setTotalAsks] = useState(0);
@@ -194,8 +190,6 @@ const handleAccountsChanged = (accounts) => {
     console.log(rows);
   }
   }
-
- 
 
   const getDataBids = (offset, update = false)=>{
     

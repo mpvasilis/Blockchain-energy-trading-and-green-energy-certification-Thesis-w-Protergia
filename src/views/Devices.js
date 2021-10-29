@@ -46,11 +46,6 @@ function Devices() {
   const [id, setId] = useState(0);
   const [isLoading,setIsLoading]= useState(true);
   
-   
-
-   
-  
-
   const signInMetamask = async() => {
     const provider = await detectEthereumProvider();
   
@@ -99,8 +94,6 @@ function Devices() {
     }
   }
 
- 
-  
   useEffect(() => {
 
     web3.eth.getAccounts().then(r=>{
@@ -148,7 +141,6 @@ function Devices() {
       
     }
    
-     
   return (
     <>
       <div className="content">
