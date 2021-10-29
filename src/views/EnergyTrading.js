@@ -243,22 +243,28 @@ const handleAccountsChanged = (accounts) => {
     console.log(rows);
   }
   }
+  const isNumeric = (number)  =>{
+    if (+number === +number) { // if is a number
+        return true;
+    }
+  
+    return false;
+  }
 
   const addBidOrAsk = () => {
     
-    const re = /^[0-9\b]+$/;
   
     if (open === 'bid'){
     
-      if (energyKW === "" || priceBid === ""){
+      if (energyKW === "" || priceBid === "" ){
         
         setError(true);
     }  
-       else if ( energyKW < 1){
+       else if ( energyKW < 1 ||  isNumeric(energyKW) === false ) {
       
         setErrorE(true)  
       }
-      else if ( priceBid < 0){
+      else if ( priceBid < 0 ||  isNumeric(priceBid) === false){
       
         setErrorP(true)  
       }
@@ -283,7 +289,7 @@ const handleAccountsChanged = (accounts) => {
     }
     }else{
       
-      if (energyKW === ""||energyKW > 1000000 ||  energyKW != re || energyKW < 1){
+      if (energyKW === ""||energyKW > 1000000  || energyKW < 1 ||  isNumeric(energyKW) === false ){
 
         setErrorE(true);
         

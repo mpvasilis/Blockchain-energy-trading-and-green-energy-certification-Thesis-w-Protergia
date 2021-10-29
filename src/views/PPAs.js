@@ -263,6 +263,14 @@ const handleAccountsChanged = (accounts) => {
   }
   }
 
+  const isNumeric = (number)  =>{
+    if (+number === +number) { // if is a number
+        return true;
+    }
+  
+    return false;
+  }
+
   const createPPA = () => {
 
     const re = /^[0-9\b]+$/;
@@ -273,17 +281,17 @@ const handleAccountsChanged = (accounts) => {
         setError(true);
         
       }
-      else if ( price < 1 ){
+      else if ( price < 1 || isNumeric(price) === false){
 
         setErrorP(true);
       }
         
-     else if (placeStartDay.length !== 10 ){
+     else if (placeStartDay.length !== 10 || isNumeric(placeStartDay) === false){
 
         setErrorS(true)
      }
        
-     else  if (placeEndDay.length !== 10 ){
+     else  if (placeEndDay.length !== 10 || isNumeric(placeEndDay) === false){
       
           setErrorE(true) 
      }
@@ -315,23 +323,23 @@ const handleAccountsChanged = (accounts) => {
         setError(true);
         
       }
-      else if (price < 1  ){
+      else if (price < 1 || isNumeric(price) === false  ){
 
         setErrorP(true);
       }
-      else if (placeStartDay.length !== 10){
+      else if (placeStartDay.length !== 10 || isNumeric(placeStartDay) === false){
 
         setErrorS(true)
       }
-      else if (placeEndDay.length !== 10){
+      else if (placeEndDay.length !== 10 || isNumeric(placeEndDay) === false){
       
         setErrorE(true)
       }
-      else if (ID < 0){
+      else if (ID < 0 || isNumeric(ID) === false){
 
         setErrorI(true)
       }
-      else if (address.length !== 42){
+      else if (address.length !== 42 ){
 
         setErrorA(true)
       }

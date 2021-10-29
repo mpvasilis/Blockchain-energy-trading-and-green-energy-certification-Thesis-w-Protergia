@@ -99,15 +99,7 @@ function Devices() {
     }
   }
 
-  const handleButton = async () => {
-    setIsLoading(true);
-
-     await web3.deviceRegistry.methods.addDevice(input).send({from: account.current}).then(function(receipt){
-      setIsLoading(false);
-     
-    })
-    
-  }
+ 
   
   useEffect(() => {
 
@@ -146,6 +138,15 @@ function Devices() {
       setError(false);
     }
 
+    const handleButton = async () => {
+      setIsLoading(true);
+  
+       await web3.deviceRegistry.methods.addDevice(input).send({from: account.current}).then(function(receipt){
+        setIsLoading(false);
+       
+      })
+      
+    }
    
      
   return (
@@ -200,9 +201,7 @@ function Devices() {
                {/* {isLoading ? "Loading" : addDevice} */}
 
                
-               
-               
-                            
+                 
                              </FormGroup>
                              </Col>
                              </Row>
