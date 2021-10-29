@@ -7,6 +7,8 @@ contract Marketplace {
 
     using Counters for Counters.Counter;
     Counters.Counter private ID;
+    ID.increment();
+    uint currentID = ID.current();
 
     event onBidEnergy(address indexed seller, uint indexed day, uint indexed price, uint energy);
     event onAskEnergy(address indexed buyer, uint indexed day, uint indexed price, uint energy);
@@ -60,8 +62,6 @@ contract Marketplace {
         require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh(in whs), for instance 5.6kwhs = 5600whs");
         require(_eprice >= cent, "Price in 'cent', for example 1.5dollars/kwh = 150cents/kwh");
         address currentAddr = msg.sender;
-        ID.increment();
-        uint currentID = ID.current();
         uint idx = ebids[currentID];
         idx = listOfEnergyBids.length;
         ebids[currentID] = idx;
@@ -78,8 +78,6 @@ contract Marketplace {
     function energyAsk(uint _energy, uint _price) public {
         require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh(in whs), for instance 5.6kwhs = 5600whs");
         address currentAddr = msg.sender;
-        ID.increment();
-        uint currentID = ID.current();
         listOfEnergyAsks.push(eAsk({
             buyer: currentAddr,
             idOfAsk: currentID,
@@ -105,8 +103,7 @@ contract Marketplace {
                     energyPurchased = listOfEnergyBids[i].energy;
                     _price = energyPurchased*listOfEnergyBids[i].eprice;
                     amount = amount-energyPurchased;
-                    ID.increment();
-                    uint currentID = ID.current();
+
                     index = easks[currentID];
                     index = listOfEnergyAsks.length;
                     easks[currentID] = idx;
@@ -180,8 +177,7 @@ contract Marketplace {
                     energyPurchased = listOfEnergyAsks[i].energy;
                     _price = energyPurchased*listOfEnergyAsks[i].price;
                     amount = amount - energyPurchased;
-                    ID.increment();
-                    uint currentID = ID.current();
+                    
                     index = ebids[currentID];
                     index = listOfEnergyBids.length;
                     ebids[currentID] = idx;
