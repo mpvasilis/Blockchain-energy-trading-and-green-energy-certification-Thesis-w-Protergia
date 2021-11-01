@@ -275,8 +275,7 @@ const handleAccountsChanged = (accounts) => {
     if (open === 'PPA'){
       if (price === ""||placeStartDay === "" || placeEndDay === ""  ){
 
-        setError(true);
-        
+        setError(true);  
       }
       else if ( price < 1 || isNumeric(price) === false){
 
@@ -315,7 +314,6 @@ const handleAccountsChanged = (accounts) => {
       if (price === ""||placeStartDay === "" || placeEndDay === "" || ID === "" ||address === ""){
 
         setError(true);
-        
       }
       else if (price < 1 || isNumeric(price) === false  ){
 

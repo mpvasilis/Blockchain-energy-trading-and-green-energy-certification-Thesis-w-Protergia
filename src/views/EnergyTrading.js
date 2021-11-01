@@ -4,7 +4,7 @@ import detectEthereumProvider from '@metamask/detect-provider';
 import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import moment from 'moment';
-
+import Modal from 'react-modal';
 
 
 
@@ -29,6 +29,9 @@ var contractAddress = '0xf204b9E3f564ef0F5d827B50A8879D058FA191A9' ;
 var abi =  [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"askEnergyNotifier","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"ownerOfDevice","type":"address"},{"indexed":false,"internalType":"uint256","name":"date","type":"uint256"},{"indexed":false,"internalType":"string","name":"id","type":"string"}],"name":"deviceAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"ownerOfDevice","type":"address"},{"indexed":false,"internalType":"uint256","name":"date","type":"uint256"},{"indexed":false,"internalType":"string","name":"id","type":"string"}],"name":"deviceUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"seller","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"offerEnergyNotifier","type":"event"},{"constant":false,"inputs":[{"internalType":"string","name":"typeOfDevice","type":"string"}],"name":"addDevice","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_energy","type":"uint256"}],"name":"askEnergy","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_energy","type":"uint256"},{"internalType":"uint256","name":"_eprice","type":"uint256"}],"name":"energyOffer","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getAsksByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getBidsByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfAsks","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfBids","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfPurchases","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"deviceID","type":"address"}],"name":"getDeviceByAddress","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"string","name":"","type":"string"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getPurchaseByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"ownerOfDevice","type":"address"},{"internalType":"string","name":"typeOfDevice","type":"string"}],"name":"updateDevice","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"viewAllAsks","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"viewAllBids","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"viewAllEnergyPurchases","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"}] ;
 // const deviceRegistry = new web3.eth.Contract(abi, contractAddress);
 const energyTrading = new web3.eth.Contract(abi, contractAddress);
+var contractAddress = '0x24A2e4300e6805446d08189a2081185Ab1F966F7' ;
+var abi = [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"onAskEnergy","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"seller","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"onBidEnergy","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"seller","type":"address"},{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"onPurchased","type":"event"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"buyAsk","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"buyBid","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_energy","type":"uint256"},{"internalType":"uint256","name":"_price","type":"uint256"}],"name":"energyAsk","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_energy","type":"uint256"},{"internalType":"uint256","name":"_eprice","type":"uint256"}],"name":"energyBid","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getAllAsks","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getAllBids","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"getAskByID","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"getBidByID","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfPurchases","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getPurchases","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getTotalAsks","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getTotalBids","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getTotalPurchases","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"removeAsk","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"removeBid","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}] ;
+const marketPlace = new web3.eth.Contract(abi, contractAddress);
 
 function EnergyTrading() {
   const [open, setOpen] = useState('bid');
@@ -38,19 +41,25 @@ function EnergyTrading() {
   const [dataBids, setDataBids] = useState(null);
   const [dataAsks, setDataAsks] = useState(null);
   const [bids, setBids] = useState(null);
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPageΒ, setCurrentPageΒ] = useState(0);
+  const [currentPageA, setCurrentPageA] = useState(0);
   const pageSize = 10;
   const [pagesCountAsk, setPagesCountAsk] = useState(0);
   const [pagesCountBid, setPagesCountBid] = useState(0);
   const [energyKW, setEnergyKW] = useState('');
   const [priceBid, setPriceBid] = useState('');
+  const [priceAsk, setPriceAsk] = useState('');
   const account = useRef('');
   const[error, setError] = useState(false);
   const[errorE, setErrorE] = useState(false);
   const[errorP, setErrorP] = useState(false);
+  const[errorPA, setErrorPA] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [disable, setDisable] = useState(false);
   const[alert, setAlert] = useState(false);
+  const[openModal, setOpenModal] = useState(false);
+
+
   
  
 const signInMetamask = async() => {
@@ -117,45 +126,90 @@ const handleAccountsChanged = (accounts) => {
     
 }
   
-  const handlePageClick = (e, page) => {
+  const handlePageClickΒ = (e, page) => {
     console.log(page);
     e.preventDefault();
-    setCurrentPage(page);
+    setCurrentPageΒ(page);
     console.log(page);
     getDataBids(page  * pageSize);
     console.log(page);
   };
 
-  const handlePreviousClick= e => {
-    const _currentPage = currentPage - 1 ;
+  const handlePreviousClickΒ= e => {
+    const _currentPageΒ = currentPageΒ - 1 ;
     e.preventDefault();
-    setCurrentPage(_currentPage);
-     getDataBids(_currentPage   * pageSize);
-     console.log(_currentPage);
+    setCurrentPageΒ(_currentPageΒ);
+     getDataBids(_currentPageΒ   * pageSize);
+     console.log(_currentPageΒ);
 
   };
 
-  const handleNextClick= e => {
-    const _currentPage = currentPage + 1 ;
+  const handleNextClickΒ= e => {
+    const _currentPageΒ = currentPageΒ + 1 ;
     e.preventDefault();
-    setCurrentPage(_currentPage);
-     getDataBids(_currentPage  * pageSize);
-     console.log(_currentPage);
+    setCurrentPageΒ(_currentPageΒ);
+     getDataBids(_currentPageΒ  * pageSize);
+     console.log(_currentPageΒ);
 
   };
-  
-  
 
+  const handlePageClickA = (e, page) => {
+    console.log(page);
+    e.preventDefault();
+    setCurrentPageA(page);
+    console.log(page);
+    getDataAsks(page  * pageSize);
+    console.log(page);
+  };
+
+  const handlePreviousClickA= e => {
+    const _currentPageA = currentPageA - 1 ;
+    e.preventDefault();
+    setCurrentPageA(_currentPageA);
+     getDataAsks(_currentPageA   * pageSize);
+     console.log(_currentPageA);
+
+  };
+
+  const handleNextClickA= e => {
+    const _currentPageA = currentPageA + 1 ;
+    e.preventDefault();
+    setCurrentPageA(_currentPageA);
+     getDataAsks(_currentPageA  * pageSize);
+     console.log(_currentPageA);
+
+  };
+
+  const tradeBid = (id, ammount) => {
+
+    console.log(id);
+        marketPlace.methods.buyBid(id, ammount).send({from: account.current}).then(function(e) {
+          console.log(e);
+          toast("You traded successfully!")
+          
+        });
+  }
+  const tradeAsk = (id, ammount) => {
+
+    console.log(id);
+        marketPlace.methods.buyAsk(id, ammount).send({from: account.current}).then(function(e) {
+          console.log(e);
+          toast("You traded successfully!")
+          
+          
+        });
+  }
+  
   const getDataAsks = (offset, update = false)=>{
 
     if(dataAsks===null || update){
-    energyTrading.methods.getCountOfAsks().call().then(function(askNum){
+    marketPlace.methods.getTotalAsks().call().then(function(askNum){
       console.log("Total asks:" , askNum);
       setTotalAsks(askNum);
       setPagesCountAsk(Math.ceil(askNum / pageSize));
 
       if(askNum>0)
-      energyTrading.methods.viewAllAsks().call()
+      marketPlace.methods.getAllAsks().call()
           .then(function(result){
             setDataAsks(result);
             console.log(pageSize + offset);
@@ -163,10 +217,12 @@ const handleAccountsChanged = (accounts) => {
             for (var i = offset; i < pageSize + offset  ; i++) {
               if(i >= askNum)  break;
               rows.push( <tr key={i}>
-               <td>{result[0][i].substr(0,6)}</td>
-                <td>{moment(moment.unix(result[1][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
-                <td>{result[2][i]/1000000}</td>
-                <td>{result[3][i]/100}</td>
+                  <td>{result[1][i]}</td>
+                  <td>{result[0][i].substr(0,6)}</td> 
+                  <td>{result[2][i]/1000000}</td>
+                  <td>{result[3][i]/100}</td>
+                <td>{moment(moment.unix(result[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
+                <td> <Button variant="secondary" size="sm" data-id={result[4][i]} onClick={event => tradeAsk(event.target.dataset.id)}>Trade</Button></td>
               </tr>);
             }
             setAsks(rows)
@@ -178,10 +234,13 @@ const handleAccountsChanged = (accounts) => {
     for (let i = offset; i < pageSize + offset  ; i++) {
       if(i < totalAsks )  { 
       rows.push( <tr key={i}>
-       <td>{dataAsks[0][i].substr(0,6)}</td>
-        <td>{moment(moment.unix(dataAsks[1][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
+        <td>{dataAsks[1][i]}</td>
+        <td>{dataAsks[0][i].substr(0,6)}</td>
         <td>{dataAsks[2][i]/1000000}</td>
         <td>{dataAsks[3][i]/100}</td>
+        <td>{moment(moment.unix(dataAsks[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
+        <td> <Button variant="secondary" size="sm" data-id={dataAsks[1][i]} onClick={event => tradeAsk(event.target.dataset.id)}>Trade</Button></td>
+
       </tr>);
       setDataAsks(null);
       }
@@ -191,18 +250,20 @@ const handleAccountsChanged = (accounts) => {
   }
   }
 
+
+
   const getDataBids = (offset, update = false)=>{
     
 
     if(dataBids===null || update){
-    energyTrading.methods.getCountOfBids().call().then(function(bidNum){
+    marketPlace.methods.getTotalBids().call().then(function(bidNum){
       console.log("Total bids:" , bidNum);
       setTotalBids(bidNum);
       setPagesCountBid(Math.ceil(bidNum / pageSize));
       
 
       if(bidNum>0)
-        energyTrading.methods.viewAllBids().call()
+        marketPlace.methods.getAllBids().call()
             .then(function(result){
               setDataBids(result);
               console.log(pageSize + offset);
@@ -210,10 +271,12 @@ const handleAccountsChanged = (accounts) => {
               for (var i = offset; i < pageSize + offset  ; i++) {
                 if(i >=  bidNum)  break;
                 rows.push( <tr key={i}>
-                  <td>{result[0][i].substr(0,6)}</td>
-                  <td>{moment(moment.unix(result[1][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
+                  <td>{result[1][i]}</td>
+                  <td>{result[0][i].substr(0,6)}</td> 
                   <td>{result[2][i]/1000000}</td>
                   <td>{result[3][i]/100}</td>
+                  <td>{moment(moment.unix(result[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
+                  <td> <Button variant="secondary" size="sm" data-id={result[1][i]} onClick={event => tradeBid(event.target.dataset.id)}>Trade</Button></td>
                 </tr>); 
               }
               setBids(rows)
@@ -225,10 +288,13 @@ const handleAccountsChanged = (accounts) => {
     for (let i = offset; i < pageSize + offset  ; i++) {
       if(i < totalBids )  { 
       rows.push( <tr key={i}>
-         <td>{dataBids[0][i].substr(0,6)}</td>
-        <td>{moment(moment.unix(dataBids[1][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
+        <td>{dataBids[1][i]}</td>
+        <td>{dataBids[0][i].substr(0,6)}</td>
         <td>{dataBids[2][i]/1000000}</td>
         <td>{dataBids[3][i]/100}</td>
+        <td>{moment(moment.unix(dataBids[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
+        <td> <Button variant="secondary" size="sm" data-id={dataBids[1][i]} onClick={event => tradeBid(event.target.dataset.id)}>Trade</Button></td>
+
       </tr>);
     
       }
@@ -263,16 +329,13 @@ const handleAccountsChanged = (accounts) => {
         setErrorP(true)  
       }
     else{
-    
-      energyTrading.methods.energyOffer(energyKW * 1000000, priceBid * 100).send({from: account.current}).on('transactionHash', (th) => {
-
-        
+      marketPlace.methods.energyBid(energyKW * 1000000, priceBid * 100).send({from: account.current}).on('transactionHash', (th) => {
 
         toast("Bid has been succesfully submited!")
       }).then(function(e) {
 
           setDataBids(null);
-          getDataBids(currentPage   * pageSize, true);
+          getDataBids(currentPageΒ   * pageSize, true);
           console.log(e)
       });
       setEnergyKW("");
@@ -287,30 +350,35 @@ const handleAccountsChanged = (accounts) => {
 
         setErrorE(true);
         
-      }else{
-      energyTrading.methods.askEnergy(energyKW * 1000000).send({from: account.current}).on('transactionHash', (th) => {
+      }
+      else if ( priceAsk < 0 ||  isNumeric(priceAsk) === false){
+      
+        setErrorPA(true)  
+      }
+      else{
+        marketPlace.methods.energyAsk(energyKW * 1000000, priceAsk * 100).send({from: account.current}).on('transactionHash', (th) => {
        
         toast("Ask has been succesfully submited!")
       }).then(function(e) {
 
         setDataAsks(null);
-        getDataAsks(currentPage   * pageSize, true);
+        getDataAsks(currentPageA  * pageSize, true);
             console.log(e)
       });
       setEnergyKW("");
+      setPriceAsk("");
       setErrorE(false);
+      setErrorPA(false);
       setError(false);
     }
   }
-    
+
   }
  
- 
-  
   useEffect(() => {
 
-    getDataAsks(currentPage * pageSize);
-    getDataBids(currentPage * pageSize);
+    getDataAsks(currentPageA * pageSize);
+    getDataBids(currentPageΒ* pageSize);
    
 
     console.log("pagecountbids: ", totalBids);
@@ -324,14 +392,12 @@ const handleAccountsChanged = (accounts) => {
    
   }, []);
   
-  
-
-    
+ 
   return (
     <>
       <div className="content">
         <Row>
-          <Col md="8">
+          <Col md="7">
             {totalAsks>0 ?
                 <Card>
               <CardHeader>
@@ -342,10 +408,11 @@ const handleAccountsChanged = (accounts) => {
                   <Table className="tablesorter" responsive>                  
                       <thead className="text-primary">
                    <tr>
-                    <th>Owner</th>
-                    <th>Date</th>
-                    <th>Total KWhs</th>
-                    <th>Remaining KWhs</th>
+                   <th>id</th>
+                   <th>Owner</th>
+                   <th>Total KWhs</th>
+                   <th>Price (EUR)</th>
+                   <th>Date</th>
                   </tr>
                   </thead>
                   <tbody>
@@ -355,10 +422,10 @@ const handleAccountsChanged = (accounts) => {
                 </Table> : <></>}
                 <TablePagination
                        pagesCount={pagesCountAsk}
-                       currentPage={currentPage}
-                       handlePageClick={handlePageClick}
-                       handlePreviousClick={handlePreviousClick}
-                       handleNextClick={handleNextClick}
+                       currentPage={currentPageA}
+                       handlePageClick={handlePageClickA}
+                       handlePreviousClick={handlePreviousClickA}
+                       handleNextClick={handleNextClickA}
                    />
               </CardBody>
               <CardFooter>
@@ -376,10 +443,11 @@ const handleAccountsChanged = (accounts) => {
                         <Table className="tablesorter" responsive>
                           <thead className="text-primary">
                           <tr>
+                            <th>id</th>
                             <th>Owner</th>
-                            <th>Date</th>
                             <th>Total KWhs</th>
                             <th>Price (EUR)</th>
+                            <th>Date</th>
                           </tr>
                           </thead>
                           <tbody>
@@ -392,10 +460,10 @@ const handleAccountsChanged = (accounts) => {
                              nextLabel={"next"}
                              breakLabel={"..."}
                              pagesCount={pagesCountBid}
-                             currentPage={currentPage}
-                             handlePageClick={handlePageClick}
-                             handlePreviousClick={handlePreviousClick}
-                             handleNextClick={handleNextClick}
+                             currentPage={currentPageΒ}
+                             handlePageClick={handlePageClickΒ}
+                             handlePreviousClick={handlePreviousClickΒ}
+                             handleNextClick={handleNextClickΒ}
                          />
                   </CardBody>
                   <CardFooter>
@@ -403,7 +471,7 @@ const handleAccountsChanged = (accounts) => {
                   </CardFooter>
                 </Card> : <></>}
           </Col>
-          <Col md="4">
+          <Col md="5">
             <Card className="card-user">
               <CardBody>
                 <CardText />
@@ -450,12 +518,23 @@ const handleAccountsChanged = (accounts) => {
                         errorP && <div style={{color: `red`} }>Please enter a valid amount of price</div>
                       }
                     </FormGroup>
+                    <FormGroup style={{display:(open==='bid'? 'none':"block")}} >
+                      <label>Price (EUR)</label>
+                      <Input
+                          value = {priceAsk}
+                          placeholder="Ask price (EUR)"
+                          type="text"
+                          onChange={event => setPriceAsk(event.target.value)}
+                      />
+                      {
+                        errorPA && <div style={{color: `red`} }>Please enter a valid amount of price</div>
+                      }
+                    </FormGroup>
                     
                     <FormGroup>
                     {
                         error && <div style={{color: `red`}}>Please fill all the blanks</div>
                       }
-                      
                       
                     <Button  variant="secondary" size="lg" disabled={disable}  onClick={() => addBidOrAsk()}>  
                       Place {open==='ask'? 'Ask':"Bid"}
@@ -468,6 +547,8 @@ const handleAccountsChanged = (accounts) => {
                 }
           </Col>
                 </Row>
+               
+           
 </>
                   :<div className="author">
                   <div className="block block-one" />
@@ -486,6 +567,74 @@ const handleAccountsChanged = (accounts) => {
               <CardFooter>
               </CardFooter>
             </Card>
+             
+            <Card>
+              <CardHeader>
+                <h4 className="title">My Asks</h4>
+              </CardHeader>
+              
+              <CardBody>
+               
+                  <Table className="tablesorter" responsive>                  
+                      <thead className="text-primary">
+                   <tr>
+                   <th>id</th>
+                   <th>Owner</th>
+                   <th>Total KWhs</th>
+                   <th>Price (EUR)</th>
+                   <th>Date</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  
+                  </tbody>
+                
+                </Table> 
+                {/* <TablePagination
+                       pagesCount={pagesCountAsk}
+                       currentPage={currentPageA}
+                       handlePageClick={handlePageClickA}
+                       handlePreviousClick={handlePreviousClickA}
+                       handleNextClick={handleNextClickA}
+                   /> */}
+              </CardBody>
+              
+            </Card> 
+            <br/>
+             
+            <Card>
+              <CardHeader>
+                <h4 className="title">My Bids</h4>
+              </CardHeader>
+              
+              <CardBody>
+               
+                  <Table className="tablesorter" responsive>                  
+                      <thead className="text-primary">
+                   <tr>
+                   <th>id</th>
+                   <th>Owner</th>
+                   <th>Total KWhs</th>
+                   <th>Price (EUR)</th>
+                   <th>Date</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+            
+                  </tbody>
+                
+                </Table> 
+                {/* <TablePagination
+                       pagesCount={pagesCountAsk}
+                       currentPage={currentPageA}
+                       handlePageClick={handlePageClickA}
+                       handlePreviousClick={handlePreviousClickA}
+                       handleNextClick={handleNextClickA}
+                   /> */}
+              </CardBody>
+              
+            </Card> 
+            <br/>
           </Col>
 
         </Row>
@@ -499,3 +648,5 @@ const handleAccountsChanged = (accounts) => {
 
 
 export default EnergyTrading; 
+
+
