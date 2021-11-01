@@ -94,6 +94,28 @@ contract Marketplace {
         emit onAskEnergy(currentAddr, block.timestamp, _price, _energy);
     }
 
+    function removeBid(uint _id) public {
+        for(uint i = 0; i<listOfEnergyBids.length; i++){
+            if(listOfEnergyBids[i].idOfBid == _id){
+                if (listOfEnergyBids.length > 1) {
+                    listOfEnergyBids[i] = listOfEnergyBids[listOfEnergyBids.length-1];
+                }
+                listOfEnergyBids.length--;
+            }
+        }
+    }
+
+    function removeAsk(uint _id) public {
+        for(uint i = 0; i<listOfEnergyAsks.length; i++){
+            if(listOfEnergyAsks[i].idOfAsk == _id){
+                if (listOfEnergyAsks.length > 1) {
+                    listOfEnergyAsks[i] = listOfEnergyAsks[listOfEnergyAsks.length-1];
+                }
+                listOfEnergyAsks.length--;
+            }
+        }
+    }
+
     function buyBid(uint _id, uint amount) public{
         address currentAddr = msg.sender;
         address _seller;
@@ -324,5 +346,17 @@ contract Marketplace {
             }
         }
         return(buyerList, sellerList, energyList, idList, priceList, dateList);
+    }
+
+    function getTotalBids() public view returns(uint count){
+        return listOfEnergyBids.length;
+    }
+
+    function getTotalAsks() public view returns(uint count){
+        return listOfEnergyAsks.length;
+    }
+
+    function getTotalPurchases() public view returns(uint count){
+        return listOfPurchases.length;
     }
 }
