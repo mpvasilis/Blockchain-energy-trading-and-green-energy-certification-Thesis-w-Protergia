@@ -267,6 +267,72 @@ contract Marketplace {
         }
     }
 
+    function getCountOfBids() public view returns(uint){
+        address currentAddr = msg.sender;
+        uint count = 0;
+        for(uint i = 0; i<listOfEnergyBids.length; i++){
+            if(listOfEnergyBids[i].seller == currentAddr){
+                count++;
+            }
+        }
+        return count;
+    }
+
+    function getMyBids() public view returns(address[] memory, uint[] memory, uint[] memory, uint[] memory, uint[] memory){
+        uint k = 0;
+        uint cnt = getCountOfBids();
+        address[] memory sellersList = new address[](cnt);
+        uint[] memory energiesList = new uint[](cnt);
+        uint[] memory idsList = new uint[](cnt);
+        uint[] memory pricesList = new uint[](cnt);
+        uint[] memory datesList = new uint[](cnt);
+
+        for(uint i = 0; i < listOfEnergyBids.length; i++){
+            if(listOfEnergyBids[i].seller == msg.sender){
+                sellersList[k] = listOfEnergyBids[i].seller;
+                energiesList[k] = listOfEnergyBids[i].energy;
+                idsList[k] = listOfEnergyBids[i].idOfBid;
+                pricesList[k] = listOfEnergyBids[i].eprice;
+                datesList[k] = listOfEnergyBids[i].timestamp;
+                k++;
+            }
+        }
+        return(sellersList, energiesList, idsList, pricesList, datesList);
+    }
+
+    function getCountOfAsks() public view returns(uint){
+        address currentAddr = msg.sender;
+        uint count = 0;
+        for(uint i = 0; i<listOfEnergyAsks.length; i++){
+            if(listOfEnergyAsks[i].buyer == currentAddr){
+                count++;
+            }
+        }
+        return count;
+    }
+
+    function getMyAsks() public view returns(address[] memory, uint[] memory, uint[] memory, uint[] memory, uint[] memory){
+        uint k = 0;
+        uint cnt = getCountOfAsks();
+        address[] memory buyersList = new address[](cnt);
+        uint[] memory energiesList = new uint[](cnt);
+        uint[] memory idsList = new uint[](cnt);
+        uint[] memory pricesList = new uint[](cnt);
+        uint[] memory datesList = new uint[](cnt);
+
+        for(uint i = 0; i < listOfEnergyAsks.length; i++){
+            if(listOfEnergyAsks[i].buyer == msg.sender){
+                buyersList[k] = listOfEnergyAsks[i].buyer;
+                energiesList[k] = listOfEnergyAsks[i].energy;
+                idsList[k] = listOfEnergyAsks[i].idOfAsk;
+                pricesList[k] = listOfEnergyAsks[i].price;
+                datesList[k] = listOfEnergyAsks[i].timestamp;
+                k++;
+            }
+        }
+        return(buyersList, energiesList, idsList, pricesList, datesList);
+    }
+
     function getBidByID(uint _id) public view returns(address, uint, uint, uint, uint){
         uint index = ebids[_id];
         require(listOfEnergyBids.length > index, "Wrong index");
