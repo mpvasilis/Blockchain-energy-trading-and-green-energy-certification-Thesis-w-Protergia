@@ -223,15 +223,35 @@ const handleAccountsChanged = (accounts) => {
           
         });
   }
-  const tradeAsk = (id, ammount) => {
+  const tradeAsk = async (id, ammount) => {
+    
+    try{
+      await marketPlace.methods.getAllAsks().call().then(function(result){
+        console.log("allasks: ", result);
+      })
+    }catch(e){
+      console.log(e);
+    }
 
-    console.log(id);
-        marketPlace.methods.buyAsk(id, ammount).send({from: account.current}).then(function(e) {
+    try{
+      await marketPlace.methods.getAllBids().call().then(function(result){
+        console.log("allbids: ", result);
+      })
+    }catch(e){
+      console.log(e);
+    }
+    ammount = 15;
+    console.log("id: ",id);
+    console.log("amount: ", ammount);
+    
+    try{
+        await marketPlace.methods.buyAsk(id, ammount).send({from: account.current}).then(function(e) {
           console.log(e);
-          toast("You traded successfully!")
-          
-          
+          toast("You traded successfully!")          
         });
+    }catch(e){
+      console.log(e);
+    }
   }
 
   const getDataAsks = (offset, update = false)=>{
@@ -336,7 +356,7 @@ const handleAccountsChanged = (accounts) => {
   const getDataMyAsks = (offset, update = false)=>{
 
     if(dataMyAsks===null || update){
-    marketPlace.methods.getCountOfAsks().call({from: account.current}).then(function(myAskNum){
+    marketPlace.methods.getCountOfAsks().call().then(function(myAskNum){
       console.log("My total asks:" , myAskNum);
       setTotalMyAsks(myAskNum);
       // setPagesCountMyAsk(Math.ceil(myAskNum / pageSize));
