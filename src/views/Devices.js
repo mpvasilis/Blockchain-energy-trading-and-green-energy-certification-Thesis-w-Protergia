@@ -3,7 +3,6 @@ import detectEthereumProvider from '@metamask/detect-provider';
 import 'bootstrap';
 import { Button } from 'reactstrap';
 import "assets/css/black-dashboard-react.css";
-// import "assets/scss/black-dashboard-react/_loading.scss";
 import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 
@@ -102,6 +101,8 @@ function Devices() {
       }, []);
 
        const addDevice= () =>{
+
+        setIsLoading(true);
   
           if (input === "" || input < 0 ){
             
@@ -122,7 +123,8 @@ function Devices() {
          else{
 
          deviceRegistry.methods.addDevice(input).send({from: account.current}).on('transactionHash', (th) => {
-       
+            
+           setIsLoading(false);
             toast("A device has been succesfully added!")   
         })} 
        
@@ -131,15 +133,15 @@ function Devices() {
       setError(false);
     }
 
-    const handleButton = async () => {
-      setIsLoading(true);
+    // const handleButton = async () => {
+    //   setIsLoading(true);
   
-       await web3.deviceRegistry.methods.addDevice(input).send({from: account.current}).then(function(receipt){
-        setIsLoading(false);
+    //    await web3.deviceRegistry.methods.addDevice(input).send({from: account.current}).then(function(receipt){
+    //     setIsLoading(false);
        
-      })
+    //   })
       
-    }
+    // }
    
   return (
     <>
@@ -187,17 +189,15 @@ function Devices() {
                     </select>
                     
              </div>
-             {/* <div class="lds-hourglass"> </div> */}
-             {/* onClick={() => handleButton()}   */}
+             <div class="lds-hourglass"> 
                <Button variant="primary" size="lg" onClick={addDevice} > Add Device </Button>{' '}
-               {/* {isLoading ? "Loading" : addDevice} */}
-
-               
-                 
+              
+               </div>
                              </FormGroup>
                              </Col>
                              </Row>
                              </div>
+                         
                              </form>
                              
                       :<div className="author">

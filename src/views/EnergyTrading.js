@@ -29,8 +29,8 @@ var contractAddress = '0xf204b9E3f564ef0F5d827B50A8879D058FA191A9' ;
 var abi =  [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"askEnergyNotifier","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"ownerOfDevice","type":"address"},{"indexed":false,"internalType":"uint256","name":"date","type":"uint256"},{"indexed":false,"internalType":"string","name":"id","type":"string"}],"name":"deviceAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"ownerOfDevice","type":"address"},{"indexed":false,"internalType":"uint256","name":"date","type":"uint256"},{"indexed":false,"internalType":"string","name":"id","type":"string"}],"name":"deviceUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"seller","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"offerEnergyNotifier","type":"event"},{"constant":false,"inputs":[{"internalType":"string","name":"typeOfDevice","type":"string"}],"name":"addDevice","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_energy","type":"uint256"}],"name":"askEnergy","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_energy","type":"uint256"},{"internalType":"uint256","name":"_eprice","type":"uint256"}],"name":"energyOffer","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getAsksByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getBidsByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfAsks","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfBids","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfPurchases","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"deviceID","type":"address"}],"name":"getDeviceByAddress","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"string","name":"","type":"string"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getPurchaseByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"ownerOfDevice","type":"address"},{"internalType":"string","name":"typeOfDevice","type":"string"}],"name":"updateDevice","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"viewAllAsks","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"viewAllBids","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"viewAllEnergyPurchases","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"}] ;
 // const deviceRegistry = new web3.eth.Contract(abi, contractAddress);
 const energyTrading = new web3.eth.Contract(abi, contractAddress);
-var contractAddress = '0x24A2e4300e6805446d08189a2081185Ab1F966F7' ;
-var abi = [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"onAskEnergy","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"seller","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"onBidEnergy","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"seller","type":"address"},{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"onPurchased","type":"event"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"buyAsk","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"buyBid","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_energy","type":"uint256"},{"internalType":"uint256","name":"_price","type":"uint256"}],"name":"energyAsk","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_energy","type":"uint256"},{"internalType":"uint256","name":"_eprice","type":"uint256"}],"name":"energyBid","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getAllAsks","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getAllBids","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"getAskByID","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"getBidByID","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfPurchases","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getPurchases","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getTotalAsks","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getTotalBids","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getTotalPurchases","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"removeAsk","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"removeBid","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}] ;
+var contractAddress = '0xD55D0E90Ae7FE6e03D22CdE72515D61974Ab526B' ;
+var abi = [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"onAskEnergy","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"seller","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"onBidEnergy","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"seller","type":"address"},{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"onPurchased","type":"event"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"buyAsk","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"buyBid","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_energy","type":"uint256"},{"internalType":"uint256","name":"_price","type":"uint256"}],"name":"energyAsk","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_energy","type":"uint256"},{"internalType":"uint256","name":"_eprice","type":"uint256"}],"name":"energyBid","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getAllAsks","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getAllBids","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"getAskByID","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"getBidByID","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfAsks","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfBids","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfPurchases","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getMyAsks","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getMyBids","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getPurchases","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getTotalAsks","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getTotalBids","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getTotalPurchases","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"removeAsk","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"removeBid","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}] ;
 const marketPlace = new web3.eth.Contract(abi, contractAddress);
 
 function EnergyTrading() {
@@ -43,8 +43,10 @@ function EnergyTrading() {
   const [bids, setBids] = useState(null);
   const [currentPageΒ, setCurrentPageΒ] = useState(0);
   const [currentPageA, setCurrentPageA] = useState(0);
+  const [currentPageMA, setCurrentPageMA] = useState(0);
   const pageSize = 10;
   const [pagesCountAsk, setPagesCountAsk] = useState(0);
+  const [pagesCountMyAsk, setPagesCountMyAsk] = useState(0);
   const [pagesCountBid, setPagesCountBid] = useState(0);
   const [energyKW, setEnergyKW] = useState('');
   const [priceBid, setPriceBid] = useState('');
@@ -58,6 +60,12 @@ function EnergyTrading() {
   const [disable, setDisable] = useState(false);
   const[alert, setAlert] = useState(false);
   const[openModal, setOpenModal] = useState(false);
+  const [dataMyAsks, setDataMyAsks] = useState(null);
+  const [dataMyBids, setDataMyBids] = useState(null);
+  const [myAsks, setMyAsks] = useState(null);
+  const [myBids, setMyBids] = useState(null);
+  const [totalMyAsks, setTotalMyAsks] = useState(0);
+  const [totalMyBids, setTotalMyBids] = useState(0);
 
 
   
@@ -179,6 +187,32 @@ const handleAccountsChanged = (accounts) => {
      console.log(_currentPageA);
 
   };
+  const handlePageClickMA = (e, page) => {
+    console.log(page);
+    e.preventDefault();
+    setCurrentPageMA(page);
+    console.log(page);
+    getDataMyAsks(page  * pageSize);
+    console.log(page);
+  };
+
+  const handlePreviousClickMA= e => {
+    const _currentPageMA = currentPageMA - 1 ;
+    e.preventDefault();
+    setCurrentPageMA(_currentPageMA);
+     getDataMyAsks(_currentPageMA   * pageSize);
+     console.log(_currentPageMA);
+
+  };
+
+  const handleNextClickMA= e => {
+    const _currentPageMA = currentPageMA + 1 ;
+    e.preventDefault();
+    setCurrentPageMA(_currentPageMA);
+     getDataMyAsks(_currentPageMA  * pageSize);
+     console.log(_currentPageMA);
+
+  };
 
   const tradeBid = (id, ammount) => {
 
@@ -199,7 +233,7 @@ const handleAccountsChanged = (accounts) => {
           
         });
   }
-  
+
   const getDataAsks = (offset, update = false)=>{
 
     if(dataAsks===null || update){
@@ -222,7 +256,7 @@ const handleAccountsChanged = (accounts) => {
                   <td>{result[2][i]/1000000}</td>
                   <td>{result[3][i]/100}</td>
                 <td>{moment(moment.unix(result[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
-                <td> <Button variant="secondary" size="sm" data-id={result[4][i]} onClick={event => tradeAsk(event.target.dataset.id)}>Trade</Button></td>
+                <td> <Button variant="secondary" size="sm" data-id={result[3][i]} onClick={event => tradeAsk(event.target.dataset.id)}>Trade</Button></td>
               </tr>);
             }
             setAsks(rows)
@@ -239,7 +273,7 @@ const handleAccountsChanged = (accounts) => {
         <td>{dataAsks[2][i]/1000000}</td>
         <td>{dataAsks[3][i]/100}</td>
         <td>{moment(moment.unix(dataAsks[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
-        <td> <Button variant="secondary" size="sm" data-id={dataAsks[1][i]} onClick={event => tradeAsk(event.target.dataset.id)}>Trade</Button></td>
+        <td> <Button variant="secondary" size="sm" data-id={dataAsks[3][i]} onClick={event => tradeAsk(event.target.dataset.id)}>Trade</Button></td>
 
       </tr>);
       setDataAsks(null);
@@ -250,18 +284,14 @@ const handleAccountsChanged = (accounts) => {
   }
   }
 
-
-
   const getDataBids = (offset, update = false)=>{
     
-
     if(dataBids===null || update){
     marketPlace.methods.getTotalBids().call().then(function(bidNum){
       console.log("Total bids:" , bidNum);
       setTotalBids(bidNum);
       setPagesCountBid(Math.ceil(bidNum / pageSize));
       
-
       if(bidNum>0)
         marketPlace.methods.getAllBids().call()
             .then(function(result){
@@ -296,13 +326,64 @@ const handleAccountsChanged = (accounts) => {
         <td> <Button variant="secondary" size="sm" data-id={dataBids[1][i]} onClick={event => tradeBid(event.target.dataset.id)}>Trade</Button></td>
 
       </tr>);
-    
       }
     }
     setBids(rows)
     console.log(rows);
   }
   }
+
+  const getDataMyAsks = (offset, update = false)=>{
+
+    if(dataMyAsks===null || update){
+    marketPlace.methods.getCountOfAsks().call({from: account.current}).then(function(myAskNum){
+      console.log("My total asks:" , myAskNum);
+      setTotalMyAsks(myAskNum);
+      // setPagesCountMyAsk(Math.ceil(myAskNum / pageSize));
+
+      if(myAskNum>0)
+      marketPlace.methods.getMyAsks().call()
+          .then(function(result){
+            setDataMyAsks(result);
+            console.log(pageSize + offset);
+            var rows = [];
+            for (var i = offset; i < pageSize + offset  ; i++) {
+              if(i >= myAskNum)  break;
+              rows.push( <tr key={i}>
+                 <td>{result[1][i]}</td>
+                 <td>{result[0][i].substr(0,6)}</td>
+                 <td>{result[2][i]/1000000}</td>
+                 <td>{result[3][i]/100}</td>
+                 <td>{moment(moment.unix(result[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
+                {/* <td> <Button variant="secondary" size="sm" data-id={result[4][i]} onClick={event => tradeAsk(event.target.dataset.id)}>Trade</Button></td> */}
+              </tr>);
+            }
+            setMyAsks(rows)
+          });
+    });
+  }
+  else{
+    let rows = [];
+    for (let i = offset; i < pageSize + offset  ; i++) {
+      if(i < totalMyAsks )  { 
+      rows.push( <tr key={i}>
+        <td>{dataMyAsks[2][i]}</td>
+        <td>{dataMyAsks[0][i].substr(0,6)}</td>
+        <td>{dataMyAsks[1][i]/1000000}</td>
+        <td>{dataMyAsks[3][i]/100}</td>
+        <td>{moment(moment.unix(dataMyAsks[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
+        {/* <td> <Button variant="secondary" size="sm" data-id={dataAsks[1][i]} onClick={event => tradeAsk(event.target.dataset.id)}>Trade</Button></td> */}
+
+      </tr>);
+      setDataMyAsks(null);
+      }
+    }
+    setMyAsks(rows)
+    console.log(rows);
+  }
+  }
+
+
   const isNumeric = (number)  =>{
     if (+number === +number) { // if is a number
         return true;
@@ -317,15 +398,12 @@ const handleAccountsChanged = (accounts) => {
     if (open === 'bid'){
     
       if (energyKW === "" || priceBid === "" ){
-        
         setError(true);
-    }  
+      }  
        else if ( energyKW < 1 ||  isNumeric(energyKW) === false ) {
-      
         setErrorE(true)  
       }
       else if ( priceBid < 0 ||  isNumeric(priceBid) === false){
-      
         setErrorP(true)  
       }
     else{
@@ -347,22 +425,21 @@ const handleAccountsChanged = (accounts) => {
     }else{
       
       if (energyKW === ""||energyKW > 1000000  || energyKW < 1 ||  isNumeric(energyKW) === false ){
-
         setErrorE(true);
-        
       }
       else if ( priceAsk < 0 ||  isNumeric(priceAsk) === false){
-      
         setErrorPA(true)  
       }
       else{
         marketPlace.methods.energyAsk(energyKW * 1000000, priceAsk * 100).send({from: account.current}).on('transactionHash', (th) => {
-       
+      
         toast("Ask has been succesfully submited!")
       }).then(function(e) {
 
         setDataAsks(null);
+        // setDataMyAsks(null);
         getDataAsks(currentPageA  * pageSize, true);
+        getDataAsks(currentPageMA  * pageSize, true);
             console.log(e)
       });
       setEnergyKW("");
@@ -379,10 +456,12 @@ const handleAccountsChanged = (accounts) => {
 
     getDataAsks(currentPageA * pageSize);
     getDataBids(currentPageΒ* pageSize);
+    getDataMyAsks(currentPageMA * pageSize);
    
 
     console.log("pagecountbids: ", totalBids);
     console.log("pagecountask: ", totalAsks);
+    console.log("pagecountmyask: ", totalMyAsks);
    
  
     web3.eth.getAccounts().then(r=>{
@@ -546,9 +625,7 @@ const handleAccountsChanged = (accounts) => {
                 </div>
                 }
           </Col>
-                </Row>
-               
-           
+                </Row> 
 </>
                   :<div className="author">
                   <div className="block block-one" />
@@ -559,7 +636,6 @@ const handleAccountsChanged = (accounts) => {
                      < Button className="btn-fill" variant="primary"  size="lg"  color="secondary" type="button" onClick= { signInMetamask }>
                   <img src={"https://docs.metamask.io/metamask-fox.svg"} style={{"height": "30px"}}></img>{"  "} Connect Wallet
                   </Button>         
-                   
              </div>   
                 }
 </div> 
@@ -567,39 +643,40 @@ const handleAccountsChanged = (accounts) => {
               <CardFooter>
               </CardFooter>
             </Card>
-             
+           
             <Card>
               <CardHeader>
                 <h4 className="title">My Asks</h4>
               </CardHeader>
               
               <CardBody>
+              {myAsks !==null ?
                
                   <Table className="tablesorter" responsive>                  
                       <thead className="text-primary">
                    <tr>
-                   <th>id</th>
                    <th>Owner</th>
                    <th>Total KWhs</th>
+                   <th>id</th>
                    <th>Price (EUR)</th>
                    <th>Date</th>
                   </tr>
                   </thead>
                   <tbody>
-                  
+                  {myAsks}
                   </tbody>
                 
-                </Table> 
-                {/* <TablePagination
-                       pagesCount={pagesCountAsk}
-                       currentPage={currentPageA}
-                       handlePageClick={handlePageClickA}
-                       handlePreviousClick={handlePreviousClickA}
-                       handleNextClick={handleNextClickA}
-                   /> */}
+                </Table> : <></>}
+                <TablePagination
+                       pagesCount={pagesCountMyAsk}
+                       currentPage={currentPageMA}
+                       handlePageClick={handlePageClickMA}
+                       handlePreviousClick={handlePreviousClickMA}
+                       handleNextClick={handleNextClickMA}
+                   />
               </CardBody>
               
-            </Card> 
+            </Card>
             <br/>
              
             <Card>
@@ -620,7 +697,7 @@ const handleAccountsChanged = (accounts) => {
                   </tr>
                   </thead>
                   <tbody>
-            
+                   {myAsks}
                   </tbody>
                 
                 </Table> 
