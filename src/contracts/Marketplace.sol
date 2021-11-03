@@ -379,6 +379,24 @@ contract Marketplace {
         return(buyers, _ids, _energies, _prices, _dates);
     }
 
+    function getAllPurchases() public view returns(address[] memory, address[] memory, uint[] memory, uint[] memory, uint[] memory, uint[] memory){
+        address[] memory _seller = new address[](listOfPurchases.length);
+        address[] memory _buyers = new address[](listOfPurchases.length);
+        uint[] memory _ids = new uint[](listOfPurchases.length);
+        uint[] memory _energies = new uint[](listOfPurchases.length);
+        uint[] memory _prices = new uint[](listOfPurchases.length);
+        uint[] memory _dates = new uint[](listOfPurchases.length);
+        for(uint i = 0; i < listOfPurchases.length; i++){
+            _seller[i] = listOfPurchases[i].seller;
+            _buyers[i] = listOfPurchases[i].buyer;
+            _ids[i] = listOfPurchases[i].id;
+            _energies[i] = listOfPurchases[i].energy;
+            _prices[i] = listOfPurchases[i].price;
+            _dates[i] = listOfPurchases[i].timestamp;
+        }
+        return(_seller, _buyers, _ids, _energies, _prices, _dates);
+    }
+
     function getCountOfPurchases() public view returns(uint){
         address currentAddr = msg.sender;
         uint count = 0;
