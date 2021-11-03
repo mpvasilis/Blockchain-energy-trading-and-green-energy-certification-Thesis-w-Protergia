@@ -4,8 +4,7 @@ import detectEthereumProvider from '@metamask/detect-provider';
 import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import moment from 'moment';
-import Modal from 'react-modal';
-
+import Modal from  'react-modal';
 
 
 import {
@@ -59,7 +58,7 @@ function EnergyTrading() {
   const [isConnected, setIsConnected] = useState(false);
   const [disable, setDisable] = useState(false);
   const[alert, setAlert] = useState(false);
-  const[openModal, setOpenModal] = useState(false);
+  const[modalIsOpen, setModalIsOpen] = useState(false);
   const [dataMyAsks, setDataMyAsks] = useState(null);
   const [dataMyBids, setDataMyBids] = useState(null);
   const [myAsks, setMyAsks] = useState(null);
@@ -67,7 +66,7 @@ function EnergyTrading() {
   const [totalMyAsks, setTotalMyAsks] = useState(0);
   const [totalMyBids, setTotalMyBids] = useState(0);
 
-
+let subtitle;
   
  
 const signInMetamask = async() => {
@@ -214,8 +213,32 @@ const handleAccountsChanged = (accounts) => {
 
   };
 
+  const customStyles = {
+    content: {
+      top: '50%',
+      left: '50%',
+      right: 'auto',
+      bottom: 'auto',
+      marginRight: '-50%',
+      transform: 'translate(-50%, -50%)',
+    },
+  };
+
+  const toggleModal = () =>{
+    setModalIsOpen(true)
+  }
+  const afterOpenModal = () =>{
+    subtitle.style.color = '#9933cc'
+  }
+
+  const closeModal = () =>{
+    setModalIsOpen(false);
+  }
+
   const tradeBid = (id, ammount) => {
 
+    toggleModal();
+    
     console.log(id);
         marketPlace.methods.buyBid(id, ammount).send({from: account.current}).then(function(e) {
           console.log(e);
@@ -225,33 +248,12 @@ const handleAccountsChanged = (accounts) => {
   }
   const tradeAsk = async (id, ammount) => {
     
-    try{
-      await marketPlace.methods.getAllAsks().call().then(function(result){
-        console.log("allasks: ", result);
-      })
-    }catch(e){
-      console.log(e);
-    }
-
-    try{
-      await marketPlace.methods.getAllBids().call().then(function(result){
-        console.log("allbids: ", result);
-      })
-    }catch(e){
-      console.log(e);
-    }
-    ammount = 15;
-    console.log("id: ",id);
-    console.log("amount: ", ammount);
+       toggleModal();
     
-    try{
         await marketPlace.methods.buyAsk(id, ammount).send({from: account.current}).then(function(e) {
           console.log(e);
           toast("You traded successfully!")          
-        });
-    }catch(e){
-      console.log(e);
-    }
+        }); 
   }
 
   const getDataAsks = (offset, update = false)=>{
@@ -276,7 +278,7 @@ const handleAccountsChanged = (accounts) => {
                   <td>{result[2][i]/1000000}</td>
                   <td>{result[3][i]/100}</td>
                 <td>{moment(moment.unix(result[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
-                <td> <Button variant="secondary" size="sm" data-id={result[3][i]} onClick={event => tradeAsk(event.target.dataset.id)}>Trade</Button></td>
+                <td> <Button variant="secondary" size="sm" data-id={result[1][i]} onClick={event => tradeAsk(event.target.dataset.id)}>Trade</Button></td>
               </tr>);
             }
             setAsks(rows)
@@ -293,7 +295,7 @@ const handleAccountsChanged = (accounts) => {
         <td>{dataAsks[2][i]/1000000}</td>
         <td>{dataAsks[3][i]/100}</td>
         <td>{moment(moment.unix(dataAsks[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
-        <td> <Button variant="secondary" size="sm" data-id={dataAsks[3][i]} onClick={event => tradeAsk(event.target.dataset.id)}>Trade</Button></td>
+        <td> <Button variant="secondary" size="sm" data-id={dataAsks[1][i]} onClick={event => tradeAsk(event.target.dataset.id)}>Trade</Button></td>
 
       </tr>);
       setDataAsks(null);
@@ -494,7 +496,32 @@ const handleAccountsChanged = (accounts) => {
  
   return (
     <>
+    
       <div className="content">
+                 
+      <Modal
+      
+        isOpen={modalIsOpen}
+        onAfterOpen={afterOpenModal}
+        onRequestClose={closeModal}
+        style={customStyles}
+      >
+        <h2 className="title" ref={(_subtitle) => (subtitle = _subtitle)}>Input amount</h2>
+        <div>input amount of kw</div>
+        
+        <form>
+          <input 
+          
+          value = {energyKW}
+          placeholder="Enter KWhs"
+          type="text"
+          // onChange={event => setEnergyKW(event.target.value)}
+          
+          />
+           <Button variant="secondary" size="sm" onClick={() => tradeAsk()}>Trade</Button>
+          <button variant="secondary" size="sm"  onClick={closeModal}>close</button>
+        </form>
+      </Modal>
         <Row>
           <Col md="7">
             {totalAsks>0 ?

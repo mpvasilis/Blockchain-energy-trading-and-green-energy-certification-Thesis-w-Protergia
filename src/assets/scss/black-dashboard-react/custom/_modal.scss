@@ -1,161 +1,66 @@
-// Modals
-// Design element Dialogs
-// --------------------------------------------------
-.modal-content {
-  border: 0;
-
-  // Modal header
-  // Top section of the modal w/ title and dismiss
-
+.App {
+    text-align: center;
+    padding-top: 2rem;
+  }
+  
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1040;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000;
+    opacity: .5;
+  }
+  
+  .modal-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1050;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    outline: 0;
+  }
+  
+  .modal {
+    z-index: 100;
+    background: white;
+    position: relative;
+    margin: 1.75rem auto;
+    border-radius: 3px;
+    max-width: 500px;
+    padding: 2rem;
+  }
+  
   .modal-header {
-    border-bottom: none;
-
-    & button {
-        position: absolute;
-        right: 27px;
-        top: 24px;
-        outline: 0;
-        padding: 1rem;
-        margin: -1rem -1rem -1rem auto;
-    }
-    .title{
-        color: $black;
-        margin-top: 5px;
-        margin-bottom: 0;
-    }
-
-    .modal-title{
-      color: $black;
-    }
-
-    i.tim-icons {
-      font-size: 16px;
-    }
+    display: flex;
+    justify-content: flex-end;
   }
-
-
-  // Modal body
-  // Where all modal content resides (sibling of .modal-header and .modal-footer)
-  .modal-body {
-    line-height: 1.9;
-
-    p{
-      color: $black;
-    }
+  
+  .modal-close-button {
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    opacity: .3;
+    cursor: pointer;
+    border: none;
   }
-  // Footer (for actions)
-  .modal-footer {
-    border-top: 0;
-    -webkit-justify-content: space-between; /* Safari 6.1+ */
-    justify-content: space-between;
-
-    button {
-      margin: 0;
-      padding-left: 16px;
-      padding-right: 16px;
-      width: auto;
-
-      &.pull-left {
-        padding-left: 5px;
-        padding-right: 5px;
-        position: relative;
-        left: -5px;
-      }
-    }
-
+  
+  button {
+    font-size: .9rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 3px;
+    padding: .3rem 1rem;
+    margin-left: .5rem;
   }
-  .modal-body + .modal-footer {
-    padding-top: 0;
+  
+  .button-default {
+    background: #247BA0;
+    color: #fff;
   }
-}
-.modal-backdrop {
-  background: rgba(0,0,0,0.3);
-}
-
-.modal{
-
-    &.modal-default{
-        @include modal-colors($white, $black);
-    }
-
-    &.modal-primary{
-        @include modal-colors($primary, $white);
-    }
-
-    &.modal-danger{
-        @include modal-colors($danger, $white);
-    }
-
-    &.modal-warning{
-        @include modal-colors($warning, $white);
-    }
-
-    &.modal-success{
-        @include modal-colors($success, $white);
-    }
-
-    &.modal-info{
-        @include modal-colors($info, $white);
-    }
-
-    .modal-header .close{
-        color: $danger;
-        text-shadow: none;
-
-        &:hover,
-        &:focus{
-            opacity: 1;
-        }
-    }
-
-    &.modal-black{
-      .modal-content{
-        background: linear-gradient(to bottom, $black 0%, $black-states 100%);
-        color: rgba($white, 0.8);
-        .modal-header{
-          .modal-title, .title{
-            color: rgba($white, 0.9);
-          }
-        }
-        .modal-body{
-          p{
-            color: rgba($white, 0.8);
-          }
-        }
-      }
-      h1, h2, h3, h4, h5, h6, p{
-        color: $white;
-      }
-    }
-}
-
-.modal-search{
-  .modal-dialog{
-    margin: 20px auto;
-    max-width: 650px;
-    input{
-      border: none;
-      font-size: 17px;
-      font-weight: 100;
-    }
-    span{
-      font-size: 35px;
-      color: $search-gray;
-    }
-  }
-  .modal-content{
-    .modal-header{
-      padding: 24px;
-    }
-  }
-
-  .modal-header .close{
-    color: $dark-background;
-    top: 30px !important;
-  }
-
-  .modal-footer{
-    border-top: 2px solid #f9f9f9;
-    margin: 0px 25px 20px;
-  }
-}
