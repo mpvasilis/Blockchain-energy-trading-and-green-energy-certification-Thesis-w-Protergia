@@ -1,6 +1,7 @@
 import React, {useEffect, useState, useRef} from "react";
 import TablePagination from '../components/pagination/TablePagination';
 import detectEthereumProvider from '@metamask/detect-provider';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import moment from 'moment';
@@ -48,6 +49,7 @@ function EnergyTrading() {
   const [pagesCountMyAsk, setPagesCountMyAsk] = useState(0);
   const [pagesCountBid, setPagesCountBid] = useState(0);
   const [energyKW, setEnergyKW] = useState('');
+  const [energyModalKW, setEnergyModalKW] = useState('');
   const [priceBid, setPriceBid] = useState('');
   const [priceAsk, setPriceAsk] = useState('');
   const account = useRef('');
@@ -59,12 +61,17 @@ function EnergyTrading() {
   const [disable, setDisable] = useState(false);
   const[alert, setAlert] = useState(false);
   const[modalIsOpen, setModalIsOpen] = useState(false);
+  const[modalBidIsOpen, setModalBidIsOpen] = useState(false);
   const [dataMyAsks, setDataMyAsks] = useState(null);
   const [dataMyBids, setDataMyBids] = useState(null);
   const [myAsks, setMyAsks] = useState(null);
   const [myBids, setMyBids] = useState(null);
   const [totalMyAsks, setTotalMyAsks] = useState(0);
   const [totalMyBids, setTotalMyBids] = useState(0);
+  const[isLoading, setIsLoading] = useState(false);
+  const[isLoadingTrade, setIsLoadingTrade] = useState(false);
+
+  const[id, setId] = useState(false);
 
 let subtitle;
   
@@ -226,6 +233,7 @@ const handleAccountsChanged = (accounts) => {
 
   const toggleModal = () =>{
     setModalIsOpen(true)
+    setIsLoadingTrade(true);
   }
   const afterOpenModal = () =>{
     subtitle.style.color = '#9933cc'
@@ -235,25 +243,30 @@ const handleAccountsChanged = (accounts) => {
     setModalIsOpen(false);
   }
 
-  const tradeBid = (id, ammount) => {
-
-    toggleModal();
-    
+  const tradeBid =  (id, ammount) => {
+   
     console.log(id);
-        marketPlace.methods.buyBid(id, ammount).send({from: account.current}).then(function(e) {
-          console.log(e);
+          marketPlace.methods.buyBid(id, ammount).send({from: account.current}).on('transactionHash', (th) => {
+          console.log(th);
           toast("You traded successfully!")
-          
+          closeModal();   
         });
   }
   const tradeAsk = async (id, ammount) => {
-    
-       toggleModal();
-    
-        await marketPlace.methods.buyAsk(id, ammount).send({from: account.current}).then(function(e) {
-          console.log(e);
-          toast("You traded successfully!")          
-        }); 
+        
+        console.log("amount: ", ammount);
+        console.log("id: ", id);
+       
+
+        await marketPlace.methods.buyAsk(id, ammount).send({from: account.current}).on('transactionHash', (th) => {
+          console.log(th);
+          toast("You traded successfully!") 
+          closeModal();   
+        })
+        .then(function(receipt){
+          setIsLoadingTrade(false);
+        })
+     
   }
 
   const getDataAsks = (offset, update = false)=>{
@@ -263,7 +276,6 @@ const handleAccountsChanged = (accounts) => {
       console.log("Total asks:" , askNum);
       setTotalAsks(askNum);
       setPagesCountAsk(Math.ceil(askNum / pageSize));
-
       if(askNum>0)
       marketPlace.methods.getAllAsks().call()
           .then(function(result){
@@ -272,14 +284,23 @@ const handleAccountsChanged = (accounts) => {
             var rows = [];
             for (var i = offset; i < pageSize + offset  ; i++) {
               if(i >= askNum)  break;
+              setIsLoadingTrade(true);
+
               rows.push( <tr key={i}>
                   <td>{result[1][i]}</td>
                   <td>{result[0][i].substr(0,6)}</td> 
                   <td>{result[2][i]/1000000}</td>
                   <td>{result[3][i]/100}</td>
                 <td>{moment(moment.unix(result[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
-                <td> <Button variant="secondary" size="sm" data-id={result[1][i]} onClick={event => tradeAsk(event.target.dataset.id)}>Trade</Button></td>
-              </tr>);
+                
+                <td>
+                
+                { isLoadingTrade ? 
+                <div class="lds-hourglass"></div>:
+               <Button variant="secondary" size="sm" data-id={result[1][i]} onClick={event=>{setId(event.target.dataset.id); toggleModal();}}>Trade</Button>
+                }
+               </td>
+                </tr>);
             }
             setAsks(rows)
           });
@@ -295,8 +316,13 @@ const handleAccountsChanged = (accounts) => {
         <td>{dataAsks[2][i]/1000000}</td>
         <td>{dataAsks[3][i]/100}</td>
         <td>{moment(moment.unix(dataAsks[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
-        <td> <Button variant="secondary" size="sm" data-id={dataAsks[1][i]} onClick={event => tradeAsk(event.target.dataset.id)}>Trade</Button></td>
-
+       
+        <td> 
+        { isLoadingTrade ? 
+                <div class="lds-hourglass"></div>
+              :<Button variant="secondary" size="sm" data-id={dataAsks[1][i]}onClick={event=>{setId(event.target.dataset.id); toggleModal();}}>Trade</Button>
+        }
+              </td>
       </tr>);
       setDataAsks(null);
       }
@@ -328,13 +354,12 @@ const handleAccountsChanged = (accounts) => {
                   <td>{result[2][i]/1000000}</td>
                   <td>{result[3][i]/100}</td>
                   <td>{moment(moment.unix(result[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
-                  <td> <Button variant="secondary" size="sm" data-id={result[1][i]} onClick={event => tradeBid(event.target.dataset.id)}>Trade</Button></td>
+                  <td> <Button variant="secondary" size="sm" data-id={result[1][i]} onClick={event=>{setId(event.target.dataset.id); toggleModal();}}>Trade</Button></td>
                 </tr>); 
               }
               setBids(rows)
             });
     });
-
   }else{
     let rows = [];
     for (let i = offset; i < pageSize + offset  ; i++) {
@@ -345,8 +370,7 @@ const handleAccountsChanged = (accounts) => {
         <td>{dataBids[2][i]/1000000}</td>
         <td>{dataBids[3][i]/100}</td>
         <td>{moment(moment.unix(dataBids[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
-        <td> <Button variant="secondary" size="sm" data-id={dataBids[1][i]} onClick={event => tradeBid(event.target.dataset.id)}>Trade</Button></td>
-
+        <td> <Button variant="secondary" size="sm" data-id={dataBids[1][i]} onClick={event=>{setId(event.target.dataset.id); toggleModal();}}>Trade</Button></td>
       </tr>);
       }
     }
@@ -355,10 +379,10 @@ const handleAccountsChanged = (accounts) => {
   }
   }
 
-  const getDataMyAsks = (offset, update = false)=>{
+  const getDataMyAsks = async (offset, update = false)=>{
 
     if(dataMyAsks===null || update){
-    marketPlace.methods.getCountOfAsks().call().then(function(myAskNum){
+     await marketPlace.methods.getCountOfAsks().call({from: account.current}).then(function(myAskNum){
       console.log("My total asks:" , myAskNum);
       setTotalMyAsks(myAskNum);
       // setPagesCountMyAsk(Math.ceil(myAskNum / pageSize));
@@ -372,9 +396,9 @@ const handleAccountsChanged = (accounts) => {
             for (var i = offset; i < pageSize + offset  ; i++) {
               if(i >= myAskNum)  break;
               rows.push( <tr key={i}>
-                 <td>{result[1][i]}</td>
-                 <td>{result[0][i].substr(0,6)}</td>
-                 <td>{result[2][i]/1000000}</td>
+                 <td>{result[2][i]}</td>
+                 <td>{result[0][i]}</td>
+                 <td>{result[1][i]/1000000}</td>
                  <td>{result[3][i]/100}</td>
                  <td>{moment(moment.unix(result[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
                 {/* <td> <Button variant="secondary" size="sm" data-id={result[4][i]} onClick={event => tradeAsk(event.target.dataset.id)}>Trade</Button></td> */}
@@ -390,7 +414,7 @@ const handleAccountsChanged = (accounts) => {
       if(i < totalMyAsks )  { 
       rows.push( <tr key={i}>
         <td>{dataMyAsks[2][i]}</td>
-        <td>{dataMyAsks[0][i].substr(0,6)}</td>
+        <td>{dataMyAsks[0][i]}</td>
         <td>{dataMyAsks[1][i]/1000000}</td>
         <td>{dataMyAsks[3][i]/100}</td>
         <td>{moment(moment.unix(dataMyAsks[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
@@ -405,7 +429,6 @@ const handleAccountsChanged = (accounts) => {
   }
   }
 
-
   const isNumeric = (number)  =>{
     if (+number === +number) { // if is a number
         return true;
@@ -414,10 +437,10 @@ const handleAccountsChanged = (accounts) => {
     return false;
   }
 
-  const addBidOrAsk = () => {
+  const addBidOrAsk = async () => {
     
   
-    if (open === 'bid'){
+  if (open === 'bid'){
     
       if (energyKW === "" || priceBid === "" ){
         setError(true);
@@ -429,15 +452,25 @@ const handleAccountsChanged = (accounts) => {
         setErrorP(true)  
       }
     else{
-      marketPlace.methods.energyBid(energyKW * 1000000, priceBid * 100).send({from: account.current}).on('transactionHash', (th) => {
+
+      setIsLoading(true);
+
+    try{
+      await marketPlace.methods.energyBid(energyKW * 1000000, priceBid * 100).send({from: account.current}).on('transactionHash', (th) => {
+
 
         toast("Bid has been succesfully submited!")
       }).then(function(e) {
 
+        setIsLoading(false);
           setDataBids(null);
           getDataBids(currentPageΒ   * pageSize, true);
           console.log(e)
       });
+    }catch(e){
+        console.log(e);
+        setIsLoading(false);
+      } 
       setEnergyKW("");
       setPriceBid("");
       setErrorE(false);
@@ -449,21 +482,29 @@ const handleAccountsChanged = (accounts) => {
       if (energyKW === ""||energyKW > 1000000  || energyKW < 1 ||  isNumeric(energyKW) === false ){
         setErrorE(true);
       }
-      else if ( priceAsk < 0 ||  isNumeric(priceAsk) === false){
+         else if ( priceAsk < 0 ||  isNumeric(priceAsk) === false){
         setErrorPA(true)  
       }
-      else{
-        marketPlace.methods.energyAsk(energyKW * 1000000, priceAsk * 100).send({from: account.current}).on('transactionHash', (th) => {
+     else{
+
+        setIsLoading(true);
+    try{  
+        await marketPlace.methods.energyAsk(energyKW * 1000000, priceAsk * 100).send({from: account.current}).on('transactionHash', (th) => {
       
         toast("Ask has been succesfully submited!")
       }).then(function(e) {
 
+        setIsLoading(false);
         setDataAsks(null);
-        // setDataMyAsks(null);
+        setDataMyAsks(null);
         getDataAsks(currentPageA  * pageSize, true);
-        getDataAsks(currentPageMA  * pageSize, true);
+        getDataMyAsks(currentPageMA  * pageSize, true);
             console.log(e)
       });
+    }catch(e){
+      console.log(e);
+      setIsLoading(false);
+    } 
       setEnergyKW("");
       setPriceAsk("");
       setErrorE(false);
@@ -480,12 +521,10 @@ const handleAccountsChanged = (accounts) => {
     getDataBids(currentPageΒ* pageSize);
     getDataMyAsks(currentPageMA * pageSize);
    
-
     console.log("pagecountbids: ", totalBids);
     console.log("pagecountask: ", totalAsks);
     console.log("pagecountmyask: ", totalMyAsks);
    
- 
     web3.eth.getAccounts().then(r=>{
       
       handleAccountsChanged(r);
@@ -496,11 +535,9 @@ const handleAccountsChanged = (accounts) => {
  
   return (
     <>
-    
-      <div className="content">
-                 
+      <div className="content">             
       <Modal
-      
+  
         isOpen={modalIsOpen}
         onAfterOpen={afterOpenModal}
         onRequestClose={closeModal}
@@ -509,18 +546,19 @@ const handleAccountsChanged = (accounts) => {
         <h2 className="title" ref={(_subtitle) => (subtitle = _subtitle)}>Input amount</h2>
         <div>input amount of kw</div>
         
-        <form>
           <input 
+            value = {energyModalKW}
+            placeholder="Enter KWhs"
+            type="text"
+            onChange={event => setEnergyModalKW(event.target.value)}
+          />              
           
-          value = {energyKW}
-          placeholder="Enter KWhs"
-          type="text"
-          // onChange={event => setEnergyKW(event.target.value)}
-          
-          />
-           <Button variant="secondary" size="sm" onClick={() => tradeAsk()}>Trade</Button>
+              
+          <Button variant="secondary" size="sm"  onClick={()=>{tradeAsk(id, energyModalKW)}}> Trade</Button>
+           {/* <Button variant="secondary" size="sm"  onClick={()=>{tradeBid(id, energyModalKW)}}> Trade</Button>  */}
+
           <button variant="secondary" size="sm"  onClick={closeModal}>close</button>
-        </form>
+     
       </Modal>
         <Row>
           <Col md="7">
@@ -562,7 +600,7 @@ const handleAccountsChanged = (accounts) => {
             {totalBids>0 ?
                 <Card>
                   <CardHeader>
-                    <h5 className="title">Open Bids {totalBids}</h5>
+                    <h5 className="title">Open Bids</h5>
                   </CardHeader>
                   <CardBody>
                     {bids !==null ?
@@ -661,11 +699,13 @@ const handleAccountsChanged = (accounts) => {
                     {
                         error && <div style={{color: `red`}}>Please fill all the blanks</div>
                       }
-                      
-                    <Button  variant="secondary" size="lg" disabled={disable}  onClick={() => addBidOrAsk()}>  
-                      Place {open==='ask'? 'Ask':"Bid"}
-                    </Button>
-                    
+                   { isLoading ? 
+                     <div class="lds-hourglass"></div>
+                     :
+                         <Button  variant="secondary" size="lg" disabled={disable}  onClick={() => addBidOrAsk()}>  
+                           Place {open==='ask'? 'Ask':"Bid"}
+                         </Button>
+                  } 
                   </FormGroup>
                  { alert && <div class="alert alert-warning" size= "lg" role="alert">
                   You must add a device first!
@@ -690,7 +730,7 @@ const handleAccountsChanged = (accounts) => {
               <CardFooter>
               </CardFooter>
             </Card>
-           
+            {/* {totalMyAsks>0 ? */}
             <Card>
               <CardHeader>
                 <h4 className="title">My Asks</h4>
@@ -714,16 +754,17 @@ const handleAccountsChanged = (accounts) => {
                   </tbody>
                 
                 </Table> : <></>}
-                <TablePagination
+                {/* <TablePagination
                        pagesCount={pagesCountMyAsk}
                        currentPage={currentPageMA}
                        handlePageClick={handlePageClickMA}
                        handlePreviousClick={handlePreviousClickMA}
                        handleNextClick={handleNextClickMA}
-                   />
+                   /> */}
               </CardBody>
               
-            </Card>
+            </Card> 
+             {/* : <></>} */}
             <br/>
              
             <Card>
@@ -744,7 +785,7 @@ const handleAccountsChanged = (accounts) => {
                   </tr>
                   </thead>
                   <tbody>
-                   {myAsks}
+                   {myBids}
                   </tbody>
                 
                 </Table> 

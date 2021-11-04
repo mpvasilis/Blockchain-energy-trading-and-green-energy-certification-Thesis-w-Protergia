@@ -44,7 +44,6 @@ function PPAs() {
   const [pagesCountPPA, setPagesCountPPA] = useState(0);
   const [pagesCountCPPA, setPagesCountCPPA] = useState(0);
   const [price, setPrice] = useState('');
-
   const [placeStartDay, setPlaceStartDay] = useState('');
   const [placeEndDay, setPlaceEndDay] = useState('');
   const [ID, setID] = useState('');
@@ -56,7 +55,7 @@ function PPAs() {
   const[errorE, setErrorE] = useState(false);
   const[errorI, setErrorI] = useState(false);
   const[errorA, setErrorA] = useState(false);
-
+  const[isLoading, setIsLoading] = useState(false);
 
   const[isDisabled, setIsDisabled] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
@@ -165,7 +164,7 @@ const handleAccountsChanged = (accounts) => {
       console.log("Total PPAs:" , ppaNum);
       setTotalPPAs(ppaNum)
       setPagesCountPPA(Math.ceil(ppaNum / pageSize));
-
+      
       if(ppaNum>0)
       PPA.methods.viewAllPPAs().call()
           .then(function(result){
@@ -182,8 +181,8 @@ const handleAccountsChanged = (accounts) => {
                 <td>{moment.unix(result[3][i]).format("DD/MM/YYYY")}</td>
                 <td>{moment.unix(result[4][i]).format("DD/MM/YYYY")}</td>
                 <td>{result[5][i]}</td>
-                <td> <Button variant="secondary" size="sm" data-id={result[2][i]} onClick={event => claimPPA(event.target.dataset.id)}>Claim</Button></td>
-                 </tr>);
+                <td> <Button variant="secondary" size="sm" data-id={result[2][i]} onClick={event => claimPPA(event.target.dataset.id)}>Claim</Button></td> 
+                </tr>);
             }
             setPPAs(rows)
           });
@@ -240,6 +239,7 @@ const handleAccountsChanged = (accounts) => {
       });
   }
   else{
+    
     let rows = [];
     for (let i = offset; i < pageSize + offset  ; i++) {
       if(i < totalCPPAs )  {
@@ -251,8 +251,9 @@ const handleAccountsChanged = (accounts) => {
         <td>{moment.unix(dataCPPAs[4][i]).format("DD/MM/YYYY")}</td>
         <td>{moment.unix(dataCPPAs[5][i]).format("DD/MM/YYYY")}</td>
         <td><Button variant="secondary" size="sm" data-id={dataCPPAs[3][i]} onClick={event => acceptCorporatePPA(event.target.dataset.id)}>Claim</Button></td>
-
+        
       </tr>);
+   
       }
     }
     setCPPAs(rows)
@@ -268,7 +269,7 @@ const handleAccountsChanged = (accounts) => {
     return false;
   }
 
-  const createPPA = () => {
+  const createPPA = async () => {
 
     
 
@@ -291,14 +292,22 @@ const handleAccountsChanged = (accounts) => {
      }
       else{
 
-        PPA.methods.createPPA(price * 100, placeStartDay, placeEndDay).send({from: account.current}).on('transactionHash', (th) => {
+        setIsLoading(true);
+      try {
+        await PPA.methods.createPPA(price * 100, placeStartDay, placeEndDay).send({from: account.current}).on('transactionHash', (th) => {
 
           toast("A PPA has been succesfully submited!")
         }).then(function(e) {
           setDataPPAs(null);
           getDataPPAs(currentPagePPA   * pageSize, true);
           console.log(e);
+          setIsLoading(false);
+
         });
+      }catch(e){
+        console.log(e);
+        setIsLoading(false);
+      } 
         setPrice("");
         setPlaceStartDay("");
         setPlaceEndDay("");
@@ -336,7 +345,7 @@ const handleAccountsChanged = (accounts) => {
         setErrorA(true)
       }
       else{
-
+        
         PPA.methods.corporatePPA(address, price * 100, placeStartDay, placeEndDay, ID, ).send({from: account.current}).on('transactionHash', (th) => {
 
           toast("A Corporate CPPA has been succesfully submited!")
@@ -360,18 +369,20 @@ const handleAccountsChanged = (accounts) => {
       }
     }
   }
-  const claimPPA = (id) => {
+  const claimPPA = async (id) => {
 
     console.log(id);
-        PPA.methods.claimPPA(id).send({from: account.current}).then(function(e) {
+       await PPA.methods.claimPPA(id).send({from: account.current}).then(function(e) {
           console.log(e);
           toast("Claimed PPA successfully!")
           const newWindow = window.open("/receipt/"+id, '_blank', 'noopener,noreferrer')
           if (newWindow) newWindow.opener = null
         });
+    
   }
 
   const acceptCorporatePPA = (id) => {
+    
       PPA.methods.acceptCorporatePPA(id).send({from: account.current}).then(function(e) {
         console.log(e);
       });
@@ -478,12 +489,15 @@ const handleAccountsChanged = (accounts) => {
                   <div className="block block-four" />
                   <p className="description">Create a PPA</p>
                   <br/>
+                
                   <Button variant="primary" size="lg" onClick={()=>{setOpen('PPA')}}>
                     Create PPA
-                  </Button>{' '}
+                  </Button>
+              
                   <Button variant="secondary" size="lg" onClick={()=>{setOpen('CPPA')}}>
                     Create Corporate PPA
                   </Button>
+                
                 </div>
                 <Row>
                   <Col className="pr-md-1 form"  md="11"  >
@@ -580,11 +594,13 @@ const handleAccountsChanged = (accounts) => {
                         error && <div style={{color: `red`}}>Fill all the blanks</div>
                       }
                     <FormGroup>
-                    
+                  { isLoading ? 
+                     <div class="lds-hourglass"></div>
+                    :
                     <Button variant="secondary" size="lg" onClick={() => createPPA()}>
                       Create {open==='CPPA'? 'CPPA':"PPA"}
                     </Button>
-
+                  }
                   </FormGroup>
           </Col>
                 </Row>

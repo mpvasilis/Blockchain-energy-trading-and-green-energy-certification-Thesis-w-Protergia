@@ -43,7 +43,7 @@ function Devices() {
   const [isConnected, setIsConnected] = useState(false);
   const [accounts, setAccounts] = useState([]);
   const [id, setId] = useState(0);
-  const [isLoading,setIsLoading]= useState(true);
+  const [isLoading,setIsLoading]= useState(false);
   
   const signInMetamask = async() => {
     const provider = await detectEthereumProvider();
@@ -98,40 +98,53 @@ function Devices() {
     web3.eth.getAccounts().then(r=>{
       handleAccountsChanged(r);
     });
-      }, []);
+  }, []);
 
-       const addDevice= () =>{
+  const addDevice= async () =>{
 
-        setIsLoading(true);
+    // setIsLoading(true);
   
-          if (input === "" || input < 0 ){
-            
-            setError(true);
-        }
-        else{
+    if (input === "" || input < 0 ){
+        
+        setError(true);
+    }
+    else{
 
-        deviceRegistry.methods.getDeviceByAddress(account.current).call({from: account.current}).then(function(result){
-          
-          console.log(typeof result);
-          console.log("result:" , result);
-          console.log("Object.values(result)[0]:", Object.values(result)[0])
-      
+      await deviceRegistry.methods.getDeviceByAddress(account.current).call({from: account.current}).then( async function(result){
+        
+        console.log(typeof result);
+        console.log("result:" , result);
+        console.log("Object.values(result)[0]:", Object.values(result)[0]);
+
         if (account.current ===  Object.values(result)[0]){
 
             toast("This device has been already added!"); 
         }
-         else{
+        else{
 
-         deviceRegistry.methods.addDevice(input).send({from: account.current}).on('transactionHash', (th) => {
-            
-           setIsLoading(false);
-            toast("A device has been succesfully added!")   
-        })} 
+          setIsLoading(true);
+
+          try {
+            await deviceRegistry.methods.addDevice(input).send({from: account.current}).on('transactionHash', (th) => {
+              console.log("tx hash: ", th);
+              
+              // toast("A device has been succesfully added!")   
+            }).then(function(receipt){
+              console.log("receipt: ", receipt);
+              setIsLoading(false);
+              toast("A device has been succesfully added!") 
+          });;
+          }catch(e){
+            console.log(e);
+            setIsLoading(false);
+          } 
+        }
+      })
        
-      })}
-      setInput("");
-      setError(false);
     }
+    setInput("");
+    setError(false);
+  }
 
     // const handleButton = async () => {
     //   setIsLoading(true);
@@ -146,6 +159,8 @@ function Devices() {
   return (
     <>
       <div className="content">
+      
+      
               <Col md="6">
             <Card className="card-user">
               <CardBody>
@@ -189,10 +204,12 @@ function Devices() {
                     </select>
                     
              </div>
-             <div class="lds-hourglass"> 
-               <Button variant="primary" size="lg" onClick={addDevice} > Add Device </Button>{' '}
-              
-               </div>
+             { isLoading ? 
+                <div class="lds-hourglass"></div>
+              :
+                <Button variant="primary" size="lg" onClick={addDevice} > Add Device </Button>
+              }
+               
                              </FormGroup>
                              </Col>
                              </Row>
