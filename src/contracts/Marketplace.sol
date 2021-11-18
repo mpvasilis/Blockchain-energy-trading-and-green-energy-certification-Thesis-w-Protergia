@@ -8,8 +8,12 @@ contract Marketplace {
     using Counters for Counters.Counter;
     Counters.Counter private ID;
 
-    event onBidEnergy(address indexed seller, uint indexed day, uint indexed price, uint energy);
-    event onAskEnergy(address indexed buyer, uint indexed day, uint indexed price, uint energy);
+    event onNewBid(address indexed seller, uint indexed day, uint indexed price, uint energy);
+    event onNewAsk(address indexed buyer, uint indexed day, uint indexed price, uint energy);
+    event bidRemoved(address indexed seller, uint indexed day, uint id, uint indexed price, uint energy);
+    event askRemoved(address indexed buyer, uint indexed day, uint id, uint indexed price, uint energy);
+    event onUpdateBid(address indexed seller, uint indexed id, uint indexed price, uint energy);
+    event onUpdateAsk(address indexed buyer, uint indexed id, uint indexed price, uint energy);
     event onPurchased(address indexed seller, address indexed buyer, uint indexed day, uint energy);
 
     uint constant cent = 1;
@@ -72,7 +76,7 @@ contract Marketplace {
             eprice: _eprice,
             timestamp: block.timestamp
         }));
-        emit onBidEnergy(currentAddr, block.timestamp, _eprice, _energy);
+        emit onNewBid(currentAddr, block.timestamp, _eprice, _energy);
     }
 
     function energyAsk(uint _energy, uint _price) public {
@@ -91,12 +95,37 @@ contract Marketplace {
             price: _price,
             timestamp: block.timestamp
         }));
-        emit onAskEnergy(currentAddr, block.timestamp, _price, _energy);
+        emit onNewAsk(currentAddr, block.timestamp, _price, _energy);
+    }
+
+    function updateBid(uint _idOfBid, uint _energy, uint _price) public {
+        require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh(in whs), for instance 5.6kwhs = 5600whs");
+        require(_price >= cent, "Price in 'cent', for example 1.5dollars/kwh = 150cents/kwh");
+        for(uint i = 0; i<listOfEnergyBids.length; i++){
+            if(listOfEnergyBids[i].idOfBid == _idOfBid){
+                listOfEnergyBids[i].energy = _energy;
+                listOfEnergyBids[i].eprice = _price;
+                emit onUpdateBid(listOfEnergyBids[i].seller, listOfEnergyBids[i].idOfBid, _price, _energy);
+            }
+        }
+    }
+
+    function updateAsk(uint _idOfAsk, uint _energy, uint _price) public {
+        require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh(in whs), for instance 5.6kwhs = 5600whs");
+        require(_price >= cent, "Price in 'cent', for example 1.5dollars/kwh = 150cents/kwh");
+        for(uint i = 0; i<listOfEnergyAsks.length; i++){
+            if(listOfEnergyAsks[i].idOfAsk == _idOfAsk){
+                listOfEnergyAsks[i].energy = _energy;
+                listOfEnergyAsks[i].price = _price;
+                emit onUpdateAsk(listOfEnergyAsks[i].buyer, listOfEnergyAsks[i].idOfAsk, _price, _energy);
+            }
+        }
     }
 
     function removeBid(uint _id) public {
         for(uint i = 0; i<listOfEnergyBids.length; i++){
             if(listOfEnergyBids[i].idOfBid == _id){
+                emit bidRemoved(listOfEnergyBids[i].seller, block.timestamp, listOfEnergyBids[i].idOfBid, listOfEnergyBids[i].eprice, listOfEnergyBids[i].energy);
                 if (listOfEnergyBids.length > 1) {
                     listOfEnergyBids[i] = listOfEnergyBids[listOfEnergyBids.length-1];
                 }
@@ -108,6 +137,7 @@ contract Marketplace {
     function removeAsk(uint _id) public {
         for(uint i = 0; i<listOfEnergyAsks.length; i++){
             if(listOfEnergyAsks[i].idOfAsk == _id){
+                emit askRemoved(listOfEnergyAsks[i].buyer, block.timestamp, listOfEnergyAsks[i].idOfAsk, listOfEnergyAsks[i].price, listOfEnergyAsks[i].energy);
                 if (listOfEnergyAsks.length > 1) {
                     listOfEnergyAsks[i] = listOfEnergyAsks[listOfEnergyAsks.length-1];
                 }
@@ -144,7 +174,7 @@ contract Marketplace {
                         price: listOfEnergyBids[i].eprice,
                         timestamp: block.timestamp
                     }));
-                    emit onAskEnergy(currentAddr, block.timestamp, listOfEnergyBids[i].eprice, amount);
+                    emit onNewAsk(currentAddr, block.timestamp, listOfEnergyBids[i].eprice, amount);
 
                     isEnergyPurchased = true;
 
@@ -220,6 +250,7 @@ contract Marketplace {
                         eprice: listOfEnergyAsks[i].price,
                         timestamp: block.timestamp
                     }));
+                    emit onNewBid(currentAddr, block.timestamp, listOfEnergyAsks[i].price, amount);
 
                     isEnergyPurchased = true;
 
