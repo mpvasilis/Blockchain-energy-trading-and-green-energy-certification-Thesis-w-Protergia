@@ -292,24 +292,7 @@ const handleAccountsChanged = (accounts) => {
     setModalUpdateIsOpen(false);
   }
 
-  const tradeBid = async (id, ammount) => {
-
-    
-    try{
-         await marketPlace.methods.buyBid(id, ammount * 1000000).send({from: account.current}).on('transactionHash', (th) => {
-          console.log(th);
-          toast("You traded successfully!")
-          closeModal();   
-        })
-        .then(function(receipt){
-          // setIsLoadingTrade(false);
-        })
-      }catch(e){
-        console.log(e);
-        // setIsLoadingTrade(false);
-
-      }
-  }
+  
   const removeAsk = async (id) => {
     console.log("id: ", id);
     try{
@@ -380,21 +363,35 @@ const handleAccountsChanged = (accounts) => {
       }catch(e){
         console.log(e);
         // setIsLoadingTrade(false);
+      }}
+  const tradeBid = async (id, ammount) => {
 
-      }
-     
-  }
+    try{
+         await marketPlace.methods.buyBid(id, ammount * 1000000).send({from: account.current}).on('transactionHash', (th) => {
+          console.log(th);
+          toast("You traded successfully!")
+          closeModal();   
+        })
+        .then(function(receipt){
+          // setIsLoadingTrade(false);
+        })
+      }catch(e){
+        console.log(e);
+        // setIsLoadingTrade(false);
+
+      }}
 
   const getDataAsks = (offset, update = false)=>{
 
-    setTableOpenAsks(true);
+
+    
     if(dataAsks===null || update){
     marketPlace.methods.getTotalAsks().call().then(function(askNum){
       console.log("Total asks:" , askNum);
       setTotalAsks(askNum);
       setPagesCountAsk(Math.ceil(askNum / pageSize));
       if(askNum>0)
-      
+
       marketPlace.methods.getAllAsks().call()
           .then(function(result){
             setDataAsks(result);
@@ -413,8 +410,12 @@ const handleAccountsChanged = (accounts) => {
                 {/* { isLoadingTrade[id] ? 
                <div class="lds-hourglass"></div>
                : */}
-               <Button variant="secondary" size="sm" data-id={result[1][i]} onClick={event=>{setId(event.target.dataset.id);
-                 toggleModal();}}>Trade</Button>
+               <Button variant="secondary" size="sm" data-id={result[1][i]} onClick={event=>{
+                 setId(event.target.dataset.id);
+                 setTableOpenBids(false);
+                 setTableOpenAsks(true);
+                 toggleModal();}}
+                 >Trade</Button>
                 
                </td>
                 </tr>);
@@ -446,9 +447,10 @@ const handleAccountsChanged = (accounts) => {
   }
 
   const getDataBids = (offset, update = false)=>{
+
+
     
-    setTableOpenBids(true);
-    setTableOpenAsks(false);
+    
     if(dataBids===null || update){
     marketPlace.methods.getTotalBids().call().then(function(bidNum){
       console.log("Total bids:" , bidNum);
@@ -470,8 +472,12 @@ const handleAccountsChanged = (accounts) => {
                   <td>{result[2][i]/1000000}</td>
                   <td>{result[3][i]/100}</td>
                   <td>{moment(moment.unix(result[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
-                  <td> <Button variant="secondary" size="sm" data-id={result[1][i]} onClick={event=>{setId(event.target.dataset.id);
-                      toggleModal();}}>Trade</Button></td>
+                  <td> <Button variant="secondary" size="sm" data-id={result[1][i]} onClick={event=>{
+                      setId(event.target.dataset.id);
+                      setTableOpenAsks(false);
+                      setTableOpenBids(true);
+                      toggleModal(); }}
+                      >Trade</Button></td>
                 </tr>); 
               }
               setBids(rows)
@@ -496,9 +502,10 @@ const handleAccountsChanged = (accounts) => {
   }
   }
 
-  const getDataMyAsks = (offset, update = true)=>{
+  const getDataMyAsks = (offset, update = false)=>{
 
     setTableOpenMyAsks(true);
+    setTableOpenMyBids(false);
     if(dataMyAsks===null || update){
        marketPlace.methods.getCountOfAsks().call({from: account.current}).then(function(myAskNum){
       console.log("My total asks:" , myAskNum);
@@ -519,9 +526,8 @@ const handleAccountsChanged = (accounts) => {
                  <td>{result[3][i]/100}</td>
                  <td>{moment(moment.unix(result[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
                 <td> <Button variant="secondary"  size="sm"  data-id={result[2][i]} onClick={event => removeAsk(event.target.dataset.id)} class="btn"><i class="fa fa-trash" ></i></Button></td>
-                <td> <Button variant="secondary" size="sm" data-id={result[2][i]} onClick={event => {setId(event.target.dataset.id); toggleModalUpdate();}}class="btn"><i class="fa fa-edit" ></i></Button></td>
+                <td> <Button class="btn" variant="secondary" size="sm" data-id={result[2][i]} onClick={event => {setId(event.target.dataset.id); toggleModalUpdate();}}><i class="fa fa-edit" ></i></Button></td>
               </tr>);
-              //<i class="fa fa-pencil fa-fw"></i>
             }
              setMyAsks(rows)
             console.log(rows);
@@ -540,7 +546,7 @@ const handleAccountsChanged = (accounts) => {
         <td>{dataMyAsks[3][i]/100}</td>
         <td>{moment(moment.unix(dataMyAsks[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
         <td> <Button variant="secondary" size="sm" data-id={dataMyAsks[2][i]} onClick={event => removeAsk(event.target.dataset.id)}class="btn"><i class="fa fa-trash" ></i></Button></td>
-        <td> <Button variant="secondary" size="sm" data-id={dataMyAsks[2][i]} onClick={event => {setId(event.target.dataset.id); toggleModalUpdate();}}class="btn"><i class="fa fa-edit" ></i></Button></td>
+        <td> <Button class="btn" variant="secondary" size="sm" data-id={dataMyAsks[2][i]} onClick={event => {setId(event.target.dataset.id); toggleModalUpdate();}}><i class="fa fa-edit" ></i></Button></td>
 
       </tr>);
       setDataMyAsks(null);
@@ -576,12 +582,10 @@ const handleAccountsChanged = (accounts) => {
                  <td>{moment(moment.unix(result[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
                  <td> <Button variant="secondary" size="sm" data-id={result[2][i]} onClick={event => removeBid(event.target.dataset.id)}class="btn"><i class="fa fa-trash" ></i></Button></td>
                  <td> <Button variant="secondary" size="sm" data-id={result[2][i]} onClick={event => {setId(event.target.dataset.id); toggleModalUpdate();}}class="btn"><i class="fa fa-edit" ></i></Button></td>
-
               </tr>);
             }
              setMyBids(rows)
             console.log(rows);
-
           });
     });
     }
@@ -695,6 +699,14 @@ const handleAccountsChanged = (accounts) => {
     }
   }
   }
+
+  // const listener = (block) => {
+  //   console.log("new action emited")
+  //   console.log(block)
+  //   getAllActions()
+  // }
+
+
   useEffect(() => {
 
     getDataMyAsks(currentPageMA * myPageSize);
@@ -702,10 +714,45 @@ const handleAccountsChanged = (accounts) => {
     getDataAsks(currentPageA * pageSize);
     getDataBids(currentPageΒ * pageSize);
    
-    console.log("pagecountbids: ", totalBids);
-    console.log("pagecountask: ", totalAsks);
-    console.log("pagecountmyask: ", totalMyAsks);
-   
+    marketPlace.events.allEvents({}, function (event) {
+      console.log(event);
+    })
+
+    .on("onNewBid", function(event){
+      getDataBids();
+      console.log("EventOnNewBid:" , event);
+    })
+    .on("onNewAsk", function(event){
+      getDataAsks();
+      console.log("EventOnNewAsk:" , event);
+    })
+    .on("onUpdateBid", function(event){
+      updateBid();
+      console.log("EventOnUpdateBid:" , event);
+    })
+    .on("onUpdateAsk", function(event){
+      updateAsk();
+      console.log("EventOnUpdateAsk:" , event);
+    })
+    .on("bidRemoved", function(event){
+      removeBid();
+      console.log("EventBidRemoved:" , event);
+    })
+    .on("askRemoved", function(event){
+      removeAsk();
+      console.log("EventAskRemoved:" , event);
+    })
+    // .on("onPurchased", function(event){
+    //   tradeAsk();
+    //   tradeBid();
+    //   console.log("EventOnPurchased:" , event);
+    // })
+
+
+    
+    
+
+    
     web3.eth.getAccounts().then(r=>{
       
       handleAccountsChanged(r);
@@ -735,9 +782,11 @@ const handleAccountsChanged = (accounts) => {
           />               
          {tableOpenAsks ?
           <Button variant="secondary" size="sm"  onClick={()=>{tradeAsk(id, energyModalKW)}}> Trade</Button>
-          :
+          : <></>}
+          {tableOpenBids ?
           <Button variant="secondary" size="sm"  onClick={()=>{tradeBid(id, energyModalKW)}}> Trade</Button>  
-         }
+          : <></>}
+         
           <button variant="secondary" size="sm"  onClick={closeModal}>close</button>
     </Modal>
       
@@ -774,9 +823,11 @@ const handleAccountsChanged = (accounts) => {
       {tableOpenMyAsks ?
 
           <Button variant="secondary" size="sm"  onClick={()=>{updateAsk(id, energyModalKW, priceModal)}}> Update</Button>
-          :
+          : <></>}
+      {tableOpenMyBids ?
           <Button variant="secondary" size="sm"  onClick={()=>{updateBid(id, energyModalKW, priceModal)}}> Update</Button>
-      }
+          : <></>}
+      
 
       <button variant="secondary" size="sm"  onClick={closeModalUpdate}>close</button>
           </thead>
@@ -875,7 +926,7 @@ const handleAccountsChanged = (accounts) => {
                   <br/>
                   <Button variant="primary" size="lg" onClick={()=>{setOpen('bid')}}>
                     Bid
-                  </Button>{' '}
+                  </Button>
                   <Button variant="secondary" size="lg" onClick={()=>{setOpen('ask')}}>
                     Ask
                   </Button>
