@@ -51,7 +51,7 @@ contract Device {
         address currentAddr = msg.sender;
         devices[currentAddr].isExist = false; ///@notice if you use msg.sender instead of the variable "currentAddr" it is not deleted
         //delete devices[currentAddr];
-        emit onDeviceRemoved(msg.sender, block.timestamp);
+        emit onDeviceRemoved(currentAddr, block.timestamp);
     }
 
     ///@notice Get signle device details from specific address
