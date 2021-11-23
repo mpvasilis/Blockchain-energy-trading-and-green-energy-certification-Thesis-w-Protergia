@@ -49,8 +49,8 @@ contract Device {
 
     function removeDevice() public {
         address currentAddr = msg.sender;
-        devices[currentAddr].isExist = false; ///@notice if you use msg.sender instead of the variable "currentAddr" it is not deleted
-        //delete devices[currentAddr];
+        devices[currentAddr].isExist = false;
+        delete devices[currentAddr];
         emit onDeviceRemoved(currentAddr, block.timestamp);
     }
 
