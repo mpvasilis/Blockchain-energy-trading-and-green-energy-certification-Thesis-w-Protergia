@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from "react";
+import React, {useEffect, useState, useRef, useCallback } from "react";
 import TablePagination from '../components/pagination/TablePagination';
 import detectEthereumProvider from '@metamask/detect-provider';
 import ReactDOM from 'react-dom';
@@ -80,11 +80,7 @@ function EnergyTrading() {
   const [tableOpenBids, setTableOpenBids] = useState(false);
   const [tableOpenMyAsks, setTableOpenMyAsks] = useState(false);
   const [tableOpenMyBids, setTableOpenMyBids] = useState(false);
-  
-
-
-
-  const[id, setId] = useState(false);
+  const[id, setId] = useState('');
 
 let subtitle;
   
@@ -291,7 +287,6 @@ const handleAccountsChanged = (accounts) => {
   const closeModalUpdate = () =>{
     setModalUpdateIsOpen(false);
   }
-
   
   const removeAsk = async (id) => {
     console.log("id: ", id);
@@ -383,8 +378,6 @@ const handleAccountsChanged = (accounts) => {
 
   const getDataAsks = (offset, update = false)=>{
 
-
-    
     if(dataAsks===null || update){
     marketPlace.methods.getTotalAsks().call().then(function(askNum){
       console.log("Total asks:" , askNum);
@@ -448,9 +441,6 @@ const handleAccountsChanged = (accounts) => {
 
   const getDataBids = (offset, update = false)=>{
 
-
-    
-    
     if(dataBids===null || update){
     marketPlace.methods.getTotalBids().call().then(function(bidNum){
       console.log("Total bids:" , bidNum);
@@ -495,6 +485,7 @@ const handleAccountsChanged = (accounts) => {
         <td>{moment(moment.unix(dataBids[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
         <td> <Button variant="secondary" size="sm" data-id={dataBids[1][i]} onClick={event=>{setId(event.target.dataset.id); toggleModal();}}>Trade</Button></td>
       </tr>);
+       setDataBids(null);
       }
     }
     setBids(rows)
@@ -503,9 +494,7 @@ const handleAccountsChanged = (accounts) => {
   }
 
   const getDataMyAsks = (offset, update = false)=>{
-
-    setTableOpenMyAsks(true);
-    setTableOpenMyBids(false);
+  
     if(dataMyAsks===null || update){
        marketPlace.methods.getCountOfAsks().call({from: account.current}).then(function(myAskNum){
       console.log("My total asks:" , myAskNum);
@@ -526,16 +515,19 @@ const handleAccountsChanged = (accounts) => {
                  <td>{result[3][i]/100}</td>
                  <td>{moment(moment.unix(result[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
                 <td> <Button variant="secondary"  size="sm"  data-id={result[2][i]} onClick={event => removeAsk(event.target.dataset.id)} class="btn"><i class="fa fa-trash" ></i></Button></td>
-                <td> <Button class="btn" variant="secondary" size="sm" data-id={result[2][i]} onClick={event => {setId(event.target.dataset.id); toggleModalUpdate();}}><i class="fa fa-edit" ></i></Button></td>
+                <td> <Button class="btn" variant="secondary" size="sm" data-id={result[2][i]} onClick={event => {setId(event.target.dataset.id);
+                   setTableOpenMyAsks(true);
+                   setTableOpenMyBids(false);
+                   toggleModalUpdate();}}>
+                  <i class="fa fa-edit" ></i></Button></td>
               </tr>);
             }
              setMyAsks(rows)
-            console.log(rows);
-
-          });
-    });
+            console.log(rows); 
+         });
+    }); 
     }
-  else{
+   else{
     let rows = [];
     for (let i = offset; i < myPageSize + offset  ; i++) {
       if(i < totalMyAsks )  { 
@@ -554,12 +546,13 @@ const handleAccountsChanged = (accounts) => {
     }
      setMyAsks(rows)
     console.log(rows);
+}
   }
-  }
-  const getDataMyBids =  (offset, update = false)=>{
 
-    setTableOpenMyBids(true);
-    setTableOpenMyAsks(false);
+
+  const getDataMyBids = (offset, update = false) => {
+
+   
     if(dataMyBids===null || update){
       marketPlace.methods.getCountOfBids().call({from: account.current}).then(function(myBidNum){
       console.log("My total bids:" , myBidNum);
@@ -581,7 +574,11 @@ const handleAccountsChanged = (accounts) => {
                  <td>{result[3][i]/100}</td>
                  <td>{moment(moment.unix(result[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
                  <td> <Button variant="secondary" size="sm" data-id={result[2][i]} onClick={event => removeBid(event.target.dataset.id)}class="btn"><i class="fa fa-trash" ></i></Button></td>
-                 <td> <Button variant="secondary" size="sm" data-id={result[2][i]} onClick={event => {setId(event.target.dataset.id); toggleModalUpdate();}}class="btn"><i class="fa fa-edit" ></i></Button></td>
+                 <td> <Button variant="secondary" size="sm" data-id={result[2][i]} onClick={event => {setId(event.target.dataset.id);
+                   setTableOpenMyBids(true);
+                   setTableOpenMyAsks(false);
+                  toggleModalUpdate();
+                  }}class="btn"><i class="fa fa-edit" ></i></Button></td>
               </tr>);
             }
              setMyBids(rows)
@@ -590,6 +587,7 @@ const handleAccountsChanged = (accounts) => {
     });
     }
   else{
+    
     let rows = [];
     for (let i = offset; i < myPageSize + offset  ; i++) {
       if(i < totalMyBids )  { 
@@ -610,6 +608,7 @@ const handleAccountsChanged = (accounts) => {
     console.log(rows);
   }
   }
+  
 
   const isNumeric = (number)  =>{
     if (+number === +number) { // if is a number
@@ -691,75 +690,101 @@ const handleAccountsChanged = (accounts) => {
       console.log(e);
       setIsLoading(false);
     } 
+    
       setEnergyKW("");
       setPriceAsk("");
       setErrorEnergy(false);
       setErrorPriceAsk(false);
       setError(false);
     }
-  }
-  }
+  }}
 
   // const listener = (block) => {
   //   console.log("new action emited")
   //   console.log(block)
-  //   getAllActions()
+  //   updateBid()
   // }
 
-
+  
+  
   useEffect(() => {
 
-    getDataMyAsks(currentPageMA * myPageSize);
-    getDataMyBids(currentPageMB * myPageSize);
+    
     getDataAsks(currentPageA * pageSize);
     getDataBids(currentPageΒ * pageSize);
-   
-    marketPlace.events.allEvents({}, function (event) {
-      console.log(event);
-    })
+    getDataMyAsks(currentPageMA * myPageSize);
+    getDataMyBids(currentPageMB * myPageSize);
+       
+    
+    marketPlace.events.onNewBid({} , function(error, event){ 
+      console.log(event); 
+     }) 
+   .on('data',  function(event){
+     console.log(event.returnValues);
+   })
+    marketPlace.events.onNewAsk({} , function(error, event){ 
+      console.log(event); 
+     }) 
+   .on('data',  function(event){
+     console.log(event.returnValues);
+   })
 
-    .on("onNewBid", function(event){
-      getDataBids();
-      console.log("EventOnNewBid:" , event);
+    marketPlace.events.onUpdateAsk({} , function(error, event){ 
+      console.log(event); 
+     }) 
+   .on('data',  function(event){
+     console.log(event.returnValues);
+   })
+
+    marketPlace.events.onUpdateBid({} , function(error, event){ 
+      console.log(event); 
+     }) 
+   .on('data',  function(event){
+     console.log(event.returnValues);
+   })
+
+     marketPlace.events.bidRemoved({} , function(error, event){ 
+       console.log(event); 
+      }) 
+    .on('data',  function(event){
+      console.log(event.returnValues);
     })
-    .on("onNewAsk", function(event){
-      getDataAsks();
-      console.log("EventOnNewAsk:" , event);
-    })
-    .on("onUpdateBid", function(event){
-      updateBid();
-      console.log("EventOnUpdateBid:" , event);
-    })
-    .on("onUpdateAsk", function(event){
-      updateAsk();
-      console.log("EventOnUpdateAsk:" , event);
-    })
-    .on("bidRemoved", function(event){
-      removeBid();
-      console.log("EventBidRemoved:" , event);
-    })
-    .on("askRemoved", function(event){
-      removeAsk();
-      console.log("EventAskRemoved:" , event);
-    })
+    
+    marketPlace.events.askRemoved({} , function(error, event){ 
+      console.log(event); 
+     }) 
+   .on('data',  function(event){
+     console.log(event.returnValues);
+   })
+    
+    marketPlace.events.onPurchased({} , function(error, event){ 
+      console.log(event); 
+     }) 
+   .on('data',  function(event){
+     console.log(event.returnValues);
+   })
+   
+   
+
+    
     // .on("onPurchased", function(event){
     //   tradeAsk();
     //   tradeBid();
     //   console.log("EventOnPurchased:" , event);
     // })
-
-
-    
-    
-
-    
+    // marketPlace.events.onPurchased({}, function (event) {
+    //   tradeBid();
+    //   console.log("EventOnTradeBid:" , event);     
+    // })
     web3.eth.getAccounts().then(r=>{
-      
+
       handleAccountsChanged(r);
     });
    
   }, []);
+
   
+ 
  
   return (
     <>
@@ -770,6 +795,7 @@ const handleAccountsChanged = (accounts) => {
         onAfterOpen={afterOpenModal}
         onRequestClose={closeModal}
         style={customStyles}
+        ariaHideApp={false}
       >
         <h2 className="title" ref={(_subtitle) => (subtitle = _subtitle)}>Input amount</h2>
         <div>input amount of kw</div>
@@ -796,6 +822,7 @@ const handleAccountsChanged = (accounts) => {
         onAfterOpen={afterOpenModalUpdate}
         onRequestClose={closeModalUpdate}
         style={customStyles}
+        ariaHideApp={false}
       >
         <thead className="text-primary">
        
