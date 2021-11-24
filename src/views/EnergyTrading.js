@@ -709,60 +709,78 @@ const handleAccountsChanged = (accounts) => {
   
   useEffect(() => {
 
-    
+  
+  if(dataMyAsks===null ){
+         marketPlace.methods.getCountOfAsks().call({from: account.current}).then(function(myAskNum){
+        setTotalMyAsks(myAskNum);
+        setPagesCountMyAsk(Math.ceil(myAskNum / myPageSize));
+          marketPlace.methods.getMyAsks().call({from: account.current}).then(function(){
+            getDataMyAsks(currentPageMA * myPageSize);
+      }); 
+    }
+  )}
+
+  if(dataMyBids===null ){
+    marketPlace.methods.getCountOfBids().call({from: account.current}).then(function(myBidNum){
+   setTotalMyBids(myBidNum);
+   setPagesCountMyBid(Math.ceil(myBidNum / myPageSize));
+     marketPlace.methods.getMyBids().call({from: account.current}).then(function(){
+       getDataMyBids(currentPageMB * myPageSize);
+
+ }); 
+}
+)}
     getDataAsks(currentPageA * pageSize);
     getDataBids(currentPageΒ * pageSize);
-    getDataMyAsks(currentPageMA * myPageSize);
-    getDataMyBids(currentPageMB * myPageSize);
-       
-    
-    marketPlace.events.onNewBid({} , function(error, event){ 
+  
+  marketPlace.events.onNewBid({} , function(error, event){ 
       console.log(event); 
-     }) 
-   .on('data',  function(event){
-     console.log(event.returnValues);
-   })
-    marketPlace.events.onNewAsk({} , function(error, event){ 
-      console.log(event); 
-     }) 
+  }) 
    .on('data',  function(event){
      console.log(event.returnValues);
    })
 
-    marketPlace.events.onUpdateAsk({} , function(error, event){ 
+  marketPlace.events.onNewAsk({} , function(error, event){ 
       console.log(event); 
-     }) 
+  }) 
    .on('data',  function(event){
      console.log(event.returnValues);
    })
 
-    marketPlace.events.onUpdateBid({} , function(error, event){ 
+  marketPlace.events.onUpdateAsk({} , function(error, event){ 
       console.log(event); 
-     }) 
+  }) 
    .on('data',  function(event){
      console.log(event.returnValues);
    })
 
-     marketPlace.events.bidRemoved({} , function(error, event){ 
+  marketPlace.events.onUpdateBid({} , function(error, event){ 
+      console.log(event); 
+   }) 
+   .on('data',  function(event){
+     console.log(event.returnValues);
+   })
+
+  marketPlace.events.bidRemoved({} , function(error, event){ 
        console.log(event); 
-      }) 
+  }) 
     .on('data',  function(event){
       console.log(event.returnValues);
     })
     
-    marketPlace.events.askRemoved({} , function(error, event){ 
+  marketPlace.events.askRemoved({} , function(error, event){ 
       console.log(event); 
-     }) 
-   .on('data',  function(event){
-     console.log(event.returnValues);
-   })
+   }) 
+      .on('data',  function(event){
+         console.log(event.returnValues);
+      })
     
-    marketPlace.events.onPurchased({} , function(error, event){ 
+  marketPlace.events.onPurchased({} , function(error, event){ 
       console.log(event); 
-     }) 
-   .on('data',  function(event){
-     console.log(event.returnValues);
-   })
+  }) 
+      .on('data',  function(event){
+        console.log(event.returnValues);
+       })
    
    
 
@@ -1077,7 +1095,7 @@ const handleAccountsChanged = (accounts) => {
               </CardHeader>
                 
               <CardBody>
-              {myBids !==null ?
+              {myBids !== null ?
                
                   <Table className="tablesorter" responsive>                  
                       <thead className="text-primary">
