@@ -41,10 +41,12 @@ contract Device {
         emit onDeviceUpdated(ownerOfDevice, day, typeOfDevice);
     }
 
-    function transferOwnershipOfDevice(address oldOwner, address newOwner) public onlyRegisteredDevice {
-        require(oldOwner != newOwner, "The address you would like to change is the same");
-        devices[oldOwner].ownerOfDevice = newOwner;
-        emit onDeviceTransferOwnership(oldOwner, newOwner);
+    function transferOwnershipOfDevice(address newOwner) public onlyRegisteredDevice {
+        require(newOwner != address(0), "The address you would like to change is the same");
+        address currentAddr = msg.sender;
+        devices[newOwner] = device(newOwner, devices[currentAddr].typeOfDevice, devices[currentAddr].timestamp, devices[currentAddr].isExist);
+        delete devices[currentAddr];
+        emit onDeviceTransferOwnership(currentAddr, newOwner);
     }
 
     function removeDevice() public {
