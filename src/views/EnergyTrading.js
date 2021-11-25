@@ -373,7 +373,8 @@ const handleAccountsChanged = (accounts) => {
           closeModal();   
         })
         .then(function(receipt){
-          // setIsLoadingTrade(false);
+          getDataAsks(currentPageA * pageSize, true );
+
         })
       }catch(e){
         console.log(e);
@@ -388,7 +389,7 @@ const handleAccountsChanged = (accounts) => {
           closeModal();   
         })
         .then(function(receipt){
-          // setIsLoadingTrade(false);
+          getDataBids(currentPageΒ * pageSize, true);
         })
       }catch(e){
         console.log(e);
