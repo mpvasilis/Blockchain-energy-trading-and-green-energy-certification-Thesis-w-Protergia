@@ -86,8 +86,9 @@ let subtitle;
   
  
 const signInMetamask = async() => {
+  
   const provider = await detectEthereumProvider();
-
+   
   if(provider !== window.ethereum) {
     console.error('Do you have multiple wallets installed?');
   }
@@ -128,10 +129,11 @@ const handleAccountsChanged = (accounts) => {
   }else if(accounts[0] !== account.current){
     account.current = accounts[0];
     setIsConnected(true)
+    
+    
     energyTrading.methods.getDeviceByAddress(account.current).call({from: account.current}).then(function(result){
 
         // console.log("Object.values(result).length:", Object.values(result).length);
-
         if (account.current ==  Object.values(result)[0]){
           setAlert(false);
           setDisable(false);
@@ -142,6 +144,7 @@ const handleAccountsChanged = (accounts) => {
         } 
         
       });
+      
     console.log('Current addr: ', account.current);
   }
   console.log("account current:", account.current);
@@ -287,6 +290,10 @@ const handleAccountsChanged = (accounts) => {
   const closeModalUpdate = () =>{
     setModalUpdateIsOpen(false);
   }
+
+  // function refreshPage() {
+  //   window.location.reload();
+  // }
   
   const removeAsk = async (id) => {
     console.log("id: ", id);
@@ -295,6 +302,9 @@ const handleAccountsChanged = (accounts) => {
         console.log(th);
         toast("You deleted your ask successfully!") 
       })
+      .then(function(receipt){
+        getDataMyAsks(currentPageMA * myPageSize, true);
+      })
     }catch(e){
       console.log(e);
       
@@ -302,11 +312,15 @@ const handleAccountsChanged = (accounts) => {
   }
 
   const removeBid = async (id) => {
+    
     console.log("id: ", id);
     try{
       await marketPlace.methods.removeBid(id).send({from: account.current}).on('transactionHash', (th) => {
         console.log(th);
         toast("You deleted your bid successfully!") 
+      })
+      .then(function(receipt){
+        getDataMyBids(currentPageMB * myPageSize, true);
       })
     }catch(e){
       console.log(e);
@@ -322,6 +336,9 @@ const handleAccountsChanged = (accounts) => {
         toast("You updated your ask successfully!") 
         closeModalUpdate();
       })
+      .then(function(receipt){
+        getDataMyAsks(currentPageMA * myPageSize, true);
+      })
     }catch(e){
       console.log(e);
       
@@ -335,6 +352,9 @@ const handleAccountsChanged = (accounts) => {
         console.log(th);
         toast("You updated your bid successfully!") 
         closeModalUpdate();
+      })
+      .then(function(receipt){
+        getDataMyBids(currentPageMB * myPageSize, true);
       })
     }catch(e){
       console.log(e);
@@ -494,7 +514,7 @@ const handleAccountsChanged = (accounts) => {
   }
 
   const getDataMyAsks = (offset, update = false)=>{
-  
+
     if(dataMyAsks===null || update){
        marketPlace.methods.getCountOfAsks().call({from: account.current}).then(function(myAskNum){
       console.log("My total asks:" , myAskNum);
@@ -502,12 +522,14 @@ const handleAccountsChanged = (accounts) => {
       setPagesCountMyAsk(Math.ceil(myAskNum / myPageSize));
 
       if(myAskNum>0)
+
         marketPlace.methods.getMyAsks().call({from: account.current}).then(function(result){
             setDataMyAsks(result);
             console.log(myPageSize + offset);
             var rows = [];
             for (var i = offset; i < myPageSize + offset  ; i++) {
               if(i >= myAskNum)  break;
+
               rows.push( <tr key={i}>
                  <td>{result[2][i]}</td>
                  <td>{result[0][i].substr(0,6)}</td>
@@ -704,7 +726,7 @@ const handleAccountsChanged = (accounts) => {
   //   console.log(block)
   //   updateBid()
   // }
-
+  
   
   
   useEffect(() => {
@@ -721,7 +743,7 @@ const handleAccountsChanged = (accounts) => {
   )}
 
   if(dataMyBids===null ){
-    marketPlace.methods.getCountOfBids().call({from: account.current}).then(function(myBidNum){
+    marketPlace.methods.getCountOfBids().call({from: account.current}).then(function(myBidNum)  {
    setTotalMyBids(myBidNum);
    setPagesCountMyBid(Math.ceil(myBidNum / myPageSize));
      marketPlace.methods.getMyBids().call({from: account.current}).then(function(){
@@ -1035,17 +1057,19 @@ const handleAccountsChanged = (accounts) => {
           </Col>
                 </Row> 
                 
-</>
+</>         
+
                   :<div className="author">
                   <div className="block block-one" />
                   <div className="block block-two" />
                   <div className="block block-three" />
                   <div className="block block-four" />
                    <p className="description">Connect your wallet to make a new Bid/Ask</p>
-                     < Button className="btn-fill" variant="primary"  size="lg"  color="secondary" type="button" onClick= { signInMetamask }>
+                     < Button className="btn-fill" variant="primary"  size="lg"  color="secondary" type="button" onClick= { signInMetamask }>   
                   <img src={"https://docs.metamask.io/metamask-fox.svg"} style={{"height": "30px"}}></img>{"  "} Connect Wallet
                   </Button>         
-             </div>   
+             </div>
+                
                 }
 </div> 
               </CardBody>
