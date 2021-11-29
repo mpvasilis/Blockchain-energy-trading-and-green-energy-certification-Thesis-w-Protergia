@@ -24,15 +24,14 @@ import {
   Col, Table,
 } from "reactstrap";
 import Web3 from 'web3';
-import { isNumericLiteral } from "typescript";
 const web3 = new Web3(Web3.givenProvider || "wss://ropsten.infura.io/ws/v3/5f552c63b2834a588871339fd81f7943");
 
 var contractAddress = '0xf204b9E3f564ef0F5d827B50A8879D058FA191A9' ;
 var abi =  [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"askEnergyNotifier","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"ownerOfDevice","type":"address"},{"indexed":false,"internalType":"uint256","name":"date","type":"uint256"},{"indexed":false,"internalType":"string","name":"id","type":"string"}],"name":"deviceAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"ownerOfDevice","type":"address"},{"indexed":false,"internalType":"uint256","name":"date","type":"uint256"},{"indexed":false,"internalType":"string","name":"id","type":"string"}],"name":"deviceUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"seller","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"offerEnergyNotifier","type":"event"},{"constant":false,"inputs":[{"internalType":"string","name":"typeOfDevice","type":"string"}],"name":"addDevice","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_energy","type":"uint256"}],"name":"askEnergy","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_energy","type":"uint256"},{"internalType":"uint256","name":"_eprice","type":"uint256"}],"name":"energyOffer","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getAsksByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getBidsByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfAsks","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfBids","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfPurchases","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"deviceID","type":"address"}],"name":"getDeviceByAddress","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"string","name":"","type":"string"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getPurchaseByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"ownerOfDevice","type":"address"},{"internalType":"string","name":"typeOfDevice","type":"string"}],"name":"updateDevice","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"viewAllAsks","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"viewAllBids","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"viewAllEnergyPurchases","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"}] ;
 // const deviceRegistry = new web3.eth.Contract(abi, contractAddress);
 const energyTrading = new web3.eth.Contract(abi, contractAddress);
- contractAddress = '0x3B0B6E991D974A46a57796329eDd7Ba84E82Db5e' ;
-abi = [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"askRemoved","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"seller","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"bidRemoved","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"onNewAsk","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"seller","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"onNewBid","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"seller","type":"address"},{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"onPurchased","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":true,"internalType":"uint256","name":"id","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"onUpdateAsk","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"seller","type":"address"},{"indexed":true,"internalType":"uint256","name":"id","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"onUpdateBid","type":"event"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"buyAsk","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"buyBid","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_energy","type":"uint256"},{"internalType":"uint256","name":"_price","type":"uint256"}],"name":"energyAsk","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_energy","type":"uint256"},{"internalType":"uint256","name":"_eprice","type":"uint256"}],"name":"energyBid","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getAllAsks","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getAllBids","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getAllPurchases","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"getAskByID","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"getBidByID","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfAsks","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfBids","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfPurchases","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getMyAsks","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getMyBids","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getPurchases","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getTotalAsks","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getTotalBids","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getTotalPurchases","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"removeAsk","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"removeBid","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_idOfAsk","type":"uint256"},{"internalType":"uint256","name":"_energy","type":"uint256"},{"internalType":"uint256","name":"_price","type":"uint256"}],"name":"updateAsk","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_idOfBid","type":"uint256"},{"internalType":"uint256","name":"_energy","type":"uint256"},{"internalType":"uint256","name":"_price","type":"uint256"}],"name":"updateBid","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}] ;
+var contractAddress = '0x3B0B6E991D974A46a57796329eDd7Ba84E82Db5e' ;
+var abi = [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"askRemoved","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"seller","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"bidRemoved","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"onNewAsk","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"seller","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"onNewBid","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"seller","type":"address"},{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"onPurchased","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":true,"internalType":"uint256","name":"id","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"onUpdateAsk","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"seller","type":"address"},{"indexed":true,"internalType":"uint256","name":"id","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"onUpdateBid","type":"event"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"buyAsk","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"buyBid","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_energy","type":"uint256"},{"internalType":"uint256","name":"_price","type":"uint256"}],"name":"energyAsk","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_energy","type":"uint256"},{"internalType":"uint256","name":"_eprice","type":"uint256"}],"name":"energyBid","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getAllAsks","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getAllBids","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getAllPurchases","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"getAskByID","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"getBidByID","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfAsks","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfBids","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfPurchases","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getMyAsks","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getMyBids","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getPurchases","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getTotalAsks","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getTotalBids","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getTotalPurchases","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"removeAsk","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"removeBid","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_idOfAsk","type":"uint256"},{"internalType":"uint256","name":"_energy","type":"uint256"},{"internalType":"uint256","name":"_price","type":"uint256"}],"name":"updateAsk","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_idOfBid","type":"uint256"},{"internalType":"uint256","name":"_energy","type":"uint256"},{"internalType":"uint256","name":"_price","type":"uint256"}],"name":"updateBid","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}] ;
 const marketPlace = new web3.eth.Contract(abi, contractAddress);
 
 function EnergyTrading() {
@@ -75,16 +74,44 @@ function EnergyTrading() {
   const [totalMyAsks, setTotalMyAsks] = useState(0);
   const [totalMyBids, setTotalMyBids] = useState(0);
   const[isLoading, setIsLoading] = useState(false);
-  const[isLoadingTrade, setIsLoadingTrade] = useState([]);
   const [tableOpenAsks, setTableOpenAsks] = useState(false);
   const [tableOpenBids, setTableOpenBids] = useState(false);
   const [tableOpenMyAsks, setTableOpenMyAsks] = useState(false);
   const [tableOpenMyBids, setTableOpenMyBids] = useState(false);
-  const[id, setId] = useState('');
+   const[id, setId] = useState('');
 
-let subtitle;
+  let subtitle;
+
+  const handleAccountsChanged = (accounts) => {
+
+    console.log("ACCS: ", accounts);
+    if(accounts.length === 0) {
+      setIsConnected(false)
+      console.log("connect to metamsk");
+    }else if(accounts[0] !== account.current){
+      account.current = accounts[0];
+      setIsConnected(true)
+      
+      
+      energyTrading.methods.getDeviceByAddress(account.current).call({from: account.current}).then(function(result){
   
- 
+          // console.log("Object.values(result).length:", Object.values(result).length);
+          if (account.current ==  Object.values(result)[0]){
+            setAlert(false);
+            setDisable(false);
+          }
+           else{
+            setAlert(true);
+            setDisable(true);
+          } 
+          
+        });
+        
+      console.log('Current addr: ', account.current);
+    }
+    console.log("account current:", account.current);  
+  }
+
 const signInMetamask = async() => {
   
   const provider = await detectEthereumProvider();
@@ -119,38 +146,6 @@ const signInMetamask = async() => {
     }
   })
 };
-
-const handleAccountsChanged = (accounts) => {
-
-  console.log("ACCS: ", accounts);
-  if(accounts.length === 0) {
-    setIsConnected(false)
-    console.log("connect to metamsk");
-  }else if(accounts[0] !== account.current){
-    account.current = accounts[0];
-    setIsConnected(true)
-    
-    
-    energyTrading.methods.getDeviceByAddress(account.current).call({from: account.current}).then(function(result){
-
-        // console.log("Object.values(result).length:", Object.values(result).length);
-        if (account.current ==  Object.values(result)[0]){
-          setAlert(false);
-          setDisable(false);
-        }
-         else{
-          setAlert(true);
-          setDisable(true);
-        } 
-        
-      });
-      
-    console.log('Current addr: ', account.current);
-  }
-  console.log("account current:", account.current);
-
-    
-}
   
   const handlePageClickΒ = (e, page) => {
     console.log(page);
@@ -267,6 +262,8 @@ const handleAccountsChanged = (accounts) => {
       bottom: 'auto',
       marginRight: '-50%',
       transform: 'translate(-50%, -50%)',
+      backgroundColor: 'rgba(255, 255, 255, 0.75)'
+      
     },
   };
 
@@ -278,10 +275,12 @@ const handleAccountsChanged = (accounts) => {
   }
 
   const afterOpenModal = () =>{
-    subtitle.style.color = '#9933cc'
+    subtitle.style.color = '#3b144e'
+    
   }
   const afterOpenModalUpdate = () =>{
-    subtitle.style.color = '#9933cc'
+    subtitle.style.color = '#3b144e'
+    
   }
   const closeModal = () =>{
     setModalIsOpen(false);
@@ -291,10 +290,281 @@ const handleAccountsChanged = (accounts) => {
     setModalUpdateIsOpen(false);
   }
 
-  // function refreshPage() {
-  //   window.location.reload();
-  // }
-  
+  const getDataAsks = (offset, update = false)=>{
+
+    if(dataAsks===null || update){
+    marketPlace.methods.getTotalAsks().call().then(function(askNum){
+      console.log("Total asks:" , askNum);
+      setTotalAsks(askNum);
+      setPagesCountAsk(Math.ceil(askNum / pageSize));
+      if(askNum>0)
+
+      marketPlace.methods.getAllAsks().call()
+          .then(function(result){
+            setDataAsks(result);
+            console.log(pageSize + offset);
+            var rows = [];
+            for (var i = offset; i < pageSize + offset  ; i++) {
+              if(i >= askNum)  break;
+
+              rows.push( <tr key={i}>
+                  <td>{result[1][i]}</td>
+                  <td>{result[0][i].substr(0,6)}</td> 
+                  <td>{result[2][i]/1000000}</td>
+                  <td>{result[3][i]/100}</td>
+                {/* <td>{moment(moment.unix(result[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>      */}
+                <td>{moment((moment.unix(result[4][i]))).startOf('minute').fromNow()}</td>
+                <td>
+               
+               <Button variant="secondary" size="sm" data-id={result[1][i]} onClick={event=>{
+                 setId(event.target.dataset.id);
+                 setTableOpenBids(false);
+                 setTableOpenAsks(true);
+                 toggleModal();}}
+                 >Trade</Button>
+                
+               </td>
+                </tr>);
+            }
+            setAsks(rows)
+          });
+    });
+  }
+  else{
+    let rows = [];
+    for (let i = offset; i < pageSize + offset  ; i++) {
+      if(i < totalAsks )  { 
+      rows.push( <tr key={i}>
+        <td>{dataAsks[1][i]}</td>
+        <td>{dataAsks[0][i].substr(0,6)}</td>
+        <td>{dataAsks[2][i]/1000000}</td>
+        <td>{dataAsks[3][i]/100}</td>
+        <td>{moment((moment.unix(dataAsks[4][i]))).startOf('minute').fromNow()}</td>
+        <td> 
+        <Button variant="secondary" size="sm" data-id={dataAsks[1][i]}onClick={event=>{setId(event.target.dataset.id); toggleModal();}}>Trade</Button>
+         </td>
+      </tr>);
+      setDataAsks(null);
+      }
+    }
+    setAsks(rows)
+    console.log(rows);
+  }
+  }
+
+  const getDataBids = (offset, update = false)=>{
+
+    if(dataBids===null || update){
+    marketPlace.methods.getTotalBids().call().then(function(bidNum){
+      console.log("Total bids:" , bidNum);
+      setTotalBids(bidNum);
+      setPagesCountBid(Math.ceil(bidNum / pageSize));
+      
+      if(bidNum>0)
+        
+        marketPlace.methods.getAllBids().call()
+            .then(function(result){
+              setDataBids(result);
+              console.log(pageSize + offset);
+              var rows = [];
+              for (var i = offset; i < pageSize + offset  ; i++) {
+                if(i >=  bidNum)  break;
+                rows.push( <tr key={i}>
+                  <td>{result[1][i]}</td>
+                  <td>{result[0][i].substr(0,6)}</td> 
+                  <td>{result[2][i]/1000000}</td>
+                  <td>{result[3][i]/100}</td>
+                  <td>{moment((moment.unix(result[4][i]))).startOf('minute').fromNow()}</td>
+                  <td> <Button variant="secondary" size="sm" data-id={result[1][i]} onClick={event=>{
+                      setId(event.target.dataset.id);
+                      setTableOpenAsks(false);
+                      setTableOpenBids(true);
+                      toggleModal(); }}
+                      >Trade</Button>
+                  </td>
+                </tr>); 
+              }
+              setBids(rows)
+            });
+    });
+  }else{
+    let rows = [];
+    for (let i = offset; i < pageSize + offset  ; i++) {
+      if(i < totalBids )  { 
+      rows.push( <tr key={i}>
+        <td>{dataBids[1][i]}</td>
+        <td>{dataBids[0][i].substr(0,6)}</td>
+        <td>{dataBids[2][i]/1000000}</td>
+        <td>{dataBids[3][i]/100}</td>
+        <td>{moment((moment.unix(dataBids[4][i]))).startOf('minute').fromNow()}</td>
+        <td> <Button variant="secondary" size="sm" data-id={dataBids[1][i]} onClick={event=>{
+          setId(event.target.dataset.id); 
+          toggleModal();}}
+          >Trade</Button>
+        </td>
+      </tr>);
+       setDataBids(null);
+      }
+    }
+    setBids(rows)
+    console.log(rows);
+  }
+  }
+
+  const getDataMyAsks = (offset, update = false)=>{
+
+    if(dataMyAsks===null || update){
+       marketPlace.methods.getCountOfAsks().call({from: account.current}).then(function(myAskNum){
+      console.log("My total asks:" , myAskNum);
+      setTotalMyAsks(myAskNum);
+      setPagesCountMyAsk(Math.ceil(myAskNum / myPageSize));
+
+      if(myAskNum>0)
+
+        marketPlace.methods.getMyAsks().call({from: account.current}).then(function(result){
+            setDataMyAsks(result);
+            console.log(myPageSize + offset);
+            var rows = [];
+            for (var i = offset; i < myPageSize + offset  ; i++) {
+              if(i >= myAskNum)  break;
+
+              rows.push( <tr key={i}>
+                 <td>{result[2][i]}</td>
+                 <td>{result[0][i].substr(0,6)}</td>
+                 <td>{result[1][i]/1000000}</td>
+                 <td>{result[3][i]/100}</td>
+                 <td>{moment((moment.unix(result[4][i]))).startOf('minute').fromNow()}</td>
+                <td> <Button variant="secondary"  size="sm"  data-id={result[2][i]} onClick={event => removeAsk(event.target.dataset.id)} class="btn"><i class="fa fa-trash" ></i></Button></td>
+                <td> <Button class="btn" variant="secondary" size="sm" data-id={result[2][i]} onClick={event => {
+                      setId(event.target.dataset.id);
+                      setTableOpenMyAsks(true);
+                      setTableOpenMyBids(false);
+                      toggleModalUpdate();}}>
+                      <i class="fa fa-edit" ></i>
+                     </Button>
+                </td>
+              </tr>);
+            }
+             setMyAsks(rows)
+            console.log(rows); 
+         });
+    }); 
+    }
+   else{
+    let rows = [];
+    for (let i = offset; i < myPageSize + offset  ; i++) {
+      if(i < totalMyAsks )  { 
+      rows.push( <tr key={i}>
+        <td>{dataMyAsks[2][i]}</td>
+        <td>{dataMyAsks[0][i].substr(0,6)}</td>
+        <td>{dataMyAsks[1][i]/1000000}</td>
+        <td>{dataMyAsks[3][i]/100}</td>
+        <td>{moment((moment.unix(dataMyAsks[4][i]))).startOf('minute').fromNow()}</td>
+        <td> <Button variant="secondary" size="sm" data-id={dataMyAsks[2][i]} onClick={event => removeAsk(event.target.dataset.id)}class="btn"><i class="fa fa-trash" ></i></Button></td>
+        <td> <Button class="btn" variant="secondary" size="sm" data-id={dataMyAsks[2][i]} onClick={event => {
+                 setId(event.target.dataset.id);
+                 setTableOpenMyAsks(true);
+                 setTableOpenMyBids(false);
+                 toggleModalUpdate();}}>
+                 <i class="fa fa-edit" ></i>
+             </Button>
+        </td>
+
+      </tr>);
+      setDataMyAsks(null);
+      }
+    }
+     setMyAsks(rows)
+    console.log(rows);
+}
+  }
+
+
+  const getDataMyBids = (offset, update = false) => {
+
+   
+    if(dataMyBids===null || update){
+      marketPlace.methods.getCountOfBids().call({from: account.current}).then(function(myBidNum){
+      console.log("My total bids:" , myBidNum);
+      setTotalMyBids(myBidNum);
+      setPagesCountMyBid(Math.ceil(myBidNum / myPageSize));
+
+      if(myBidNum>0)
+      marketPlace.methods.getMyBids().call({from: account.current}).then(function(result){
+            setDataMyBids(result);
+            console.log("Result:" ,result);
+            console.log(myPageSize + offset);
+            var rows = [];
+            for (var i = offset; i < myPageSize + offset  ; i++) {
+              if(i >= myBidNum)  break;
+              rows.push( <tr key={i}>
+                 <td>{result[2][i]}</td>
+                 <td>{result[0][i].substr(0,6)}</td>
+                 <td>{result[1][i]/1000000}</td>
+                 <td>{result[3][i]/100}</td>
+                 <td>{moment((moment.unix(result[4][i]))).startOf('minute').fromNow()}</td>
+                 <td> <Button variant="secondary" size="sm" data-id={result[2][i]} onClick={event => removeBid(event.target.dataset.id)}class="btn"><i class="fa fa-trash" ></i></Button></td>
+                 <td> <Button variant="secondary" size="sm" data-id={result[2][i]} onClick={event => {
+                         setId(event.target.dataset.id);
+                         setTableOpenMyBids(true);
+                         setTableOpenMyAsks(false);
+                         toggleModalUpdate();}}class="btn">
+                         <i class="fa fa-edit" ></i>
+                      </Button>
+                 </td>
+              </tr>);
+            }
+             setMyBids(rows)
+            console.log(rows);
+          });
+    });
+    }
+  else{
+    
+    let rows = [];
+    for (let i = offset; i < myPageSize + offset  ; i++) {
+      if(i < totalMyBids )  { 
+      rows.push( <tr key={i}>
+        <td>{dataMyBids[2][i]}</td>
+        <td>{dataMyBids[0][i].substr(0,6)}</td>
+        <td>{dataMyBids[1][i]/1000000}</td>
+        <td>{dataMyBids[3][i]/100}</td>
+        <td>{moment((moment.unix(dataMyBids[4][i]))).startOf('minute').fromNow()}</td>
+        <td> <Button variant="secondary" size="sm" data-id={dataMyBids[2][i]} onClick={event => removeBid(event.target.dataset.id)}class="btn"><i class="fa fa-trash" ></i></Button></td>
+        <td> <Button variant="secondary" size="sm" data-id={dataMyBids[2][i]} onClick={event => {setId(event.target.dataset.id);
+               setTableOpenMyBids(true);
+               setTableOpenMyAsks(false);
+               toggleModalUpdate();}}class="btn">
+               <i class="fa fa-edit" ></i>
+             </Button>
+        </td>
+
+      </tr>);
+      setDataMyBids(null);
+      
+      }
+    }
+     setMyBids(rows)
+    console.log(rows);
+    
+  }
+  }
+  if(dataMyAsks===null ){
+    marketPlace.methods.getCountOfAsks().call({from: account.current}).then(function(){
+      marketPlace.methods.getMyAsks().call({from: account.current}).then(function(){
+       getDataMyAsks(currentPageMA * myPageSize, true);
+      }); 
+    }); 
+}
+
+if(dataMyBids===null ){
+marketPlace.methods.getCountOfBids().call({from: account.current}).then(function()  {
+  marketPlace.methods.getMyBids().call({from: account.current}).then(function(){
+  getDataMyBids(currentPageMB * myPageSize, true);
+ }); 
+}
+)}
+
   const removeAsk = async (id) => {
     console.log("id: ", id);
     try{
@@ -304,10 +574,10 @@ const handleAccountsChanged = (accounts) => {
       })
       .then(function(receipt){
         getDataMyAsks(currentPageMA * myPageSize, true);
+        
       })
     }catch(e){
       console.log(e);
-      
     }
   }
 
@@ -321,6 +591,8 @@ const handleAccountsChanged = (accounts) => {
       })
       .then(function(receipt){
         getDataMyBids(currentPageMB * myPageSize, true);
+        
+        
       })
     }catch(e){
       console.log(e);
@@ -335,9 +607,10 @@ const handleAccountsChanged = (accounts) => {
         console.log(th);
         toast("You updated your ask successfully!") 
         closeModalUpdate();
+       
       })
       .then(function(receipt){
-        getDataMyAsks(currentPageMA * myPageSize, true);
+        getDataMyAsks(currentPageMA * myPageSize, true);       
       })
     }catch(e){
       console.log(e);
@@ -378,7 +651,6 @@ const handleAccountsChanged = (accounts) => {
         })
       }catch(e){
         console.log(e);
-        // setIsLoadingTrade(false);
       }}
   const tradeBid = async (id, ammount) => {
 
@@ -396,241 +668,6 @@ const handleAccountsChanged = (accounts) => {
         // setIsLoadingTrade(false);
 
       }}
-
-  const getDataAsks = (offset, update = false)=>{
-
-    if(dataAsks===null || update){
-    marketPlace.methods.getTotalAsks().call().then(function(askNum){
-      console.log("Total asks:" , askNum);
-      setTotalAsks(askNum);
-      setPagesCountAsk(Math.ceil(askNum / pageSize));
-      if(askNum>0)
-
-      marketPlace.methods.getAllAsks().call()
-          .then(function(result){
-            setDataAsks(result);
-            console.log(pageSize + offset);
-            var rows = [];
-            for (var i = offset; i < pageSize + offset  ; i++) {
-              if(i >= askNum)  break;
-
-              rows.push( <tr key={i}>
-                  <td>{result[1][i]}</td>
-                  <td>{result[0][i].substr(0,6)}</td> 
-                  <td>{result[2][i]/1000000}</td>
-                  <td>{result[3][i]/100}</td>
-                <td>{moment(moment.unix(result[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>     
-                <td>
-                {/* { isLoadingTrade[id] ? 
-               <div class="lds-hourglass"></div>
-               : */}
-               <Button variant="secondary" size="sm" data-id={result[1][i]} onClick={event=>{
-                 setId(event.target.dataset.id);
-                 setTableOpenBids(false);
-                 setTableOpenAsks(true);
-                 toggleModal();}}
-                 >Trade</Button>
-                
-               </td>
-                </tr>);
-            }
-            setAsks(rows)
-          });
-    });
-  }
-  else{
-    let rows = [];
-    for (let i = offset; i < pageSize + offset  ; i++) {
-      if(i < totalAsks )  { 
-      rows.push( <tr key={i}>
-        <td>{dataAsks[1][i]}</td>
-        <td>{dataAsks[0][i].substr(0,6)}</td>
-        <td>{dataAsks[2][i]/1000000}</td>
-        <td>{dataAsks[3][i]/100}</td>
-        <td>{moment(moment.unix(dataAsks[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
-        <td> 
-        <Button variant="secondary" size="sm" data-id={dataAsks[1][i]}onClick={event=>{setId(event.target.dataset.id); toggleModal();}}>Trade</Button>
-         </td>
-      </tr>);
-      setDataAsks(null);
-      }
-    }
-    setAsks(rows)
-    console.log(rows);
-  }
-  }
-
-  const getDataBids = (offset, update = false)=>{
-
-    if(dataBids===null || update){
-    marketPlace.methods.getTotalBids().call().then(function(bidNum){
-      console.log("Total bids:" , bidNum);
-      setTotalBids(bidNum);
-      setPagesCountBid(Math.ceil(bidNum / pageSize));
-      
-      if(bidNum>0)
-        
-        marketPlace.methods.getAllBids().call()
-            .then(function(result){
-              setDataBids(result);
-              console.log(pageSize + offset);
-              var rows = [];
-              for (var i = offset; i < pageSize + offset  ; i++) {
-                if(i >=  bidNum)  break;
-                rows.push( <tr key={i}>
-                  <td>{result[1][i]}</td>
-                  <td>{result[0][i].substr(0,6)}</td> 
-                  <td>{result[2][i]/1000000}</td>
-                  <td>{result[3][i]/100}</td>
-                  <td>{moment(moment.unix(result[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
-                  <td> <Button variant="secondary" size="sm" data-id={result[1][i]} onClick={event=>{
-                      setId(event.target.dataset.id);
-                      setTableOpenAsks(false);
-                      setTableOpenBids(true);
-                      toggleModal(); }}
-                      >Trade</Button></td>
-                </tr>); 
-              }
-              setBids(rows)
-            });
-    });
-  }else{
-    let rows = [];
-    for (let i = offset; i < pageSize + offset  ; i++) {
-      if(i < totalBids )  { 
-      rows.push( <tr key={i}>
-        <td>{dataBids[1][i]}</td>
-        <td>{dataBids[0][i].substr(0,6)}</td>
-        <td>{dataBids[2][i]/1000000}</td>
-        <td>{dataBids[3][i]/100}</td>
-        <td>{moment(moment.unix(dataBids[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
-        <td> <Button variant="secondary" size="sm" data-id={dataBids[1][i]} onClick={event=>{setId(event.target.dataset.id); toggleModal();}}>Trade</Button></td>
-      </tr>);
-       setDataBids(null);
-      }
-    }
-    setBids(rows)
-    console.log(rows);
-  }
-  }
-
-  const getDataMyAsks = (offset, update = false)=>{
-
-    if(dataMyAsks===null || update){
-       marketPlace.methods.getCountOfAsks().call({from: account.current}).then(function(myAskNum){
-      console.log("My total asks:" , myAskNum);
-      setTotalMyAsks(myAskNum);
-      setPagesCountMyAsk(Math.ceil(myAskNum / myPageSize));
-
-      if(myAskNum>0)
-
-        marketPlace.methods.getMyAsks().call({from: account.current}).then(function(result){
-            setDataMyAsks(result);
-            console.log(myPageSize + offset);
-            var rows = [];
-            for (var i = offset; i < myPageSize + offset  ; i++) {
-              if(i >= myAskNum)  break;
-
-              rows.push( <tr key={i}>
-                 <td>{result[2][i]}</td>
-                 <td>{result[0][i].substr(0,6)}</td>
-                 <td>{result[1][i]/1000000}</td>
-                 <td>{result[3][i]/100}</td>
-                 <td>{moment(moment.unix(result[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
-                <td> <Button variant="secondary"  size="sm"  data-id={result[2][i]} onClick={event => removeAsk(event.target.dataset.id)} class="btn"><i class="fa fa-trash" ></i></Button></td>
-                <td> <Button class="btn" variant="secondary" size="sm" data-id={result[2][i]} onClick={event => {setId(event.target.dataset.id);
-                   setTableOpenMyAsks(true);
-                   setTableOpenMyBids(false);
-                   toggleModalUpdate();}}>
-                  <i class="fa fa-edit" ></i></Button></td>
-              </tr>);
-            }
-             setMyAsks(rows)
-            console.log(rows); 
-         });
-    }); 
-    }
-   else{
-    let rows = [];
-    for (let i = offset; i < myPageSize + offset  ; i++) {
-      if(i < totalMyAsks )  { 
-      rows.push( <tr key={i}>
-        <td>{dataMyAsks[2][i]}</td>
-        <td>{dataMyAsks[0][i].substr(0,6)}</td>
-        <td>{dataMyAsks[1][i]/1000000}</td>
-        <td>{dataMyAsks[3][i]/100}</td>
-        <td>{moment(moment.unix(dataMyAsks[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
-        <td> <Button variant="secondary" size="sm" data-id={dataMyAsks[2][i]} onClick={event => removeAsk(event.target.dataset.id)}class="btn"><i class="fa fa-trash" ></i></Button></td>
-        <td> <Button class="btn" variant="secondary" size="sm" data-id={dataMyAsks[2][i]} onClick={event => {setId(event.target.dataset.id); toggleModalUpdate();}}><i class="fa fa-edit" ></i></Button></td>
-
-      </tr>);
-      setDataMyAsks(null);
-      }
-    }
-     setMyAsks(rows)
-    console.log(rows);
-}
-  }
-
-
-  const getDataMyBids = (offset, update = false) => {
-
-   
-    if(dataMyBids===null || update){
-      marketPlace.methods.getCountOfBids().call({from: account.current}).then(function(myBidNum){
-      console.log("My total bids:" , myBidNum);
-      setTotalMyBids(myBidNum);
-      setPagesCountMyBid(Math.ceil(myBidNum / myPageSize));
-
-      if(myBidNum>0)
-      marketPlace.methods.getMyBids().call({from: account.current}).then(function(result){
-            setDataMyBids(result);
-            console.log("Result:" ,result);
-            console.log(myPageSize + offset);
-            var rows = [];
-            for (var i = offset; i < myPageSize + offset  ; i++) {
-              if(i >= myBidNum)  break;
-              rows.push( <tr key={i}>
-                 <td>{result[2][i]}</td>
-                 <td>{result[0][i].substr(0,6)}</td>
-                 <td>{result[1][i]/1000000}</td>
-                 <td>{result[3][i]/100}</td>
-                 <td>{moment(moment.unix(result[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
-                 <td> <Button variant="secondary" size="sm" data-id={result[2][i]} onClick={event => removeBid(event.target.dataset.id)}class="btn"><i class="fa fa-trash" ></i></Button></td>
-                 <td> <Button variant="secondary" size="sm" data-id={result[2][i]} onClick={event => {setId(event.target.dataset.id);
-                   setTableOpenMyBids(true);
-                   setTableOpenMyAsks(false);
-                  toggleModalUpdate();
-                  }}class="btn"><i class="fa fa-edit" ></i></Button></td>
-              </tr>);
-            }
-             setMyBids(rows)
-            console.log(rows);
-          });
-    });
-    }
-  else{
-    
-    let rows = [];
-    for (let i = offset; i < myPageSize + offset  ; i++) {
-      if(i < totalMyBids )  { 
-      rows.push( <tr key={i}>
-        <td>{dataMyBids[2][i]}</td>
-        <td>{dataMyBids[0][i].substr(0,6)}</td>
-        <td>{dataMyBids[1][i]/1000000}</td>
-        <td>{dataMyBids[3][i]/100}</td>
-        <td>{moment(moment.unix(dataMyBids[4][i]).format("YYYYMMDD"), "YYYYMMDD").fromNow()}</td>
-        <td> <Button variant="secondary" size="sm" data-id={dataMyBids[2][i]} onClick={event => removeBid(event.target.dataset.id)}class="btn"><i class="fa fa-trash" ></i></Button></td>
-        <td> <Button variant="secondary" size="sm" data-id={dataMyBids[2][i]} onClick={event => {setId(event.target.dataset.id); toggleModalUpdate();}}class="btn"><i class="fa fa-edit" ></i></Button></td>
-
-      </tr>);
-      setDataMyBids(null);
-      }
-    }
-     setMyBids(rows)
-    console.log(rows);
-  }
-  }
   
 
   const isNumeric = (number)  =>{
@@ -721,90 +758,65 @@ const handleAccountsChanged = (accounts) => {
       setError(false);
     }
   }}
+ 
 
-  // const listener = (block) => {
-  //   console.log("new action emited")
-  //   console.log(block)
-  //   updateBid()
-  // }
-  
-  
-  
   useEffect(() => {
-
-  
-  if(dataMyAsks===null ){
-         marketPlace.methods.getCountOfAsks().call({from: account.current}).then(function(myAskNum){
-        setTotalMyAsks(myAskNum);
-        setPagesCountMyAsk(Math.ceil(myAskNum / myPageSize));
-          marketPlace.methods.getMyAsks().call({from: account.current}).then(function(){
-            getDataMyAsks(currentPageMA * myPageSize);
-      }); 
-    }
-  )}
-
-  if(dataMyBids===null ){
-    marketPlace.methods.getCountOfBids().call({from: account.current}).then(function(myBidNum)  {
-   setTotalMyBids(myBidNum);
-   setPagesCountMyBid(Math.ceil(myBidNum / myPageSize));
-     marketPlace.methods.getMyBids().call({from: account.current}).then(function(){
-       getDataMyBids(currentPageMB * myPageSize);
-
- }); 
-}
-)}
+    
     getDataAsks(currentPageA * pageSize);
     getDataBids(currentPageΒ * pageSize);
-  
+    getDataMyAsks(currentPageMA * myPageSize, true);
+    getDataMyBids(currentPageMB * myPageSize, true);
+
+
   marketPlace.events.onNewBid({} , function(error, event){ 
-      console.log(event); 
-  }) 
+    console.log("event:" , event); 
+    }) 
    .on('data',  function(event){
      console.log(event.returnValues);
    })
 
   marketPlace.events.onNewAsk({} , function(error, event){ 
-      console.log(event); 
+    console.log("event:" , event);  
   }) 
    .on('data',  function(event){
      console.log(event.returnValues);
    })
 
   marketPlace.events.onUpdateAsk({} , function(error, event){ 
-      console.log(event); 
+      console.log("event:" , event); 
   }) 
    .on('data',  function(event){
      console.log(event.returnValues);
    })
 
   marketPlace.events.onUpdateBid({} , function(error, event){ 
-      console.log(event); 
+    console.log("event:" , event);  
    }) 
    .on('data',  function(event){
      console.log(event.returnValues);
    })
 
   marketPlace.events.bidRemoved({} , function(error, event){ 
-       console.log(event); 
+      console.log("event:" , event);  
   }) 
     .on('data',  function(event){
       console.log(event.returnValues);
     })
     
   marketPlace.events.askRemoved({} , function(error, event){ 
-      console.log(event); 
+      console.log("event:" , event); 
    }) 
       .on('data',  function(event){
          console.log(event.returnValues);
       })
     
   marketPlace.events.onPurchased({} , function(error, event){ 
-      console.log(event); 
+      console.log("event:" , event);  
   }) 
       .on('data',  function(event){
         console.log(event.returnValues);
        })
-   
+       
    
 
     
@@ -845,8 +857,9 @@ const handleAccountsChanged = (accounts) => {
             value = {energyModalKW}
             placeholder="Enter KWhs"
             type="text"
-            onChange={event => setEnergyModalKW(event.target.value)}
+            onChange={event => setEnergyModalKW(event.target.value)}  
           />               
+          
          {tableOpenAsks ?
           <Button variant="secondary" size="sm"  onClick={()=>{tradeAsk(id, energyModalKW)}}> Trade</Button>
           : <></>}
@@ -854,7 +867,9 @@ const handleAccountsChanged = (accounts) => {
           <Button variant="secondary" size="sm"  onClick={()=>{tradeBid(id, energyModalKW)}}> Trade</Button>  
           : <></>}
          
-          <button variant="secondary" size="sm"  onClick={closeModal}>close</button>
+          <button variant="secondary" size="sm"  onClick= {closeModal}>close</button>
+          
+           
     </Modal>
       
     <Modal
