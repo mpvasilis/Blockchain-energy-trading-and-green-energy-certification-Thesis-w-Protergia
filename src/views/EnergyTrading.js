@@ -696,14 +696,16 @@ const signInMetamask = async(accounts) => {
       else if ( priceBid < 0 ||  isNumeric(priceBid) === false){
         setErrorPriceBid(true)  
       }
-      else if ( priceBid.split(/([.])/)[2] > 999999){
-        console.log("split PriceBid:" ,( priceBid.split(/([.])/)[2]) )
+      
+      else if (priceBid.includes('.') && priceBid.split('.')[1].length > 6){
+         console.log("split priceBid:" ,( priceBid.split(/([.])/)[1]) )
         setErrorPriceBid(true)  
-      }
-      else if ( energyKW.split(/([.])/)[2] > 999999 ){
-        console.log("Split EnergyKWBid:" ,( energyKW.split(/([.])/)[2]) )
-        setErrorEnergy(true)  
-      }
+     }
+     
+      else if (energyKW.includes('.') && energyKW.split('.')[1].length > 6 ){
+       console.log("Split EnergyKWBid:" ,( energyKW.split(/([.])/)[1]) )
+       setErrorEnergy(true)  
+     }
       
     else{
 
@@ -735,23 +737,27 @@ const signInMetamask = async(accounts) => {
       setErrorPriceBid(false);
       setError(false);
     }
-    }else{
-      
+
+    }else{ 
+      console.log("priceAsk.split" , priceAsk.split('.'))
+      console.log("EnergyKWAsk.split" , energyKW.split('.'))
+      console.log(typeof priceAsk.split('.'))
+      console.log("priceASK:" , priceAsk)
       if (energyKW === ""||energyKW > 1000000  || energyKW < 1 ||  isNumeric(energyKW) === false ){
         setErrorEnergy(true);
       }
-         else if ( priceAsk < 0 ||  isNumeric(priceAsk) === false){
+      else if ( priceAsk < 0 ||  isNumeric(priceAsk) === false){
         setErrorPriceAsk(true)  
       }
-      else if ( priceAsk.split(/([.])/)[2] > 999999){
-        console.log("split PriceAsk:" ,( priceAsk.split(/([.])/)[2]) )
-        setErrorPriceAsk(true)  
-      }
-      else if ( energyKW.split(/([.])/)[2] > 999999 ){
-        console.log("Split EnergyKWAsk:" ,( energyKW.split(/([.])/)[2]) )
-        setErrorEnergy(true)  
-      }
-
+       else if (priceAsk.includes('.') && priceAsk.split('.')[1].length > 6){
+        console.log("split priceAsk:" ,( priceAsk.split(/([.])/)[1]) )
+       setErrorPriceAsk(true)  
+    }
+    
+    else  if (energyKW.includes('.') && energyKW.split('.')[1].length > 6 ){
+      console.log("Split EnergyKWAsk:" ,( energyKW.split(/([.])/)[1]) )
+      setErrorEnergy(true)  
+    }
 
      else{
 
