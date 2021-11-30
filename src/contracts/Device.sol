@@ -45,7 +45,7 @@ contract Device {
         require(newOwner != address(0), "The address you would like to change is the same");
         address currentAddr = msg.sender;
         devices[newOwner] = device(newOwner, devices[currentAddr].typeOfDevice, devices[currentAddr].timestamp, devices[currentAddr].isExist);
-        delete devices[currentAddr];
+        //delete devices[currentAddr];
         emit onDeviceTransferOwnership(currentAddr, newOwner);
     }
 

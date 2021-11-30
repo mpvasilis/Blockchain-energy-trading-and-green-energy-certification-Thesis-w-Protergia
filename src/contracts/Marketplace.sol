@@ -16,8 +16,9 @@ contract Marketplace {
     event onUpdateAsk(address indexed buyer, uint indexed id, uint indexed price, uint energy);
     event onPurchased(address indexed seller, address indexed buyer, uint indexed day, uint energy);
 
-    uint constant cent = 1;
-    uint constant dollar = 100 * cent;
+    uint constant mCent = 1;
+    uint constant cent = 1000 * mCent;
+    uint constant dollar = 1000 * cent;
 
     uint constant mWh = 1;
     uint constant  Wh = 1000 * mWh;
@@ -62,7 +63,7 @@ contract Marketplace {
 
     function energyBid(uint _energy, uint _eprice) public {
         require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh(in whs), for instance 5.6kwhs = 5600whs");
-        require(_eprice >= cent, "Price in 'cent', for example 1.5dollars/kwh = 150cents/kwh");
+        require(_eprice >= mCent, "Price in 'cent', for example 1.5dollars/kwh = 150cents/kwh");
         ID.increment();
         uint currentID = ID.current();
         address currentAddr = msg.sender;
@@ -81,7 +82,7 @@ contract Marketplace {
 
     function energyAsk(uint _energy, uint _price) public {
         require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh(in whs), for instance 5.6kwhs = 5600whs");
-        require(_price >= cent, "Price in 'cent', for example 1.5dollars/kwh = 150cents/kwh");
+        require(_price >= mCent, "Price in 'cent', for example 1.5dollars/kwh = 150cents/kwh");
         ID.increment();
         uint currentID = ID.current();
         address currentAddr = msg.sender;
@@ -100,7 +101,7 @@ contract Marketplace {
 
     function updateBid(uint _idOfBid, uint _energy, uint _price) public {
         require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh(in whs), for instance 5.6kwhs = 5600whs");
-        require(_price >= cent, "Price in 'cent', for example 1.5dollars/kwh = 150cents/kwh");
+        require(_price >= mCent, "Price in 'cent', for example 1.5dollars/kwh = 150cents/kwh");
         for(uint i = 0; i<listOfEnergyBids.length; i++){
             if(listOfEnergyBids[i].idOfBid == _idOfBid){
                 listOfEnergyBids[i].energy = _energy;
@@ -112,7 +113,7 @@ contract Marketplace {
 
     function updateAsk(uint _idOfAsk, uint _energy, uint _price) public {
         require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh(in whs), for instance 5.6kwhs = 5600whs");
-        require(_price >= cent, "Price in 'cent', for example 1.5dollars/kwh = 150cents/kwh");
+        require(_price >= mCent, "Price in 'cent', for example 1.5dollars/kwh = 150cents/kwh");
         for(uint i = 0; i<listOfEnergyAsks.length; i++){
             if(listOfEnergyAsks[i].idOfAsk == _idOfAsk){
                 listOfEnergyAsks[i].energy = _energy;
