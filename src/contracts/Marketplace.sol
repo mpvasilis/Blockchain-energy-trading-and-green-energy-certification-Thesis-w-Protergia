@@ -150,7 +150,6 @@ contract Marketplace {
     function buyBid(uint _id, uint amount) public{
         address currentAddr = msg.sender;
         address _seller;
-        uint index = 0;
         uint idx = epurchases[_id];
         bool isEnergyPurchased = false;
         uint _price = 0;
@@ -162,40 +161,19 @@ contract Marketplace {
                     energyPurchased = listOfEnergyBids[i].energy;
                     _price = energyPurchased*listOfEnergyBids[i].eprice;
                     amount = amount-energyPurchased;
+                    listOfEnergyBids[i].energy = 0;
 
-                    ID.increment();
-                    uint currentID = ID.current();
-                    index = easks[currentID];
-                    index = listOfEnergyAsks.length;
-                    easks[currentID] = idx;
-                    listOfEnergyAsks.push(eAsk({
-                        buyer: currentAddr,
-                        idOfAsk: currentID,
-                        energy: amount,
-                        price: listOfEnergyBids[i].eprice,
-                        timestamp: block.timestamp
-                    }));
-                    emit onNewAsk(currentAddr, block.timestamp, listOfEnergyBids[i].eprice, amount);
+                    energyAsk(amount, listOfEnergyBids[i].eprice);
 
                     isEnergyPurchased = true;
-
-                    if (listOfEnergyBids.length > 1) {
-                        listOfEnergyBids[i] = listOfEnergyBids[listOfEnergyBids.length-1];
-                    }
-                    listOfEnergyBids.length--;
-                    //i--;
 
                 }else if(listOfEnergyBids[i].energy == amount){
                     _seller = listOfEnergyBids[i].seller;
                     energyPurchased = amount;
                     _price = energyPurchased*listOfEnergyBids[i].eprice;
+                    listOfEnergyBids[i].energy = 0;
 
                     isEnergyPurchased = true;
-
-                    if (listOfEnergyBids.length > 1) {
-                        listOfEnergyBids[i] = listOfEnergyBids[listOfEnergyBids.length-1];
-                    }
-                    listOfEnergyBids.length--;
 
                 }else{
                     _seller = listOfEnergyBids[i].seller;
@@ -218,6 +196,13 @@ contract Marketplace {
                         timestamp: block.timestamp
                     }));
                     emit onPurchased(_seller, currentAddr, block.timestamp, energyPurchased);
+
+                if(listOfEnergyBids[i].energy == 0) {
+                    if (listOfEnergyBids.length > 1) {
+                        listOfEnergyBids[i] = listOfEnergyBids[listOfEnergyBids.length-1];
+                    }
+                    listOfEnergyBids.length--;
+                }
                 }
             }
         }
@@ -226,7 +211,6 @@ contract Marketplace {
     function buyAsk(uint _id, uint amount) public {
         address currentAddr = msg.sender;
         address _buyer;
-        uint index = 0;
         uint idx = epurchases[_id];
         bool isEnergyPurchased = false;
         uint _price = 0;
@@ -238,40 +222,19 @@ contract Marketplace {
                     energyPurchased = listOfEnergyAsks[i].energy;
                     _price = energyPurchased*listOfEnergyAsks[i].price;
                     amount = amount-energyPurchased;
+                    listOfEnergyAsks[i].energy = 0;
 
-                    ID.increment();
-                    uint currentID = ID.current();
-                    index = ebids[currentID];
-                    index = listOfEnergyBids.length;
-                    ebids[currentID] = idx;
-                    listOfEnergyBids.push(eBid({
-                        seller: currentAddr,
-                        idOfBid: currentID,
-                        energy: amount,
-                        eprice: listOfEnergyAsks[i].price,
-                        timestamp: block.timestamp
-                    }));
-                    emit onNewBid(currentAddr, block.timestamp, listOfEnergyAsks[i].price, amount);
+                    energyBid(amount, listOfEnergyAsks[i].price);
 
                     isEnergyPurchased = true;
-
-                    if (listOfEnergyAsks.length > 1) {
-                        listOfEnergyAsks[i] = listOfEnergyAsks[listOfEnergyAsks.length-1];
-                    }
-                    listOfEnergyAsks.length--;
-                    //i--;
 
                 }else if(listOfEnergyAsks[i].energy == amount){
                     _buyer = listOfEnergyAsks[i].buyer;
                     energyPurchased = amount;
                     _price = energyPurchased * listOfEnergyAsks[i].price;
+                    listOfEnergyAsks[i].energy = 0;
 
                     isEnergyPurchased = true;
-
-                    if (listOfEnergyAsks.length > 1) {
-                        listOfEnergyAsks[i] = listOfEnergyAsks[listOfEnergyAsks.length-1];
-                    }
-                    listOfEnergyAsks.length--;
 
                 }else{
                     _buyer = listOfEnergyAsks[i].buyer;
@@ -294,6 +257,13 @@ contract Marketplace {
                         timestamp: block.timestamp
                     }));
                     emit onPurchased(currentAddr, _buyer, block.timestamp, energyPurchased);
+
+                if(listOfEnergyAsks[i].energy == 0) {
+                    if (listOfEnergyAsks.length > 1) {
+                        listOfEnergyAsks[i] = listOfEnergyAsks[listOfEnergyAsks.length-1];
+                    }
+                    listOfEnergyAsks.length--;
+                }
                 }
             }
         }
