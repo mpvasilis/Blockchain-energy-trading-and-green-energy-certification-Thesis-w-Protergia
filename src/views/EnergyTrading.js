@@ -605,7 +605,8 @@ const signInMetamask = async(accounts) => {
   }
 
   const updateAsk = async (id, amount, price) => {
-    
+
+     
     try{
       await marketPlace.methods.updateAsk(id, amount * 1000000, price * 1000000).send({from: account.current}).on('transactionHash', (th) => {
         console.log(th);
@@ -614,8 +615,11 @@ const signInMetamask = async(accounts) => {
        
       })
       .then(function(receipt){
-        getDataMyAsks(currentPageMA * myPageSize, true);       
+        getDataMyAsks(currentPageMA * myPageSize, true);  
+          
       })
+      setPriceModal(''); 
+      setEnergyModalKW(''); 
     }catch(e){
       console.log(e);
       
@@ -623,6 +627,7 @@ const signInMetamask = async(accounts) => {
   }
 
   const updateBid = async (id, amount, price) => {
+    
     
     try{
       await marketPlace.methods.updateBid(id, amount * 1000000, price * 1000000).send({from: account.current}).on('transactionHash', (th) => {
@@ -632,7 +637,10 @@ const signInMetamask = async(accounts) => {
       })
       .then(function(receipt){
         getDataMyBids(currentPageMB * myPageSize, true);
+        
       })
+      setPriceModal(''); 
+      setEnergyModalKW('');
     }catch(e){
       console.log(e);
       
@@ -641,6 +649,7 @@ const signInMetamask = async(accounts) => {
 
   const tradeAsk = async (id, amount) => {
 
+        setEnergyModalKW('')
         console.log("amount: ", amount);
         console.log("id: ", id);
     try{
@@ -651,13 +660,13 @@ const signInMetamask = async(accounts) => {
         })
         .then(function(receipt){
           getDataAsks(currentPageA * pageSize, true );
-
         })
       }catch(e){
         console.log(e);
       }}
-  const tradeBid = async (id, ammount) => {
 
+  const tradeBid = async (id, ammount) => {
+    setEnergyModalKW('')
     try{
          await marketPlace.methods.buyBid(id, ammount * 1000000).send({from: account.current}).on('transactionHash', (th) => {
           console.log(th);
@@ -667,12 +676,12 @@ const signInMetamask = async(accounts) => {
         .then(function(receipt){
           getDataBids(currentPageΒ * pageSize, true);
         })
+        
       }catch(e){
         console.log(e);
-        // setIsLoadingTrade(false);
 
       }}
-      const isNumeric = (number)  =>{
+   const isNumeric = (number)  =>{
         if (+number === +number) { // if is a number
             return true;
         }
@@ -895,7 +904,7 @@ const signInMetamask = async(accounts) => {
           <Button variant="secondary" size="sm"  onClick={()=>{tradeBid(id, energyModalKW)}}> Trade</Button>  
           : <></>}
          
-          <button variant="secondary" size="sm"  onClick= {closeModal}>close</button>
+          <button variant="secondary" size="sm"  onClick= {()=>{setEnergyModalKW('');closeModal();}}>close</button>
           
            
     </Modal>
@@ -940,7 +949,7 @@ const signInMetamask = async(accounts) => {
           : <></>}
       
 
-      <button variant="secondary" size="sm"  onClick={closeModalUpdate}>close</button>
+      <button variant="secondary" size="sm"  onClick={()=>{ closeModalUpdate(); setPriceModal(''); setEnergyModalKW('');}}>close</button>
           </thead>
           
     </Modal>
