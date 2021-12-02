@@ -579,6 +579,8 @@ const signInMetamask = async(accounts) => {
       })
       .then(function(receipt){
         getDataMyAsks(currentPageMA * myPageSize, true);
+        getDataAsks(currentPageA * pageSize, true);
+   
       })
     }catch(e){
       console.log(e);
@@ -595,7 +597,7 @@ const signInMetamask = async(accounts) => {
       })
       .then(function(receipt){
         getDataMyBids(currentPageMB * myPageSize, true);
-        
+        getDataBids(currentPageΒ * pageSize);
         
       })
     }catch(e){
@@ -616,7 +618,8 @@ const signInMetamask = async(accounts) => {
       })
       .then(function(receipt){
         getDataMyAsks(currentPageMA * myPageSize, true);  
-          
+        getDataAsks(currentPageA * pageSize, true);
+
       })
       setPriceModal(''); 
       setEnergyModalKW(''); 
@@ -637,7 +640,8 @@ const signInMetamask = async(accounts) => {
       })
       .then(function(receipt){
         getDataMyBids(currentPageMB * myPageSize, true);
-        
+        getDataBids(currentPageΒ * pageSize, true);
+
       })
       setPriceModal(''); 
       setEnergyModalKW('');
