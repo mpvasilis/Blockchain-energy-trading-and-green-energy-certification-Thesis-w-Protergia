@@ -224,6 +224,7 @@ contract Marketplace {
                     amount = amount-energyPurchased;
                     listOfEnergyAsks[i].energy = 0;
 
+                    ///@notice create a new bid for the leftover amount
                     energyBid(amount, listOfEnergyAsks[i].price);
 
                     isEnergyPurchased = true;
@@ -258,6 +259,7 @@ contract Marketplace {
                     }));
                     emit onPurchased(currentAddr, _buyer, block.timestamp, energyPurchased);
 
+                    ///@notice for each puschase with listOfEnergyAsks[i].energy = 0, remove the current item and replace it
                 if(listOfEnergyAsks[i].energy == 0) {
                     if (listOfEnergyAsks.length > 1) {
                         listOfEnergyAsks[i] = listOfEnergyAsks[listOfEnergyAsks.length-1];
