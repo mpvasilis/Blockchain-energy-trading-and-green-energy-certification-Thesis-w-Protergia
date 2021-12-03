@@ -597,7 +597,7 @@ const signInMetamask = async(accounts) => {
       })
       .then(function(receipt){
         getDataMyBids(currentPageMB * myPageSize, true);
-        getDataBids(currentPageΒ * pageSize);
+        getDataBids(currentPageΒ * pageSize, true);
         
       })
     }catch(e){
