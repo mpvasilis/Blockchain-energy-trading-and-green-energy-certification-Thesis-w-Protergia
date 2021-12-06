@@ -3,6 +3,7 @@ import detectEthereumProvider from '@metamask/detect-provider';
 import PropTypes from 'prop-types';
 import TablePagination from '../components/pagination/TablePagination';
 import { toast } from 'react-toastify';
+import moment from 'moment';
 
 // reactstrap components
 import {
@@ -42,16 +43,20 @@ function PPAs() {
   const [CPPAs, setCPPAs] = useState(null);
   const [pagesCountPPA, setPagesCountPPA] = useState(0);
   const [pagesCountCPPA, setPagesCountCPPA] = useState(0);
-
-
   const [price, setPrice] = useState('');
-  // const [priceBid, setPriceBid] = useState(0);
   const [placeStartDay, setPlaceStartDay] = useState('');
   const [placeEndDay, setPlaceEndDay] = useState('');
   const [ID, setID] = useState('');
   const [address, setAddress] = useState('');
   const account = useRef('');
   const[error, setError] = useState(false);
+  const[errorPrice, setErrorPrice] = useState(false);
+  const[errorStartDay, setErrorStartDay] = useState(false);
+  const[errorEndDay, setErrorEndDay] = useState(false);
+  const[errorId, setErrorId] = useState(false);
+  const[errorAddress, setErrorAddress] = useState(false);
+  const[isLoading, setIsLoading] = useState(false);
+
   const[isDisabled, setIsDisabled] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
 
@@ -152,7 +157,6 @@ const handleAccountsChanged = (accounts) => {
   }
 }
 
-
   const getDataPPAs = (offset, update = false)=>{
 
     if(dataPPAs===null  || update){
@@ -160,7 +164,7 @@ const handleAccountsChanged = (accounts) => {
       console.log("Total PPAs:" , ppaNum);
       setTotalPPAs(ppaNum)
       setPagesCountPPA(Math.ceil(ppaNum / pageSize));
-
+      
       if(ppaNum>0)
       PPA.methods.viewAllPPAs().call()
           .then(function(result){
@@ -173,12 +177,12 @@ const handleAccountsChanged = (accounts) => {
               rows.push( <tr key={i}>
                 <td>{result[2][i]}</td>
                 <td>{result[0][i].substr(0,6)}</td>
-                <td>{result[1][i]}</td>
-                <td>{result[3][i]}</td>
-                <td>{result[4][i]}</td>
+                <td>{result[1][i]/100}</td>
+                <td>{moment.unix(result[3][i]).format("DD/MM/YYYY")}</td>
+                <td>{moment.unix(result[4][i]).format("DD/MM/YYYY")}</td>
                 <td>{result[5][i]}</td>
-                <td> <Button variant="secondary" size="sm" data-id={result[2][i]} onClick={event => claimPPA(event.target.dataset.id)}>Claim</Button></td>
-              </tr>);
+                <td> <Button variant="secondary" size="sm" data-id={result[2][i]} onClick={event => claimPPA(event.target.dataset.id)}>Claim</Button></td> 
+                </tr>);
             }
             setPPAs(rows)
           });
@@ -191,11 +195,10 @@ const handleAccountsChanged = (accounts) => {
         <td>{dataPPAs[2][i]}</td>
         <td>{dataPPAs[0][i].substr(0,6)}</td>
         <td>{dataPPAs[1][i]/100}</td>
-        <td>{dataPPAs[3][i]}</td>
-        <td>{dataPPAs[4][i]}</td>
+        <td>{moment.unix(dataPPAs[3][i]).format("DD/MM/YYYY")}</td>
+        <td>{moment.unix(dataPPAs[4][i]).format("DD/MM/YYYY")}</td>
         <td>{dataPPAs[5][i]}</td>
         <td> <Button variant="secondary" size="sm" data-id={dataPPAs[2][i]} onClick={event => claimPPA(event.target.dataset.id)}>Claim</Button></td>
-
       </tr>);
       }
     }
@@ -226,8 +229,8 @@ const handleAccountsChanged = (accounts) => {
                 <td>{result[0][i].substr(0,6)}</td>
                 <td>{result[1][i].substr(0,6)}</td>
                 <td>{result[2][i]/100}</td>
-                <td>{result[4][i]}</td>
-                <td>{result[5][i]}</td>
+                <td>{moment.unix(result[4][i]).format("DD/MM/YYYY")}</td>
+                <td>{moment.unix(result[5][i]).format("DD/MM/YYYY")}</td>
                 <td><Button variant="secondary" size="sm" data-id={result[3][i]} onClick={event => acceptCorporatePPA(event.target.dataset.id)}>Claim</Button></td>
               </tr>);
             }
@@ -236,6 +239,7 @@ const handleAccountsChanged = (accounts) => {
       });
   }
   else{
+    
     let rows = [];
     for (let i = offset; i < pageSize + offset  ; i++) {
       if(i < totalCPPAs )  {
@@ -243,12 +247,13 @@ const handleAccountsChanged = (accounts) => {
         <td>{dataCPPAs[3][i]}</td>
         <td>{dataCPPAs[0][i].substr(0,6)}</td>
         <td>{dataCPPAs[1][i].substr(0,6)}</td>
-        <td>{dataCPPAs[2][i]}</td>
-        <td>{dataCPPAs[4][i]}</td>
-        <td>{dataCPPAs[5][i]}</td>
+        <td>{dataCPPAs[2][i]/100}</td>
+        <td>{moment.unix(dataCPPAs[4][i]).format("DD/MM/YYYY")}</td>
+        <td>{moment.unix(dataCPPAs[5][i]).format("DD/MM/YYYY")}</td>
         <td><Button variant="secondary" size="sm" data-id={dataCPPAs[3][i]} onClick={event => acceptCorporatePPA(event.target.dataset.id)}>Claim</Button></td>
-
+        
       </tr>);
+   
       }
     }
     setCPPAs(rows)
@@ -256,36 +261,91 @@ const handleAccountsChanged = (accounts) => {
   }
   }
 
-  const createPPA = () => {
+  const isNumeric = (number)  =>{
+    if (+number === +number) { // if is a number
+        return true;
+    }
+  
+    return false;
+  }
+
+  const createPPA = async () => {
+
+    
 
     if (open === 'PPA'){
-      if (price === ""||placeStartDay === ""||placeEndDay === ""||placeEndDay < placeStartDay||price < 1){
+      if (price === ""||placeStartDay === "" || placeEndDay === ""  ){
 
-        setError(true);
+        setError(true);  
       }
+      else if ( price < 1 || isNumeric(price) === false){
+
+        setErrorPrice(true);
+      }        
+      else if (placeStartDay.length !== 10 || isNumeric(placeStartDay) === false){
+
+        setErrorStartDay(true)
+     }
+     else  if (placeEndDay.length !== 10 || isNumeric(placeEndDay) === false){
+      
+          setErrorEndDay(true) 
+     }
       else{
 
-        PPA.methods.createPPA(price * 100, placeStartDay, placeEndDay).send({from: account.current}).on('transactionHash', (th) => {
+        setIsLoading(true);
+      try {
+        await PPA.methods.createPPA(price * 100, placeStartDay, placeEndDay).send({from: account.current}).on('transactionHash', (th) => {
 
           toast("A PPA has been succesfully submited!")
         }).then(function(e) {
           setDataPPAs(null);
           getDataPPAs(currentPagePPA   * pageSize, true);
           console.log(e);
+          setIsLoading(false);
+
         });
+      }catch(e){
+        console.log(e);
+        setIsLoading(false);
+      } 
         setPrice("");
         setPlaceStartDay("");
         setPlaceEndDay("");
+        setErrorPrice(false);
+        setError(false);
+        setErrorStartDay(false);
+        setErrorEndDay(false);
       }
     }
 
     if (open === 'CPPA'){
-      if (price === ""||placeStartDay === ""||placeEndDay === ""||ID === ""||address === ""||price < 1||placeEndDay < placeStartDay){
+
+      if (price === ""||placeStartDay === "" || placeEndDay === "" || ID === "" ||address === ""){
 
         setError(true);
       }
-      else{
+      else if (price < 1 || isNumeric(price) === false  ){
 
+        setErrorPrice(true);
+      }
+      else if (placeStartDay.length !== 10 || isNumeric(placeStartDay) === false){
+
+        setErrorStartDay(true)
+      }
+      else if (placeEndDay.length !== 10 || isNumeric(placeEndDay) === false){
+      
+        setErrorEndDay(true)
+      }
+      else if (ID < 0 || isNumeric(ID) === false){
+
+        setErrorId(true)
+      }
+      else if (address.length !== 42 ){
+
+        setErrorAddress(true)
+      }
+      else{
+        
         PPA.methods.corporatePPA(address, price * 100, placeStartDay, placeEndDay, ID, ).send({from: account.current}).on('transactionHash', (th) => {
 
           toast("A Corporate CPPA has been succesfully submited!")
@@ -300,21 +360,29 @@ const handleAccountsChanged = (accounts) => {
         setPlaceStartDay("");
         setPlaceEndDay("");
         setID("");
+        setError(false);
+        setErrorPrice(false);
+        setErrorStartDay(false);
+        setErrorEndDay(false);
+        setErrorId(false);
+        setErrorAddress(false);
       }
     }
   }
-  const claimPPA = (id) => {
+  const claimPPA = async (id) => {
 
     console.log(id);
-        PPA.methods.claimPPA(id).send({from: account.current}).then(function(e) {
+       await PPA.methods.claimPPA(id).send({from: account.current}).then(function(e) {
           console.log(e);
           toast("Claimed PPA successfully!")
           const newWindow = window.open("/receipt/"+id, '_blank', 'noopener,noreferrer')
           if (newWindow) newWindow.opener = null
         });
+    
   }
 
   const acceptCorporatePPA = (id) => {
+    
       PPA.methods.acceptCorporatePPA(id).send({from: account.current}).then(function(e) {
         console.log(e);
       });
@@ -329,13 +397,11 @@ const handleAccountsChanged = (accounts) => {
     });
   }, []);
 
-
   return (
     <>
       <div className="content">
 
       <Row>
-
             <Col md="7">
             {totalPPAs>0 ?
                 <Card>
@@ -410,13 +476,10 @@ const handleAccountsChanged = (accounts) => {
               </CardFooter>
             </Card> : <></>}
 
-
-
             </Col>
             <Col md="5">
             <Card className="card-user">
               <CardBody>
-
               <div>
                   {isConnected
                   ? <>  <div className="author">
@@ -426,12 +489,15 @@ const handleAccountsChanged = (accounts) => {
                   <div className="block block-four" />
                   <p className="description">Create a PPA</p>
                   <br/>
+                
                   <Button variant="primary" size="lg" onClick={()=>{setOpen('PPA')}}>
                     Create PPA
-                  </Button>{' '}
+                  </Button>
+              
                   <Button variant="secondary" size="lg" onClick={()=>{setOpen('CPPA')}}>
                     Create Corporate PPA
                   </Button>
+                
                 </div>
                 <Row>
                   <Col className="pr-md-1 form"  md="11"  >
@@ -442,18 +508,26 @@ const handleAccountsChanged = (accounts) => {
                           placeholder="Enter Price(EUR)"
                           type="text"
                           onChange={event => setPrice(event.target.value)}
+                          
                       />
+                      {
+                        errorPrice && <div style={{color: `red`}}>Set a valid Price</div>
+                      }
 
                     </FormGroup>
                     <FormGroup style={{display:(open==='CPPA'? 'none':"block")}} >
                       <label>Start Day</label>
                       <Input
-                           value = {placeStartDay}
+                          value = {placeStartDay}
                           placeholder="Start Day"
                           type="text"
-                          onChange={event => setPlaceStartDay(event.target.value)}
-                      />
+                          onChange={event => setPlaceStartDay(event.target.value)}  
+                      />    
+                       {
+                        errorStartDay && <div style={{color: `red`}}>Set a valid Start day</div>
+                      }
                     </FormGroup>
+
                     <FormGroup style={{display:(open==='CPPA'? 'none':"block")}} >
                       <label>End Day</label>
                       <Input
@@ -462,7 +536,11 @@ const handleAccountsChanged = (accounts) => {
                           type="text"
                           onChange={event => setPlaceEndDay(event.target.value)}
                       />
+                      {
+                        errorEndDay && <div style={{color: `red`}}>Set a valid End day</div>
+                      }
                     </FormGroup>
+                    
                     <FormGroup style={{display:(open==='PPA'? 'none':"block")}} >
                       <label>Start Day</label>
                       <Input
@@ -471,7 +549,11 @@ const handleAccountsChanged = (accounts) => {
                           type="text"
                           onChange={event => setPlaceStartDay(event.target.value)}
                       />
+                       {
+                        errorStartDay && <div style={{color: `red`}}>Set a valid Start day</div>
+                      }
                     </FormGroup>
+                   
                     <FormGroup style={{display:(open==='PPA'? 'none':"block")}} >
                       <label>End Day</label>
                       <Input
@@ -480,6 +562,9 @@ const handleAccountsChanged = (accounts) => {
                           type="text"
                           onChange={event => setPlaceEndDay(event.target.value)}
                       />
+                      {
+                        errorEndDay && <div style={{color: `red`}}>Set a valid End day</div>
+                      }
                     </FormGroup>
                     <FormGroup style={{display:(open==='PPA'? 'none':"block")}} >
                       <label>ID</label>
@@ -489,6 +574,9 @@ const handleAccountsChanged = (accounts) => {
                           type="text"
                           onChange={event => setID(event.target.value)}
                       />
+                      {
+                        errorId && <div style={{color: `red`}}>Set a valid ID</div>
+                      }
                     </FormGroup>
                     <FormGroup style={{display:(open==='PPA'? 'none':"block")}} >
                       <label>Address</label>
@@ -498,21 +586,23 @@ const handleAccountsChanged = (accounts) => {
                           type="text"
                           onChange={event => setAddress(event.target.value)}
                       />
-                    </FormGroup>
-                    <FormGroup>
-                    {
-                        error && <div style={{color: `red`}}>Not valid details</div>
+                       {
+                        errorAddress && <div style={{color: `red`}}>Set a valid address</div>
                       }
+                    </FormGroup>
+                    {
+                        error && <div style={{color: `red`}}>Fill all the blanks</div>
+                      }
+                    <FormGroup>
+                  { isLoading ? 
+                     <div class="lds-hourglass"></div>
+                    :
                     <Button variant="secondary" size="lg" onClick={() => createPPA()}>
                       Create {open==='CPPA'? 'CPPA':"PPA"}
                     </Button>
-
-
-
+                  }
                   </FormGroup>
           </Col>
-
-
                 </Row>
 
 </>
@@ -535,10 +625,6 @@ const handleAccountsChanged = (accounts) => {
             </Card>
           </Col>
           </Row>
-
-
-
-
       </div>
     </>
   );
