@@ -825,6 +825,7 @@ const signInMetamask = async(accounts) => {
   marketPlace.events.onUpdateAsk({} , function(error, event){ 
       console.log("event:" , event); 
       getDataAsks(currentPageA * pageSize);
+      getDataMyAsks(currentPageMA * myPageSize);
   }) 
    .on('data',  function(event){
      console.log(event.returnValues);
@@ -833,6 +834,7 @@ const signInMetamask = async(accounts) => {
   marketPlace.events.onUpdateBid({} , function(error, event){ 
     console.log("event:" , event);  
     getDataBids(currentPageΒ * pageSize);
+    getDataMyBids(currentPageMB * myPageSize);
    }) 
    .on('data',  function(event){
      console.log(event.returnValues);
@@ -862,25 +864,10 @@ const signInMetamask = async(accounts) => {
       .on('data',  function(event){
         console.log(event.returnValues);
        })
-       
-   
-    
-    // .on("onPurchased", function(event){
-    //   tradeAsk();
-    //   tradeBid();
-    //   console.log("EventOnPurchased:" , event);
-    // })
-    // marketPlace.events.onPurchased({}, function (event) {
-    //   tradeBid();
-    //   console.log("EventOnTradeBid:" , event);     
-    // })
-   
-   
+
   }, []);
 
   
- 
- 
   return (
     <>
       <div className="content">             
