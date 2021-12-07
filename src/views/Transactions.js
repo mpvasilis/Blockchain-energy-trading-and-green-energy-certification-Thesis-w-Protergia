@@ -3,6 +3,8 @@ import TablePagination from '../components/pagination/TablePagination';
 import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 import PropTypes from "prop-types";
 import detectEthereumProvider from '@metamask/detect-provider';
+import moment from 'moment';
+
 
 // reactstrap components
 import {
@@ -238,7 +240,7 @@ const signInMetamask = async(accounts) => {
                 <td>{result[1][i].substr(0,6)}</td>
                 <td>{result[2][i]/1000000}</td>
                 <td>{result[4][i]/1000000000000}</td>
-                <td>{result[5][i]}</td>
+                <td>{moment((moment.unix(result[5][i]))).startOf('minute').fromNow()}</td>
               </tr>);
             }
             setMyPurchases(rows);
@@ -256,7 +258,7 @@ const signInMetamask = async(accounts) => {
        <td>{myData[1][i].substr(0,6)}</td>
        <td>{myData[2][i]/1000000}</td>
        <td>{myData[4][i]/1000000000000}</td>
-       <td>{myData[5][i]}</td>
+       <td> <td>{moment((moment.unix(myData[5][i]))).startOf('minute').fromNow()}</td></td>
       </tr>);
       setMyData(null);
       }
