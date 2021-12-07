@@ -551,20 +551,12 @@ const signInMetamask = async(accounts) => {
      setMyBids(rows)
     console.log(rows);  
   }}
+  
   if(dataMyAsks===null ){
-    marketPlace.methods.getCountOfAsks().call({from: account.current}).then(function(){
-      marketPlace.methods.getMyAsks().call({from: account.current}).then(function(){
        getDataMyAsks(currentPageMA * myPageSize, true);
-      }); 
-    }); 
   }
-
   if(dataMyBids===null ){
-    marketPlace.methods.getCountOfBids().call({from: account.current}).then(function()  {
-      marketPlace.methods.getMyBids().call({from: account.current}).then(function(){
        getDataMyBids(currentPageMB * myPageSize, true);
-      }); 
-    });
   }
 
   const removeAsk = async (id) => {
@@ -802,8 +794,8 @@ const signInMetamask = async(accounts) => {
     
     getDataAsks(currentPageA * pageSize);
     getDataBids(currentPageΒ * pageSize);
-    getDataMyAsks(currentPageMA * myPageSize, true);
-    getDataMyBids(currentPageMB * myPageSize, true);
+    // getDataMyAsks(currentPageMA * myPageSize, true);
+    // getDataMyBids(currentPageMB * myPageSize, true);
 
 
   marketPlace.events.onNewBid({} , function(error, event){ 
