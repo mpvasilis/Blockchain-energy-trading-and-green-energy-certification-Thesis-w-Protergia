@@ -17,8 +17,8 @@ contract Marketplace {
     event onPurchased(address indexed seller, address indexed buyer, uint indexed day, uint energy);
 
     uint constant mCent = 1;
-    uint constant cent = 1000 * mCent;
-    uint constant dollar = 1000 * cent;
+    //uint constant cent = 1000 * mCent;
+    //uint constant dollar = 1000 * cent;
 
     uint constant mWh = 1;
     uint constant  Wh = 1000 * mWh;

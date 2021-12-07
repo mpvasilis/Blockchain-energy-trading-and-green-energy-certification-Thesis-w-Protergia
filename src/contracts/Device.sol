@@ -1,64 +1,145 @@
 pragma solidity >=0.4.21 <0.9.0;
 
+import "src/contracts/SafeMath.sol";
+import "src/contracts/Counters.sol";
+
 contract Device {
-    event onDeviceAdded(address indexed ownerOfDevice, uint date, string id);
-    event onDeviceUpdated(address indexed ownerOfDevice, uint date, string id);
-    event onDeviceTransferOwnership(address oldOwner, address indexed newOwner);
-    event onDeviceRemoved(address device, uint date);
 
-    ///@notice Struct to store all devices 
-    ///@dev ownerOfDevice is the current address which the device is connected
-    ///@dev typeOfDevice, PV, EV, Solar, Biomass, Hydo Turbine or battery(Multiple)
-    ///@dev isExist to match the registered device with bool value.
+    using Counters for Counters.Counter;
+    Counters.Counter private id;
+
+    event onDeviceAdded(address indexed ownerOfDevice, uint date, string name);
+    event onDeviceUpdated(address indexed ownerOfDevice, string name, string typeDevice, uint date, uint id);
+    event onDeviceTransferOwnership(address oldOwner, address indexed newOwner, uint id);
+    event onDeviceRemoved(address indexed owner, uint id, uint date);
+    event onEnergyRecorded(address indexed owner, uint id, uint energy, uint date);
+
     struct device {
-        address ownerOfDevice;
+        address owner;
         string typeOfDevice;
-        uint timestamp;
-        bool isExist;
+        string name;
+        uint energy;
+        uint uuID;
+        uint date;
     }
 
-    ///@notice Mapping address as key to struct battery with mapping name batteries
-    mapping (address => device) devices;
+    // struct tEnergy {
+    //     address ownerOfDevices;
+    //     uint totalEnergy;
+    // }
 
-    modifier onlyRegisteredDevice{
-         require(devices[msg.sender].isExist==true, "Only registered devices have access");
-         _;
-     }
+    mapping(uint => uint) deviceMap;
+    device[] devices;
+    //tEnergy[] listOfEnergy;
 
-    ///@notice Add a battery by address.
-    ///@dev Only one device can register by each address.
-    function addDevice (string memory typeOfDevice) public {
-        require(devices[msg.sender].isExist == false, "Device details already added");
-        devices[msg.sender] = device(msg.sender, typeOfDevice, block.timestamp, true);
-        emit onDeviceAdded(msg.sender, block.timestamp, typeOfDevice);
+    function createDevice(string memory _typeOfDevice, string memory _name) public {
+
+        ///@notice must added a valid way to check the validity of device input
+
+        address _owner = msg.sender;
+        uint currentTime = block.timestamp;
+        id.increment();
+        uint currentID = id.current();
+        uint idx = devices.length;
+        deviceMap[currentID] = idx;
+        devices.push(device({
+            owner: _owner,
+            typeOfDevice: _typeOfDevice,
+            name: _name,
+            energy: 0,
+            uuID: currentID,
+            date: currentTime
+        }));
+        emit onDeviceAdded(_owner, currentTime, _name);
     }
 
-    ///@notice Change details of a battery.
-    ///@dev Only registered devices have access to this function.
-    function updateDevice(address ownerOfDevice, string memory typeOfDevice) public onlyRegisteredDevice {
-        devices[ownerOfDevice].typeOfDevice = typeOfDevice;
-        uint day = block.timestamp;
-        emit onDeviceUpdated(ownerOfDevice, day, typeOfDevice);
+    function removeDevice(uint _id) public {
+        address _owner = msg.sender;
+        for(uint i = 0; i<devices.length; i++){
+            if(devices[i].uuID == _id && devices[i].owner == _owner){
+                emit onDeviceRemoved(_owner, _id, block.timestamp);
+                if (devices.length > 1) {
+                    devices[i] = devices[devices.length-1];
+                }
+                devices.length--;
+            }
+        }
     }
 
-    function transferOwnershipOfDevice(address newOwner) public onlyRegisteredDevice {
-        require(newOwner != address(0), "The address you would like to change is the same");
+    function updateDevice(uint _id, string memory _name, string memory _typeOfDevice) public {
+        address _owner = msg.sender;
+        for(uint i = 0; i<devices.length; i++){
+            if(devices[i].uuID == _id && devices[i].owner == _owner){
+                devices[i].name = _name;
+                devices[i].typeOfDevice = _typeOfDevice;
+                emit onDeviceUpdated(_owner, _name, _typeOfDevice, block.timestamp, _id);
+            }
+        }
+    }
+
+    function transferOwnershipOfDevice(uint _id, address _to) public {
+        address _from = msg.sender;
+        require(_from != _to, "You can not use the same address");
+        for(uint i = 0; i<devices.length; i++){
+            if(devices[i].uuID == _id && devices[i].owner == _from){
+                devices[i].owner = _to;
+                emit onDeviceTransferOwnership(_from, _to, _id);
+            }
+        }
+    }
+
+    function recordEnergyPerDevice(uint _id, uint _energy) public {
+        address _owner = msg.sender;
+        for(uint i = 0; i<devices.length; i++){
+            if(devices[i].uuID == _id && devices[i].owner == _owner){
+                devices[i].energy = devices[i].energy + _energy;
+                emit onEnergyRecorded(_owner, _id, _energy, block.timestamp);
+            }
+        }
+    }
+
+    function getCountOfDevices() public view returns(uint){
         address currentAddr = msg.sender;
-        devices[newOwner] = device(newOwner, devices[currentAddr].typeOfDevice, devices[currentAddr].timestamp, devices[currentAddr].isExist);
-        //delete devices[currentAddr];
-        emit onDeviceTransferOwnership(currentAddr, newOwner);
+        uint count = 0;
+        for(uint i = 0; i<devices.length; i++){
+            if(devices[i].owner == currentAddr){
+                count++;
+            }
+        }
+        return count;
     }
 
-    function removeDevice() public {
+    function getMyDevices() public view returns(uint[] memory, uint[] memory){
+        uint k = 0;
+        uint cnt = getCountOfDevices();
+        uint[] memory ids = new uint[](cnt);
+        uint[] memory dates = new uint[](cnt);
+
+        for(uint i = 0; i < devices.length; i++){
+            if(devices[i].owner == msg.sender){
+                ids[k] = devices[i].uuID;
+                dates[k] = devices[i].date;
+                k++;
+            }
+        }
+        return(ids, dates);
+    }
+
+    function getTotalEnergy() public view returns(uint) {
         address currentAddr = msg.sender;
-        devices[currentAddr].isExist = false;
-        delete devices[currentAddr];
-        emit onDeviceRemoved(currentAddr, block.timestamp);
+        uint x = 0;
+        for(uint i = 0; i<devices.length; i++){
+            if(devices[i].owner == currentAddr){
+                x = x + devices[i].energy;
+            }
+        }
+        return x;
     }
 
-    ///@notice Get signle device details from specific address
-    function getDeviceByAddress() public view returns (address, string memory, uint){
-        address deviceID = msg.sender;
-        return (devices[deviceID].ownerOfDevice, devices[deviceID].typeOfDevice, devices[deviceID].timestamp);
+    function getEnergyPerDevice(uint _id) public view returns(uint) {
+        uint index = deviceMap[_id];
+        require(devices.length > index, "Wrong index");
+        require(devices[index].uuID == _id, "Wrong ID");
+        return(devices[index].energy);
     }
 }
