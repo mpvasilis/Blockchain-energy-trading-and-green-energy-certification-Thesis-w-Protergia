@@ -113,18 +113,12 @@ function Devices() {
           console.log("Object.values(result)[0]:", Object.values(result)[0])
       
         if (account.current ===  Object.values(result)[0]){
-
-
-            toast("This device has been already added!");
-            
+           toast("This device has been already added!");
         }
          else{
-
          deviceRegistry.methods.addDevice(input).send({from: account.current}).on('transactionHash', (th) => {
-       
             toast("A device has been succesfully added!")   
         })} 
-       
       })}
      
   return (
