@@ -23,14 +23,8 @@ contract Device {
         uint date;
     }
 
-    // struct tEnergy {
-    //     address ownerOfDevices;
-    //     uint totalEnergy;
-    // }
-
     mapping(uint => uint) deviceMap;
     device[] devices;
-    //tEnergy[] listOfEnergy;
 
     function createDevice(string memory _typeOfDevice, string memory _name) public {
 
@@ -127,19 +121,22 @@ contract Device {
 
     function getTotalEnergy() public view returns(uint) {
         address currentAddr = msg.sender;
-        uint x = 0;
+        uint res = 0;
         for(uint i = 0; i<devices.length; i++){
             if(devices[i].owner == currentAddr){
-                x = x + devices[i].energy;
+                res = res + devices[i].energy;
             }
         }
-        return x;
+        return res;
     }
 
-    function getEnergyPerDevice(uint _id) public view returns(uint) {
+    ///@notice Solidity generally can not return dynamic string arrays
+    ///@notice so, you can use this function to show the available energy per device
+    ///@notice and name, type of device as well, when someone click on it.
+    function getEnergyPerDevice(uint _id) public view returns(uint, string memory, string memory) {
         uint index = deviceMap[_id];
         require(devices.length > index, "Wrong index");
         require(devices[index].uuID == _id, "Wrong ID");
-        return(devices[index].energy);
+        return(devices[index].energy, devices[index].typeOfDevice, devices[index].name);
     }
 }
