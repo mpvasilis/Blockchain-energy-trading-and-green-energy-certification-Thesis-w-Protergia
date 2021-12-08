@@ -5,7 +5,6 @@ import PropTypes from "prop-types";
 import detectEthereumProvider from '@metamask/detect-provider';
 import moment from 'moment';
 
-
 // reactstrap components
 import {
   Button,
@@ -263,7 +262,7 @@ const signInMetamask = async(accounts) => {
       setMyData(null);
       }
     }
-    setMyPurchases(rows)
+    setMyPurchases(rows)//* update table*/
     console.log(rows);
   }}
 
@@ -286,7 +285,7 @@ const signInMetamask = async(accounts) => {
 
         <Row>
           <Col md="12">
-          {/* {totalMyPurchases>0 ? */}
+          {totalMyPurchases>0 ?
                 <Card>
               <CardHeader>
                 <h5 className="title">Purchased Energy</h5>
@@ -323,7 +322,7 @@ const signInMetamask = async(accounts) => {
 
               </CardFooter>
             </Card>
-               {/* : <></> }  */}
+               : <></> } 
           {/* {totalPurchases>0 ?
                 <Card>
               <CardHeader>

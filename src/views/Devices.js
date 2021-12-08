@@ -1,10 +1,12 @@
 import React, {useEffect, useState, useRef} from "react";
 import detectEthereumProvider from '@metamask/detect-provider';
 import 'bootstrap';
+import TablePagination from '../components/pagination/TablePagination';
 import { Button } from 'reactstrap';
 import "assets/css/black-dashboard-react.css";
 import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 
 // reactstrap components
 import {
@@ -27,10 +29,12 @@ import {
 import Web3 from 'web3';
 const web3 = new Web3(Web3.givenProvider || "wss://ropsten.infura.io/ws/v3/5f552c63b2834a588871339fd81f7943");
 
-var contractAddress = '0xf204b9E3f564ef0F5d827B50A8879D058FA191A9' ;
-var abi = [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"askEnergyNotifier","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"ownerOfDevice","type":"address"},{"indexed":false,"internalType":"uint256","name":"date","type":"uint256"},{"indexed":false,"internalType":"string","name":"id","type":"string"}],"name":"deviceAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"ownerOfDevice","type":"address"},{"indexed":false,"internalType":"uint256","name":"date","type":"uint256"},{"indexed":false,"internalType":"string","name":"id","type":"string"}],"name":"deviceUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"seller","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"offerEnergyNotifier","type":"event"},{"constant":false,"inputs":[{"internalType":"string","name":"typeOfDevice","type":"string"}],"name":"addDevice","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_energy","type":"uint256"}],"name":"askEnergy","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_energy","type":"uint256"},{"internalType":"uint256","name":"_eprice","type":"uint256"}],"name":"energyOffer","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getAsksByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getBidsByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfAsks","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfBids","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfPurchases","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"deviceID","type":"address"}],"name":"getDeviceByAddress","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"string","name":"","type":"string"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getPurchaseByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"ownerOfDevice","type":"address"},{"internalType":"string","name":"typeOfDevice","type":"string"}],"name":"updateDevice","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"viewAllAsks","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"viewAllBids","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"viewAllEnergyPurchases","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"}] ; 
-const deviceRegistry = new web3.eth.Contract(abi, contractAddress);
-
+// var contractAddress = '0xf204b9E3f564ef0F5d827B50A8879D058FA191A9' ;
+// var abi = [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"askEnergyNotifier","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"ownerOfDevice","type":"address"},{"indexed":false,"internalType":"uint256","name":"date","type":"uint256"},{"indexed":false,"internalType":"string","name":"id","type":"string"}],"name":"deviceAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"ownerOfDevice","type":"address"},{"indexed":false,"internalType":"uint256","name":"date","type":"uint256"},{"indexed":false,"internalType":"string","name":"id","type":"string"}],"name":"deviceUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"seller","type":"address"},{"indexed":true,"internalType":"uint256","name":"day","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"}],"name":"offerEnergyNotifier","type":"event"},{"constant":false,"inputs":[{"internalType":"string","name":"typeOfDevice","type":"string"}],"name":"addDevice","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_energy","type":"uint256"}],"name":"askEnergy","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_energy","type":"uint256"},{"internalType":"uint256","name":"_eprice","type":"uint256"}],"name":"energyOffer","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getAsksByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getBidsByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfAsks","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfBids","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfPurchases","outputs":[{"internalType":"uint256","name":"count","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"deviceID","type":"address"}],"name":"getDeviceByAddress","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"string","name":"","type":"string"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"getPurchaseByIndex","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"ownerOfDevice","type":"address"},{"internalType":"string","name":"typeOfDevice","type":"string"}],"name":"updateDevice","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"viewAllAsks","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"viewAllBids","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"viewAllEnergyPurchases","outputs":[{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"address[]","name":"","type":"address[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"}] ; 
+// const deviceRegistry = new web3.eth.Contract(abi, contractAddress);
+var contractAddress =  '0x6979C393964F93Bad65259A859D4F19c8C6B9d13' ;
+var abi = [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"ownerOfDevice","type":"address"},{"indexed":false,"internalType":"uint256","name":"date","type":"uint256"},{"indexed":false,"internalType":"string","name":"name","type":"string"}],"name":"onDeviceAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"date","type":"uint256"}],"name":"onDeviceRemoved","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"oldOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"},{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"}],"name":"onDeviceTransferOwnership","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"ownerOfDevice","type":"address"},{"indexed":false,"internalType":"string","name":"name","type":"string"},{"indexed":false,"internalType":"string","name":"typeDevice","type":"string"},{"indexed":false,"internalType":"uint256","name":"date","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"}],"name":"onDeviceUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"energy","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"date","type":"uint256"}],"name":"onEnergyRecorded","type":"event"},{"constant":false,"inputs":[{"internalType":"string","name":"_typeOfDevice","type":"string"},{"internalType":"string","name":"_name","type":"string"}],"name":"createDevice","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getCountOfDevices","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"getEnergyPerDevice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getMyDevices","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getTotalEnergy","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"},{"internalType":"uint256","name":"_energy","type":"uint256"}],"name":"recordEnergyPerDevice","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"}],"name":"removeDevice","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"},{"internalType":"address","name":"_to","type":"address"}],"name":"transferOwnershipOfDevice","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"},{"internalType":"string","name":"_name","type":"string"},{"internalType":"string","name":"_typeOfDevice","type":"string"}],"name":"updateDevice","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}] ; 
+const Device = new web3.eth.Contract(abi, contractAddress);
 
 function Devices() {
   const [open, setOpen] = useState('add');
@@ -42,11 +46,13 @@ function Devices() {
   const [isConnected, setIsConnected] = useState(false);
    const [accounts, setAccounts] = useState([]);
    const [id, setId] = useState(0);
-
-   
-
-   
-  
+   const [selectValue,setSelectValue]=useState('');
+   const [deviceData, setDeviceData] = useState(null);
+   const [totalDevices, setTotalDevices] = useState(0);
+   const [myDevices, setMyDevices] = useState(null);
+   const [currentPage, setCurrentPage] = useState(0);
+   const [pagesCount, setPagesCount] = useState(0);
+   const pageSize = 5;
 
   const signInMetamask = async() => {
     const provider = await detectEthereumProvider();
@@ -95,35 +101,163 @@ function Devices() {
       console.log('Current addr: ', account.current);
     }
   }
-  
-  useEffect(() => {
-    web3.eth.getAccounts().then(r=>{
-      handleAccountsChanged(r);
-    });
+  const handlePageClick = (e, page) => {
+    console.log(page);
+    e.preventDefault();
+    setCurrentPage(page);
+    console.log(page);
+    getDeviceData(page  * pageSize);
+    console.log(page);
+  };
 
-      }, []);
-   
+  const handlePreviousClick= e => {
+    const _currentPage = currentPage - 1 ;
+    e.preventDefault();
+    setCurrentPage(_currentPage);
+    getDeviceData(_currentPage  * pageSize);
+     console.log(_currentPage);
+  };
+
+  const handleNextClick= e => {
+    const _currentPage = currentPage + 1 ;
+    e.preventDefault();
+    setCurrentPage(_currentPage);
+    getDeviceData(_currentPage  * pageSize);
+     console.log(_currentPage);
+  };
+
+      const getDeviceData = (offset, update = false)=>{
+
+        if(deviceData===null || update){
+          Device.methods.getCountOfDevices().call({from: account.current}).then(function(total){
+            console.log("total devices:" , total);
+            setTotalDevices(total);
+          setPagesCount(Math.ceil(total / pageSize));
+          
+           
+          if(total>0)
+          Device.methods.getMyDevices().call({from: account.current})
+              .then(function(result){
+                setDeviceData(result);
+                console.log(pageSize + offset);
+                var rows = [];
+                for (var i = offset; i < pageSize + offset  ; i++) {
+                  if(i >= total)  break;
+    
+                  rows.push( <tr key={i}>
+                    <td>{result[0][i]}</td>
+                    <td>{moment((moment.unix(result[1][i]))).startOf('minute').fromNow()}</td>
+                    <td> <Button variant="secondary" size="sm" data-id={result[0][i]} class="btn" onClick={event => removeDevice(event.target.dataset.id)}>
+                         <i data-id={result[0][i]} class="fa fa-trash" ></i></Button>
+                    </td>
+                    <td>
+                    <Button variant="secondary" size="sm" data-id={result[0][i]} onClick={event => {setId(event.target.dataset.id); }}class="btn">
+                         <i data-id={result[0][i]} class="fa fa-edit" ></i>
+                    </Button>
+                    </td>
+                  </tr>);
+                }
+                setMyDevices(rows);
+                console.log(rows);
+              });
+        });
+      }
+      else{
+        let rows = [];
+        for (let i = offset; i < pageSize + offset  ; i++) {
+          if(i < totalDevices )  {
+          rows.push( <tr key={i}>
+           <td>{deviceData[0][i]}</td>
+           <td>{moment((moment.unix(deviceData[1][i]))).startOf('minute').fromNow()}</td>
+           <td> <Button variant="secondary" size="sm" data-id={deviceData[0][i]} class="btn" onClick={event => removeDevice(event.target.dataset.id)}>
+                 <i data-id={deviceData[0][i]} class="fa fa-trash" ></i></Button>
+           </td>
+           <td>
+               <Button variant="secondary" size="sm" data-id={deviceData[0][i]} onClick={event => {setId(event.target.dataset.id); }}class="btn">
+                   <i data-id={deviceData[0][i]} class="fa fa-edit" ></i>
+               </Button>
+           </td>
+          </tr>);
+          setDeviceData(null);
+          }
+        }
+        setMyDevices(rows)//* update table*/
+        console.log(rows);
+      }}
+
+      const handleSelect=(e)=>{
+        setSelectValue(e.target.value);
+        console.log(e.target.value);
+     }
     
        const addDevice= () =>{
-
-        deviceRegistry.methods.getDeviceByAddress(account.current).call({from: account.current}).then(function(result){
-          
-          console.log(typeof result);
-          console.log("result:" , result);
-          console.log("Object.values(result)[0]:", Object.values(result)[0])
+           //   if (account.current ===  Object.values(result)[0]){
+           //      toast("This device has been already added!");
+           //   }
       
-        if (account.current ===  Object.values(result)[0]){
-           toast("This device has been already added!");
+        Device.methods.createDevice(input, selectValue ).send({from: account.current}).on('transactionHash', (th) => {
+          console.log("name:" , input);
+          console.log("type:" , selectValue );
+           toast("A device has been succesfully added!")  
+        })
+      }
+
+      if(deviceData===null){
+        getDeviceData(currentPage * pageSize, true);
+      }
+
+      const removeDevice= async (id) => {
+    
+        console.log("id: ", id);
+        try{
+          await Device.methods.removeDevice(id).send({from: account.current}).on('transactionHash', (th) => {
+            console.log(th);
+            toast("You deleted your device successfully!") 
+          })
+          .then(function(receipt){
+            getDeviceData(currentPage * pageSize, true);   
+          })
+        }catch(e){
+          console.log(e);
+          
         }
-         else{
-         deviceRegistry.methods.addDevice(input).send({from: account.current}).on('transactionHash', (th) => {
-            toast("A device has been succesfully added!")   
-        })} 
-      })}
-     
+      }
+    
+      // const updateDevice = async (id) => {
+    
+      //   try{
+      //     await marketPlace.methods.updateAsk(id, amount * 1000000, price * 1000000).send({from: account.current}).on('transactionHash', (th) => {
+      //       console.log(th);
+      //       toast("You updated your ask successfully!") 
+      //       closeModalUpdate();
+           
+      //     })
+      //     .then(function(receipt){
+      //       getDataMyAsks(currentPageMA * myPageSize, true);  
+      //       getDataAsks(currentPageA * pageSize, true);
+    
+      //     })
+      //     setPriceModal(''); 
+      //     setEnergyModalKW(''); 
+      //   }catch(e){
+      //     console.log(e);
+          
+      //   }
+      // }
+
+      useEffect(() => {
+        web3.eth.getAccounts().then(r=>{
+          handleAccountsChanged(r);
+        });
+    
+          }, []);
+
+
   return (
     <>
       <div className="content">
+        
+      
               <Col md="6">
             <Card className="card-user">
               <CardBody>
@@ -147,34 +281,41 @@ function Devices() {
                                    type="text"
                                    value={input}
                                    onInput={e => setInput(e.target.value)}
+                                   
                                />
+                               < div class="form-group  col-md-13 "><br></br>
+     
+                                <select 
+                                id="inputDevices" class="form-control "
+                                value= {selectValue}
+                                onChange={handleSelect} 
+                                // onSelect={handleSelect}
+                                >
+                                        <option >Select Devices</option>
+                                        <option value="Wind">Wind</option>
+                                        <option value="Biomass">Biomass</option>
+                                        <option value="Hydo turbine">Hydo turbine</option>
+                                        <option value="Solar Thermal">Solar Thermal</option>
+                                        <option value="PV">PV</option>
+                                        <option value="EV">EV</option>
+                                        <option value="Battery">Battery</option>
+                                      </select> 
+                                     {/* <h4>You selected {selectValue}</h4> */}
+
+                                      
+                                </div>
                                {
                                  error && <div style={{color: `red`}}>Please enter a valid ID</div>
                                }
 
-      < div class="form-group  col-md-13 "><br></br>
-     
-      <select id="inpurDevices" class="form-control ">
-      
-                    <option selected >Select Devices</option>
-                    <option value="1">Wind</option>
-                     <option value="2">Biomass</option>
-                     <option value="3">Hydo turbine</option>
-                     <option value="4">Solar Thermal</option>
-                     <option value="5">PV</option>
-                     <option value="6">EV</option>
-                     <option value="7">Battery</option>
-                    </select>
-                    
-             </div>
-             
-               
-               <Button variant="primary" size="lg" onClick={addDevice}  > Add Device  </Button>{' '}
+                  <Button variant="primary" size="lg" onClick={addDevice}  > Add Device  </Button>{' '}
                                
                              </FormGroup>
                              </Col>
+                               
                              </Row>
                              </div>
+                             
                              </form>
                              
                       :<div className="author">
@@ -187,12 +328,52 @@ function Devices() {
                       <img src={"https://docs.metamask.io/metamask-fox.svg"} style={{"height": "30px"}}></img>{"  "} Connect Wallet
                       </Button>         
                        
-                 </div>   
+                       </div>   
                     }
     </div> 
+    
+    
                 </CardBody>
                 </Card>
                 </Col>
+                <Col md="7">
+                   
+                   <Card>
+                 <CardHeader>
+                   <h5 className="title">List of my devices</h5>
+                 </CardHeader>
+                 <CardBody>
+
+                   {myDevices!==null ?
+                       <Table className="tablesorter" responsive>
+                         <thead className="text-primary">
+                     <tr>
+                       <th>id</th>
+                       <th>Date</th>
+                     </tr>
+                     </thead>
+                     <tbody>
+                     {myDevices}
+
+                     </tbody>
+                   </Table> 
+                   : <></>}
+                   <TablePagination
+                     pagesCount={pagesCount}
+                     currentPage={currentPage}
+                     handlePageClick={handlePageClick}
+                     handlePreviousClick={handlePreviousClick}
+                     handleNextClick={handleNextClick}
+                   />
+                 </CardBody>
+                 <CardFooter>
+
+                 </CardFooter>
+               </Card>
+                 
+                 </Col>
+                
+                
       </div>
     </>
   );
