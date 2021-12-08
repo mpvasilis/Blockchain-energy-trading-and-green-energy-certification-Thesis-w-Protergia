@@ -103,20 +103,14 @@ contract Device {
         return count;
     }
 
-    function getMyDevices() public view returns(uint[] memory, uint[] memory){
-        uint k = 0;
-        uint cnt = getCountOfDevices();
-        uint[] memory ids = new uint[](cnt);
-        uint[] memory dates = new uint[](cnt);
-
-        for(uint i = 0; i < devices.length; i++){
-            if(devices[i].owner == msg.sender){
-                ids[k] = devices[i].uuID;
-                dates[k] = devices[i].date;
-                k++;
-            }
-        }
-        return(ids, dates);
+    ///@notice In order to iterate with the devices of a given address we need this extra function with the current legth of device array
+    ///@notice So in the Front end we would need to get the length and iterate for each device that we want to list in our platform 
+    ///@notice and get the index for that device
+    function getMyDevices(uint _id) public view returns(uint, string memory, string memory, uint){
+        uint index = deviceMap[_id];
+        require(devices.length > index, "Wrong index");
+        require(devices[index].uuID == _id, "Wrong ID");
+        return(devices[index].uuID, devices[index].typeOfDevice, devices[index].name, devices[index].date);
     }
 
     function getTotalEnergy() public view returns(uint) {
@@ -133,10 +127,10 @@ contract Device {
     ///@notice Solidity generally can not return dynamic string arrays
     ///@notice so, you can use this function to show the available energy per device
     ///@notice and name, type of device as well, when someone click on it.
-    function getEnergyPerDevice(uint _id) public view returns(uint, string memory, string memory) {
+    function getEnergyPerDevice(uint _id) public view returns(uint) {
         uint index = deviceMap[_id];
         require(devices.length > index, "Wrong index");
         require(devices[index].uuID == _id, "Wrong ID");
-        return(devices[index].energy, devices[index].typeOfDevice, devices[index].name);
+        return(devices[index].energy);
     }
 }
