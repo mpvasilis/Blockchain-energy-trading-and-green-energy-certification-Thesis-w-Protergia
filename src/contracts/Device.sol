@@ -92,7 +92,7 @@ contract Device {
         }
     }
 
-    function getCountOfDevices() public view returns(uint){
+    function getCountOfDevices() private view returns(uint){
         address currentAddr = msg.sender;
         uint count = 0;
         for(uint i = 0; i<devices.length; i++){
@@ -103,10 +103,24 @@ contract Device {
         return count;
     }
 
-    ///@notice In order to iterate with the devices of a given address we need this extra function with the current legth of device array
+    function getMyAsks() public view returns(uint[] memory){
+        uint k = 0;
+        uint cnt = getCountOfDevices();
+        uint[] memory idsList = new uint[](cnt);
+
+        for(uint i = 0; i < devices.length; i++){
+            if(devices[i].owner == msg.sender){
+                idsList[k] = devices[i].uuID;
+                k++;
+            }
+        }
+        return idsList;
+    }
+
+    ///@notice In order to iterate with the devices of a given id we need this extra function with the current legth of device array
     ///@notice So in the Front end we would need to get the length and iterate for each device that we want to list in our platform 
     ///@notice and get the index for that device
-    function getMyDevices(uint _id) public view returns(uint, string memory, string memory, uint){
+    function getDeviceByID(uint _id) public view returns(uint, string memory, string memory, uint){
         uint index = deviceMap[_id];
         require(devices.length > index, "Wrong index");
         require(devices[index].uuID == _id, "Wrong ID");

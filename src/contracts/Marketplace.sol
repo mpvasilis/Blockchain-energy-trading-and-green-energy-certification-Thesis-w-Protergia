@@ -271,7 +271,7 @@ contract Marketplace {
         }
     }
 
-    function getCountOfBids() public view returns(uint){
+    function getCountOfBids() private view returns(uint){
         address currentAddr = msg.sender;
         uint count = 0;
         for(uint i = 0; i<listOfEnergyBids.length; i++){
@@ -304,7 +304,7 @@ contract Marketplace {
         return(sellersList, energiesList, idsList, pricesList, datesList);
     }
 
-    function getCountOfAsks() public view returns(uint){
+    function getCountOfAsks() private view returns(uint){
         address currentAddr = msg.sender;
         uint count = 0;
         for(uint i = 0; i<listOfEnergyAsks.length; i++){
@@ -401,7 +401,7 @@ contract Marketplace {
         return(_seller, _buyers, _ids, _energies, _prices, _dates);
     }
 
-    function getCountOfPurchases() public view returns(uint){
+    function getCountOfPurchases() private view returns(uint){
         address currentAddr = msg.sender;
         uint count = 0;
         for(uint i = 0; i<listOfPurchases.length; i++){
