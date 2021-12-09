@@ -103,7 +103,7 @@ contract Device {
         return count;
     }
 
-    function getMyAsks() public view returns(uint[] memory){
+    function getMyDevices() public view returns(uint[] memory){
         uint k = 0;
         uint cnt = getCountOfDevices();
         uint[] memory idsList = new uint[](cnt);
