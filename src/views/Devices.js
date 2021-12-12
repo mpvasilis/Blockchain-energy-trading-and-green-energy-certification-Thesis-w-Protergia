@@ -257,20 +257,20 @@ function Devices() {
 
           const [Ress, setRess] = useState('');
 
-          /* function setRes(){
-           Device.methods.getTotalEnergy().call().then(function(res){
+          function setRes(){
+            web3.eth.getAccounts().then(function(accounts){
+var acc=accounts[0];
+           Device.methods.getTotalEnergy().call({from: acc}).then(function(res){
             
             
                 setRess(res);
             
             console.log(res);
             
-            })}setRes();*/
+            })}
+            )}setRes();
 
-          Device.methods.getEnergyPerDevice(3).call().then(function(num){
-            setRess(num);
-            console.log(num);
-          })
+         
   return (  
     <>
    
