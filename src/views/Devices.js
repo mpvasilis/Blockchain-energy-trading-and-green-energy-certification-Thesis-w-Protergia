@@ -257,17 +257,17 @@ function Devices() {
 
           const [Ress, setRess] = useState('');
 
-          function setRes(){
-            Device.methods.getTotalEnergy().call().then(function(res){
+          /* function setRes(){
+           Device.methods.getTotalEnergy().call().then(function(res){
             
             
                 setRess(res);
             
             console.log(res);
             
-            })}setRes();
+            })}setRes();*/
 
-          Device.methods.getEnergyPerDevice(1).call().then(function(num){
+          Device.methods.getEnergyPerDevice(3).call().then(function(num){
             setRess(num);
             console.log(num);
           })
