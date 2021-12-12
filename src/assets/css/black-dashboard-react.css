@@ -13646,5 +13646,12 @@ textarea.form-control {
 
 select.form-control option {
   color: #888; }
+  .energy-info{
 
+
+position: relative;
+ left: 1100px;
+top: -500px;
+    
+  }
 /*# sourceMappingURL=black-dashboard-react.css.map */
