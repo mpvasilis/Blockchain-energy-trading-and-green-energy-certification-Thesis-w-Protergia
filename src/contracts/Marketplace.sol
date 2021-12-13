@@ -2,11 +2,13 @@ pragma solidity >=0.4.21 <0.9.0;
 
 import "src/contracts/SafeMath.sol";
 import "src/contracts/Counters.sol";
+import "src/contracts/Device.sol";
 
-contract Marketplace {
+contract Marketplace is Device {
 
     using Counters for Counters.Counter;
     Counters.Counter private ID;
+    uint currentDevice;
 
     event onNewBid(address indexed seller, uint indexed day, uint indexed price, uint energy);
     event onNewAsk(address indexed buyer, uint indexed day, uint indexed price, uint energy);
@@ -29,6 +31,7 @@ contract Marketplace {
 
     struct eBid {
         address seller;
+        uint idOfDevice;
         uint idOfBid;
         uint energy;
         uint eprice;
@@ -40,6 +43,7 @@ contract Marketplace {
     
     struct eAsk {
         address buyer;
+        uint idOfDevice;
         uint idOfAsk;
         uint energy;
         uint price;
@@ -52,6 +56,7 @@ contract Marketplace {
     struct ePurchases {
         address buyer;
         address seller;
+        uint idOfDevice;
         uint energy;
         uint id;
         uint price;
@@ -61,9 +66,14 @@ contract Marketplace {
     mapping(uint => uint) epurchases;
     ePurchases[] listOfPurchases;
 
-    function energyBid(uint _energy, uint _eprice) public {
+    function setDevice(uint _idOfDevice) public {
+        currentDevice = _idOfDevice;
+    }
+
+    function energyBid(uint _energy, uint _eprice, uint _idOfDevice) public {
         require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh(in whs), for instance 5.6kwhs = 5600whs");
         require(_eprice >= mCent, "Price in 'cent', for example 1.5dollars/kwh = 150cents/kwh");
+        setDevice(_idOfDevice);
         ID.increment();
         uint currentID = ID.current();
         address currentAddr = msg.sender;
@@ -72,6 +82,7 @@ contract Marketplace {
         ebids[currentID] = idx;
         listOfEnergyBids.push(eBid({
             seller: currentAddr,
+            idOfDevice: currentDevice,
             idOfBid: currentID,
             energy: _energy,
             eprice: _eprice,
@@ -80,9 +91,10 @@ contract Marketplace {
         emit onNewBid(currentAddr, block.timestamp, _eprice, _energy);
     }
 
-    function energyAsk(uint _energy, uint _price) public {
+    function energyAsk(uint _energy, uint _price, uint _idOfDevice) public {
         require(_energy >= kWh, "Wrong energy input require a minimum offer of 1 kWh(in whs), for instance 5.6kwhs = 5600whs");
         require(_price >= mCent, "Price in 'cent', for example 1.5dollars/kwh = 150cents/kwh");
+        setDevice(_idOfDevice);
         ID.increment();
         uint currentID = ID.current();
         address currentAddr = msg.sender;
@@ -91,6 +103,7 @@ contract Marketplace {
         easks[currentID] = idx;
         listOfEnergyAsks.push(eAsk({
             buyer: currentAddr,
+            idOfDevice: currentDevice,
             idOfAsk: currentID,
             energy: _energy,
             price: _price,
@@ -162,8 +175,9 @@ contract Marketplace {
                     _price = energyPurchased*listOfEnergyBids[i].eprice;
                     amount = amount-energyPurchased;
                     listOfEnergyBids[i].energy = 0;
+                    Device.updateDeviceByMarketplace(listOfEnergyBids[i].idOfDevice, energyPurchased);
 
-                    energyAsk(amount, listOfEnergyBids[i].eprice);
+                    energyAsk(amount, listOfEnergyBids[i].eprice, currentDevice);
 
                     isEnergyPurchased = true;
 
@@ -172,6 +186,7 @@ contract Marketplace {
                     energyPurchased = amount;
                     _price = energyPurchased*listOfEnergyBids[i].eprice;
                     listOfEnergyBids[i].energy = 0;
+                    Device.updateDeviceByMarketplace(listOfEnergyBids[i].idOfDevice, energyPurchased);
 
                     isEnergyPurchased = true;
 
@@ -180,6 +195,7 @@ contract Marketplace {
                     energyPurchased = amount;
                     _price = energyPurchased * listOfEnergyBids[i].eprice;
                     listOfEnergyBids[i].energy = listOfEnergyBids[i].energy-energyPurchased;
+                    Device.updateDeviceByMarketplace(listOfEnergyBids[i].idOfDevice, energyPurchased);
 
                     isEnergyPurchased = true;
                 }
@@ -190,6 +206,7 @@ contract Marketplace {
                     listOfPurchases.push(ePurchases({
                         buyer: currentAddr,
                         seller: _seller,
+                        idOfDevice: listOfEnergyBids[i].idOfDevice,
                         energy: energyPurchased,
                         id: listOfEnergyBids[i].idOfBid,
                         price: _price,
@@ -223,9 +240,10 @@ contract Marketplace {
                     _price = energyPurchased*listOfEnergyAsks[i].price;
                     amount = amount-energyPurchased;
                     listOfEnergyAsks[i].energy = 0;
+                    Device.updateDeviceByMarketplace(listOfEnergyAsks[i].idOfDevice, energyPurchased);
 
                     ///@notice create a new bid for the leftover amount
-                    energyBid(amount, listOfEnergyAsks[i].price);
+                    energyBid(amount, listOfEnergyAsks[i].price, currentDevice);
 
                     isEnergyPurchased = true;
 
@@ -234,6 +252,7 @@ contract Marketplace {
                     energyPurchased = amount;
                     _price = energyPurchased * listOfEnergyAsks[i].price;
                     listOfEnergyAsks[i].energy = 0;
+                    Device.updateDeviceByMarketplace(listOfEnergyAsks[i].idOfDevice, energyPurchased);
 
                     isEnergyPurchased = true;
 
@@ -242,6 +261,7 @@ contract Marketplace {
                     energyPurchased = amount;
                     _price = energyPurchased * listOfEnergyAsks[i].price;
                     listOfEnergyAsks[i].energy = listOfEnergyAsks[i].energy-energyPurchased;
+                    Device.updateDeviceByMarketplace(listOfEnergyAsks[i].idOfDevice, energyPurchased);
 
                     isEnergyPurchased = true;
                 }
@@ -252,6 +272,7 @@ contract Marketplace {
                     listOfPurchases.push(ePurchases({
                         buyer: _buyer,
                         seller: currentAddr,
+                        idOfDevice: listOfEnergyAsks[i].idOfDevice,
                         energy: energyPurchased,
                         id: listOfEnergyAsks[i].idOfAsk,
                         price: _price,
@@ -337,50 +358,54 @@ contract Marketplace {
         return(buyersList, energiesList, idsList, pricesList, datesList);
     }
 
-    function getBidByID(uint _id) public view returns(address, uint, uint, uint, uint){
+    function getBidByID(uint _id) public view returns(uint, address, uint, uint, uint, uint){
         uint index = ebids[_id];
         require(listOfEnergyBids.length > index, "Wrong index");
         require(listOfEnergyBids[index].idOfBid == _id, "Wrong ID");
-        return(listOfEnergyBids[index].seller, listOfEnergyBids[index].idOfBid, listOfEnergyBids[index].energy, listOfEnergyBids[index].eprice, listOfEnergyBids[index].timestamp);
+        return(listOfEnergyBids[index].idOfDevice, listOfEnergyBids[index].seller, listOfEnergyBids[index].idOfBid, listOfEnergyBids[index].energy, listOfEnergyBids[index].eprice, listOfEnergyBids[index].timestamp);
     }
 
-    function getAskByID(uint _id) public view returns(address, uint, uint, uint, uint){
+    function getAskByID(uint _id) public view returns(uint, address, uint, uint, uint, uint){
         uint index = ebids[_id];
         require(listOfEnergyAsks.length > index, "Wrong index");
         require(listOfEnergyAsks[index].idOfAsk == _id, "Wrong ID");
-        return(listOfEnergyAsks[index].buyer, listOfEnergyAsks[index].idOfAsk, listOfEnergyAsks[index].energy, listOfEnergyAsks[index].price, listOfEnergyAsks[index].timestamp);
+        return(listOfEnergyAsks[index].idOfDevice, listOfEnergyAsks[index].buyer, listOfEnergyAsks[index].idOfAsk, listOfEnergyAsks[index].energy, listOfEnergyAsks[index].price, listOfEnergyAsks[index].timestamp);
     }
 
-    function getAllBids() public view returns(address[] memory, uint[] memory, uint[] memory, uint[] memory, uint[] memory){
+    function getAllBids() public view returns(uint[] memory, address[] memory, uint[] memory, uint[] memory, uint[] memory, uint[] memory){
         address[] memory seller = new address[](listOfEnergyBids.length);
         uint[] memory ids = new uint[](listOfEnergyBids.length);
+        uint[] memory idDevice = new uint[](listOfEnergyBids.length);
         uint[] memory energies = new uint[](listOfEnergyBids.length);
         uint[] memory prices = new uint[](listOfEnergyBids.length);
         uint[] memory dates = new uint[](listOfEnergyBids.length);
         for(uint i = 0; i < listOfEnergyBids.length; i++){
             seller[i] = listOfEnergyBids[i].seller;
             ids[i] = listOfEnergyBids[i].idOfBid;
+            idDevice[i] = listOfEnergyBids[i].idOfDevice;
             energies[i] = listOfEnergyBids[i].energy;
             prices[i] = listOfEnergyBids[i].eprice;
             dates[i] = listOfEnergyBids[i].timestamp;
         }
-        return(seller, ids, energies, prices, dates);
+        return(idDevice, seller, ids, energies, prices, dates);
     }
 
-    function getAllAsks() public view returns(address[] memory, uint[] memory, uint[] memory, uint[] memory, uint[] memory){
+    function getAllAsks() public view returns(uint[] memory, address[] memory, uint[] memory, uint[] memory, uint[] memory, uint[] memory){
         address[] memory buyers = new address[](listOfEnergyAsks.length);
         uint[] memory _ids = new uint[](listOfEnergyAsks.length);
+        uint[] memory _idDevice = new uint[](listOfEnergyBids.length);
         uint[] memory _energies = new uint[](listOfEnergyAsks.length);
         uint[] memory _prices = new uint[](listOfEnergyAsks.length);
         uint[] memory _dates = new uint[](listOfEnergyAsks.length);
         for(uint i = 0; i < listOfEnergyAsks.length; i++){
             buyers[i] = listOfEnergyAsks[i].buyer;
             _ids[i] = listOfEnergyAsks[i].idOfAsk;
+            _idDevice[i] = listOfEnergyBids[i].idOfDevice;
             _energies[i] = listOfEnergyAsks[i].energy;
             _prices[i] = listOfEnergyAsks[i].price;
             _dates[i] = listOfEnergyAsks[i].timestamp;
         }
-        return(buyers, _ids, _energies, _prices, _dates);
+        return(_idDevice, buyers, _ids, _energies, _prices, _dates);
     }
 
     function getAllPurchases() public view returns(address[] memory, address[] memory, uint[] memory, uint[] memory, uint[] memory, uint[] memory){

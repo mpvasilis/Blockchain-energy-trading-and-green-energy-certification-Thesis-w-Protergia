@@ -10,6 +10,7 @@ contract Device {
 
     event onDeviceAdded(address indexed ownerOfDevice, uint date, string name);
     event onDeviceUpdated(address indexed ownerOfDevice, string name, string typeDevice, uint date, uint id);
+    event onUpdated(address indexed ownerOfDevice, uint date, uint energy, uint id);
     event onDeviceTransferOwnership(address oldOwner, address indexed newOwner, uint id);
     event onDeviceRemoved(address indexed owner, uint id, uint date);
     event onEnergyRecorded(address indexed owner, uint id, uint energy, uint date);
@@ -62,13 +63,17 @@ contract Device {
 
     function updateDevice(uint _id, string memory _name, string memory _typeOfDevice) public {
         address _owner = msg.sender;
-        for(uint i = 0; i<devices.length; i++){
-            if(devices[i].uuID == _id && devices[i].owner == _owner){
-                devices[i].name = _name;
-                devices[i].typeOfDevice = _typeOfDevice;
-                emit onDeviceUpdated(_owner, _name, _typeOfDevice, block.timestamp, _id);
-            }
-        }
+        uint index = deviceMap[_id];
+        devices[index].name = _name;
+        devices[index].typeOfDevice = _typeOfDevice;
+        emit onDeviceUpdated(_owner, _name, _typeOfDevice, block.timestamp, _id);
+    }
+
+    function updateDeviceByMarketplace(uint _id, uint _energy) public {
+        address _owner = msg.sender;
+        uint index = deviceMap[_id];
+        devices[index].energy = devices[index].energy - _energy;
+        emit onUpdated(_owner, block.timestamp, _id, _energy);
     }
 
     function transferOwnershipOfDevice(uint _id, address _to) public {
@@ -86,13 +91,13 @@ contract Device {
         address _owner = msg.sender;
         for(uint i = 0; i<devices.length; i++){
             if(devices[i].uuID == _id && devices[i].owner == _owner){
-                devices[i].energy = devices[i].energy + _energy;
+                devices[i].energy = _energy;
                 emit onEnergyRecorded(_owner, _id, _energy, block.timestamp);
             }
         }
     }
 
-    function getCountOfDevices() private view returns(uint){
+    function getCountOfDevices() public view returns(uint){
         address currentAddr = msg.sender;
         uint count = 0;
         for(uint i = 0; i<devices.length; i++){
