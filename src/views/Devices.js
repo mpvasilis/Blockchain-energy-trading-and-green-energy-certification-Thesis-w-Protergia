@@ -127,7 +127,8 @@ function Devices() {
     getDeviceData(_currentPage  * pageSize);
      console.log(_currentPage);
   };
-
+  function takis(ids){
+    console.log(ids)}
       const getDeviceData = (offset, update = false)=>{
 
         if(deviceData===null || update){
@@ -136,7 +137,7 @@ function Devices() {
             setTotalDevices(total);
           setPagesCount(Math.ceil(total / pageSize));
           
-           
+          
           if(total>0)
           Device.methods.getMyDevices().call({from: account.current})
               .then(function(result){
@@ -154,6 +155,9 @@ function Devices() {
                     </td>
                     <td>
                     <Button variant="secondary" size="sm" data-id={result[0]} onClick={event => {setId(event.target.dataset.id); }}class="btn">
+                         <i data-id={result[0]} class="fa fa-edit" ></i>
+                    </Button>
+                    <Button variant="secondary" size="sm" data-id={result[0]} onClick={event => {setId(event.target.dataset.id); },event => SetCrg(event.target.dataset.id)}class="btn">
                          <i data-id={result[0]} class="fa fa-edit" ></i>
                     </Button>
                     </td>
@@ -256,6 +260,17 @@ function Devices() {
 
 
           const [Ress, setRess] = useState('');
+          const [Crg, setCrg] = useState('');
+function SetCrg(id){
+ 
+  
+               Device.methods.getEnergyPerDevice(id).call().then(function(crg){
+              
+                
+                    setCrg(crg);})
+               }
+
+
 
           function setRes(){
             web3.eth.getAccounts().then(function(accounts){
@@ -281,12 +296,17 @@ var acc=accounts[0];
       
 
 
-   
+ 
       <div className="content">
         
+       
+         <div class="d-flex flex-column flex-lg-column">
       
-              <Col md="6">
-            <Card className="card-user">
+                   
+                <div class="d-flex flex-column flex-lg-row">
+                 
+                    
+            <Card className="card-user mr-5">
               <CardBody>
                 <CardText />
                 <div>
@@ -345,6 +365,10 @@ var acc=accounts[0];
                              
                              </form>
                              
+
+
+
+
                       :<div className="author">
                       <div className="block block-one" />
                       <div className="block block-two" />
@@ -358,14 +382,63 @@ var acc=accounts[0];
                        </div>   
                     }
     </div> 
+
+
+    
     
     
                 </CardBody>
                 </Card>
-                </Col>
-                <Col md="7">
-                   
-                   <Card>
+
+                {isConnected
+                      ? 
+                      <Col md="13">
+                      <Card className="card-users">
+                        <CardBody> 
+          
+                <div className="authors">
+          
+               
+                                  <div className="block block-ones" />
+                                  <div className="block block-twos" />
+                                  <div className="block block-threes" />
+                                  <div className="block block-fours" />
+                                  <h2 className="total-energy">Total energy = {Ress}</h2>
+                                  <h2 className="nrg-by-id">Energy={Crg}</h2>
+                <p className="energy-byid">   </p>
+                                  </div>    
+                                   </CardBody>
+                                  </Card></Col>
+                        :
+                        
+
+                        <Col md="13">
+                        <Card className="card-users">
+                          <CardBody> 
+            
+                  <div className="authors">
+            
+                 
+                                    <div className="block block-ones" />
+                                    <div className="block block-twos" />
+                                    <div className="block block-threes" />
+                                    <div className="block block-fours" />
+                                    <h2 className="total-energy">Connect</h2>
+                  <p className="energy-byid">   </p>
+                                    </div>    
+                                     </CardBody>
+                                    </Card></Col>
+                        
+                        }
+
+
+
+
+
+
+</div>
+
+                <Card className="tabledevice mr-4">
                  <CardHeader>
                    <h5 className="title">List of my devices</h5>
                  </CardHeader>
@@ -397,12 +470,26 @@ var acc=accounts[0];
 
                  </CardFooter>
                </Card>
+
+            
+
+
+
+                        
+                </div>
+
+                
+         
                  
-                 </Col>
-                
-                
-      </div>
-      <h1 className="energy-info">{Ress}</h1>
+
+</div>
+
+
+
+           
+
+      
+    
     </>
   );
 }

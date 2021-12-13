@@ -865,6 +865,9 @@ pre {
   .col-md-12 {
     flex: 0 0 100%;
     max-width: 100%; }
+    .col-md-13 {
+      flex: 0 0 50%;
+    max-width: 30%; }
   .order-md-first {
     order: -1; }
   .order-md-last {
@@ -13313,6 +13316,7 @@ textarea.form-control {
   position: relative;
   width: 100%;
   margin-bottom: 30px;
+  
   box-shadow: 0 1px 20px 0px rgba(0, 0, 0, 0.1); }
   .card label {
     color: rgba(255, 255, 255, 0.6); }
@@ -13536,6 +13540,7 @@ textarea.form-control {
     text-align: center;
     text-transform: none;
     margin-top: 25px; }
+    
     .card-user .author a + p.description {
       margin-top: -7px; }
     .card-user .author .block {
@@ -13646,12 +13651,104 @@ textarea.form-control {
 
 select.form-control option {
   color: #888; }
-  .energy-info{
+  .total-energy{
 
 
 position: relative;
- left: 1100px;
-top: -500px;
-    
+
+    top: -40px;
   }
-/*# sourceMappingURL=black-dashboard-react.css.map */
+
+  .total-energy{
+
+
+    position: relative;
+    
+        top:-90px;
+      }
+
+  .card-users {
+    overflow: hidden; 
+ position: relative;
+
+  }
+    .card-users .image {
+      height: 120px; }
+    .card-users .authors {
+      text-align: center;
+      text-transform: none;
+      margin-top: 190px; }
+      
+      .card-users .authors a + p.description {
+        margin-top: -7px; }
+      .card-users .authors .block {
+        position: absolute;
+      
+        height: 100px;
+        width: 250px; }
+        .card-users .authors .block.block-ones {
+          background: rgba(225, 78, 202, 0.6);
+          background: -webkit-linear-gradient(to right, rgba(225, 78, 202, 0.6) 0%, rgba(225, 78, 202, 0) 100%);
+          background: -o-linear-gradient(to right, rgba(225, 78, 202, 0.6) 0%, rgba(225, 78, 202, 0) 100%);
+          background: -moz-linear-gradient(to right, rgba(225, 78, 202, 0.6) 0%, rgba(225, 78, 202, 0) 100%);
+          background: linear-gradient(to right, rgba(225, 78, 202, 0.6) 0%, rgba(225, 78, 202, 0) 100%);
+          filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=10);
+          -webkit-transform: rotate(150deg);
+          -moz-transform: rotate(150deg);
+          -ms-transform: rotate(150deg);
+          -o-transform: rotate(150deg);
+          transform: rotate(150deg);
+          margin-top: -150px;
+          margin-left: -100px; }
+        .card-users .authors .block.block-twos {
+          background: rgba(225, 78, 202, 0.6);
+          background: -webkit-linear-gradient(to right, rgba(225, 78, 202, 0.6) 0%, rgba(225, 78, 202, 0) 100%);
+          background: -o-linear-gradient(to right, rgba(225, 78, 202, 0.6) 0%, rgba(225, 78, 202, 0) 100%);
+          background: -moz-linear-gradient(to right, rgba(225, 78, 202, 0.6) 0%, rgba(225, 78, 202, 0) 100%);
+          background: linear-gradient(to right, rgba(225, 78, 202, 0.6) 0%, rgba(225, 78, 202, 0) 100%);
+          filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=10);
+          -webkit-transform: rotate(30deg);
+          -moz-transform: rotate(30deg);
+          -ms-transform: rotate(30deg);
+          -o-transform: rotate(30deg);
+          transform: rotate(30deg);
+          margin-top: -100px;
+          margin-left: -100px; }
+        .card-users .authors .block.block-threes {
+          background: rgba(225, 78, 202, 0.6);
+          background: -webkit-linear-gradient(to right, rgba(225, 78, 202, 0.6) 0%, rgba(225, 78, 202, 0) 100%);
+          background: -o-linear-gradient(to right, rgba(225, 78, 202, 0.6) 0%, rgba(225, 78, 202, 0) 100%);
+          background: -moz-linear-gradient(to right, rgba(225, 78, 202, 0.6) 0%, rgba(225, 78, 202, 0) 100%);
+          background: linear-gradient(to right, rgba(225, 78, 202, 0.6) 0%, rgba(225, 78, 202, 0) 100%);
+          filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=10);
+          -webkit-transform: rotate(170deg);
+          -moz-transform: rotate(170deg);
+          -ms-transform: rotate(170deg);
+          -o-transform: rotate(170deg);
+          transform: rotate(170deg);
+          margin-top: -150px;
+          right: -45px; }
+        .card-users .authors .block.block-fours {
+          background: rgba(225, 78, 202, 0.6);
+          background: -webkit-linear-gradient(to right, rgba(225, 78, 202, 0.6) 0%, rgba(225, 78, 202, 0) 100%);
+          background: -o-linear-gradient(to right, rgba(225, 78, 202, 0.6) 0%, rgba(225, 78, 202, 0) 100%);
+          background: -moz-linear-gradient(to right, rgba(225, 78, 202, 0.6) 0%, rgba(225, 78, 202, 0) 100%);
+          background: linear-gradient(to right, rgba(225, 78, 202, 0.6) 0%, rgba(225, 78, 202, 0) 100%);
+          filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=10);
+          -webkit-transform: rotate(150deg);
+          -moz-transform: rotate(150deg);
+          -ms-transform: rotate(150deg);
+          -o-transform: rotate(150deg);
+          transform: rotate(150deg);
+          margin-top: -25px;
+          right: -45px; }
+
+          .nrg-by-id{
+
+
+position: relative;
+top:-70px;
+
+          }
+         
+        /*# sourceMappingURL=black-dashboard-react.css.map */
