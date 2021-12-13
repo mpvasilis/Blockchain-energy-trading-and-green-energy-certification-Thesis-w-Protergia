@@ -393,7 +393,7 @@ contract Marketplace is Device {
     function getAllAsks() public view returns(uint[] memory, address[] memory, uint[] memory, uint[] memory, uint[] memory, uint[] memory){
         address[] memory buyers = new address[](listOfEnergyAsks.length);
         uint[] memory _ids = new uint[](listOfEnergyAsks.length);
-        uint[] memory _idDevice = new uint[](listOfEnergyBids.length);
+        uint[] memory _idDevice = new uint[](listOfEnergyAsks.length);
         uint[] memory _energies = new uint[](listOfEnergyAsks.length);
         uint[] memory _prices = new uint[](listOfEnergyAsks.length);
         uint[] memory _dates = new uint[](listOfEnergyAsks.length);
