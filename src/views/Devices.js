@@ -148,17 +148,17 @@ function Devices() {
                   if(i >= total)  break;
     
                   rows.push( <tr key={i}>
-                    <td>{result[0]}</td>
+                    <td>{result[i]}</td>
                     <td>{moment((moment.unix(result[1]))).startOf('minute').fromNow()}</td>
-                    <td> <Button variant="secondary" size="sm" data-id={result[0]} class="btn" onClick={event => removeDevice(event.target.dataset.id)}>
-                         <i data-id={result[0]} class="fa fa-trash" ></i></Button>
+                    <td> <Button variant="secondary" size="sm" data-id={result[i]} class="btn" onClick={event => removeDevice(event.target.dataset.id)}>
+                         <i data-id={result[i]} class="fa fa-trash" ></i></Button>
                     </td>
                     <td>
-                    <Button variant="secondary" size="sm" data-id={result[0]} onClick={event => {setId(event.target.dataset.id); }}class="btn">
-                         <i data-id={result[0]} class="fa fa-edit" ></i>
+                    <Button variant="secondary" size="sm" data-id={result[i]} onClick={event => {setId(event.target.dataset.id); }}class="btn">
+                         <i data-id={result[i]} class="fa fa-edit" ></i>
                     </Button>
-                    <Button variant="secondary" size="sm" data-id={result[0]} onClick={event => {setId(event.target.dataset.id); },event => SetCrg(event.target.dataset.id)}class="btn">
-                         <i data-id={result[0]} class="fa fa-edit" ></i>
+                    <Button variant="secondary" size="sm" data-id={result[i]} onClick={event => {setId(event.target.dataset.id); },event => SetCrg(event.target.dataset.id)}class="btn">
+                         <i data-id={result[i]} class="fa fa-edit" ></i>
                     </Button>
                     </td>
                   </tr>);
