@@ -288,7 +288,7 @@ var acc=accounts[0];
             
 
 
-            const [named, setNamed] = useState("d-flex flex-column flex-md-row flex-lg-row flex-sm-column flex-xs-column");
+           
          
 
           
@@ -312,7 +312,7 @@ var acc=accounts[0];
          <div class="d-flex flex-column flex-lg-column">
       
                    
-         <div className= {named} >
+         <div className= "d-flex flex-column flex-md-row flex-lg-row flex-sm-column" >
 
                  
                     
