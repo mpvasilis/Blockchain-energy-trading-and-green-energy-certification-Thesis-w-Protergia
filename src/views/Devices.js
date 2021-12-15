@@ -257,7 +257,7 @@ function Devices() {
         });
     
           }, []);
-
+               
 
           const [Ress, setRess] = useState('');
           const [Crg, setCrg] = useState('');
@@ -284,15 +284,24 @@ var acc=accounts[0];
             
             })}
             )}setRes();
+            const [width, setWidth] = useState();
+            
 
+
+            const [named, setNamed] = useState("d-flex flex-column flex-md-row flex-lg-row flex-sm-column flex-xs-column");
          
+
+          
+
+       
+ 
   return (  
     <>
    
     
 
     
-      
+
       
 
 
@@ -303,7 +312,8 @@ var acc=accounts[0];
          <div class="d-flex flex-column flex-lg-column">
       
                    
-                <div class="d-flex flex-column flex-lg-row">
+         <div className= {named} >
+
                  
                     
             <Card className="card-user mr-5">
@@ -328,7 +338,7 @@ var acc=accounts[0];
                                    type="text"
                                    value={input}
                                    onInput={e => setInput(e.target.value)}
-                                   
+                                                     
                                />
                                < div class="form-group  col-md-13 "><br></br>
      
@@ -392,6 +402,7 @@ var acc=accounts[0];
 
                 {isConnected
                       ? 
+                //      <div className="">
                       <Col md="13">
                       <Card className="card-users">
                         <CardBody> 
@@ -409,6 +420,7 @@ var acc=accounts[0];
                                   </div>    
                                    </CardBody>
                                   </Card></Col>
+                                 // </div>
                         :
                         
 
@@ -436,7 +448,7 @@ var acc=accounts[0];
 
 
 
-</div>
+</div> 
 
                 <Card className="tabledevice mr-4">
                  <CardHeader>

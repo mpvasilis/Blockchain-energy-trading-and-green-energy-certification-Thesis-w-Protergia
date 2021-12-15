@@ -13455,7 +13455,7 @@ textarea.form-control {
   .card.card-plain {
     background: transparent;
     box-shadow: none; }
-  .card .image {
+  .card .image { 
     overflow: hidden;
     height: 200px;
     position: relative; }
@@ -13671,13 +13671,15 @@ position: relative;
     overflow: hidden; 
  position: relative;
 
+
   }
     .card-users .image {
       height: 120px; }
     .card-users .authors {
       text-align: center;
       text-transform: none;
-      margin-top: 190px; }
+      margin-top: 190px; 
+    }
       
       .card-users .authors a + p.description {
         margin-top: -7px; }
@@ -13750,5 +13752,7 @@ position: relative;
 top:-70px;
 
           }
+  
+
          
         /*# sourceMappingURL=black-dashboard-react.css.map */
