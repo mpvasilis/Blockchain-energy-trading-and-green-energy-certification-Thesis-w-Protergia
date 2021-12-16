@@ -333,6 +333,13 @@ contract Device {
         require(devices[index].uuID == _id, "Wrong ID");
         return(devices[index].energy);
     }
+
+    function getTypeOfDevice(uint _id) public view returns(string memory) {
+        uint index = deviceMap[_id];
+        require(devices.length > index, "Wrong index");
+        require(devices[index].uuID == _id, "Wrong ID");
+        return(devices[index].typeOfDevice);
+    }
 }
 
 contract Marketplace is Device {
