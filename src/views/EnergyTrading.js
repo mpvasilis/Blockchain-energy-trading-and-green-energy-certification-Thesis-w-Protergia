@@ -80,21 +80,7 @@ function EnergyTrading() {
   const [totalDevices, setTotalDevices] = useState(0);
    const[id, setId] = useState('');
 
-
-
   let subtitle;
-
-  const convertId=()=>{
-    marketplace.methods.getMyDevices().call({from: account.current}).then(function(total){
-      console.log("total devices:" , total);
-      for (var i = 0; i < total.length  ; i++) {
-      marketplace.methods.getTypeOfDevice(total[i]).call().then(function(type){
-        console.log("typeOfDevice" ,type)
-
-     });       
-    }
-    });
-  }
 
   const handleAccountsChanged = async (accounts) => {
 
@@ -285,15 +271,22 @@ const signInMetamask = async(accounts) => {
       
     },
   };
-  
-
+  const getDeviceType = (deviceId) =>{
+    let ret = ""
+    marketplace.methods.getTypeOfDevice(deviceId).call({from: account.current})
+    .then(function(result2){
+     console.log("RESULT2:" , result2);
+     ret = result2
+    });
+    return ret
+  }
   const toggleModal = () =>{
     setModalIsOpen(true)
   }
   const toggleModalUpdate = () =>{
     setModalUpdateIsOpen(true)
   }
-
+  
   const afterOpenModal = () =>{
     subtitle.style.color = '#3b144e'
     
@@ -383,28 +376,22 @@ const signInMetamask = async(accounts) => {
       setPagesCountBid(Math.ceil(bidNum / pageSize));
       
       if(bidNum>0)  
-      marketplace.methods.getAllBids().call().then(function(result){
-              setDataBids(result);
-              console.log("RESULT1:" , result);
-
-            marketplace.methods.getMyDevices().call({from: account.current}).then(function(total){
-             console.log("total devices:" , total);
-           
-      for (var  x = 0  ; x < total.length ; x++) {
-        marketplace.methods.getDeviceByID(total[x]).call({from: account.current})
-           .then(function(result2){
-            console.log("RESULT2:" , result2);
+      marketplace.methods.getAllBids().call().then(function(resultBid){
+              setDataBids(resultBid);
+              console.log("ResultForAllBids:" , resultBid);
               var rows = [];
               for (var i = offset; i < pageSize + offset  ; i++) {
                 if(i >=  bidNum)  break;
+                // let deviceType =  getDeviceType(resultBid[0][i])
+                // console.log("deviceType:" ,deviceType)
                 rows.push( <tr key={i}>
-                  <td>{result[2][i]}</td>
-                  <td>{result[1][i].substr(0,6)}</td> 
-                  <td>{result2[2]}</td>
-                  <td>{result[3][i]/1000000}</td>
-                  <td>{result[4][i]/1000000}</td>
-                  <td>{moment((moment.unix(result[5][i]))).startOf('minute').fromNow()}</td>
-                  <td> <Button variant="secondary" size="sm" data-id={result[2][i]} onClick={event=>{
+                  <td>{resultBid[2][i]}</td>
+                  <td>{resultBid[1][i].substr(0,6)}</td> 
+                  <td>{resultBid[0][i]}</td>
+                  <td>{resultBid[3][i]/1000000}</td>
+                  <td>{resultBid[4][i]/1000000}</td>
+                  <td>{moment((moment.unix(resultBid[5][i]))).startOf('minute').fromNow()}</td>
+                  <td> <Button variant="secondary" size="sm" data-id={resultBid[2][i]} onClick={event=>{
                       setId(event.target.dataset.id);
                       setTableOpenAsks(false);
                       setTableOpenBids(true);
@@ -412,18 +399,11 @@ const signInMetamask = async(accounts) => {
                       >Trade</Button>
                   </td>
                 </tr>); 
-                
+                 
               }
             
-              setBids(rows)
-            
-            });
-        }
-          });
-            
-        });
-      
-         
+              setBids(rows)   
+        });   
     });
   }else{
     let rows = [];
@@ -806,19 +786,19 @@ const signInMetamask = async(accounts) => {
         
   
   const getOptionData = ()=>{
-    var optionArray = [];
+    
     marketplace.methods.getMyDevices().call({from: account.current}).then(function(total){
          console.log("total devices:" , total);
          setTotalDevices(total.length);
-         
+         var optionArray = [];
      if (total.length > 0)
       for (var  i = 0  ; i < total.length ; i++) {
         marketplace.methods.getDeviceByID(total[i]).call({from: account.current})
-           .then(function(result){  
+           .then(function(resultOptions){  
             
-             console.log("resultOptions:" ,result);
+             console.log("resultOptions:" ,resultOptions);
                optionArray.push( 
-                <option  value={result[0]}>{result[1]}</option>               
+                <option  value={resultOptions[0]}>{resultOptions[1]}</option>               
                     );
              console.log("myOptions :" ,optionArray);
              setMyOptions(optionArray);
@@ -844,7 +824,7 @@ const signInMetamask = async(accounts) => {
       handleAccountsChanged(r);
 
     });
-    convertId();
+    
     getOptionData();
     getDataAsks(currentPageA * pageSize, true);
     getDataBids(currentPageΒ * pageSize, true);
