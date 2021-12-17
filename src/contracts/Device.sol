@@ -8,8 +8,10 @@ contract Device {
     using Counters for Counters.Counter;
     Counters.Counter private id;
 
+    enum Type {Wind, Biomass, Hydro, Solar, PV, EV, Battery}
+
     event onDeviceAdded(address indexed ownerOfDevice, uint date, string name);
-    event onDeviceUpdated(address indexed ownerOfDevice, string name, string typeDevice, uint date, uint id);
+    event onDeviceUpdated(address indexed ownerOfDevice, string name, uint typeDevice, uint date, uint id);
     event onUpdated(address indexed ownerOfDevice, uint date, uint energy, uint id);
     event onDeviceTransferOwnership(address oldOwner, address indexed newOwner, uint id);
     event onDeviceRemoved(address indexed owner, uint id, uint date);
@@ -17,8 +19,8 @@ contract Device {
 
     struct device {
         address owner;
-        string typeOfDevice;
         string name;
+        uint typeOfDevice;
         uint energy;
         uint uuID;
         uint date;
@@ -27,8 +29,8 @@ contract Device {
     mapping(uint => uint) deviceMap;
     device[] devices;
 
-    function createDevice(string memory _typeOfDevice, string memory _name) public {
-
+    function createDevice(uint _typeOfDevice, string memory _name) public {
+        require(_typeOfDevice>=0 || _typeOfDevice<=6, "You have to select a valid type of Device");
         ///@notice must added a valid way to check the validity of device input
 
         address _owner = msg.sender;
@@ -61,7 +63,7 @@ contract Device {
         }
     }
 
-    function updateDevice(uint _id, string memory _name, string memory _typeOfDevice) public {
+    function updateDevice(uint _id, string memory _name, uint _typeOfDevice) public {
         address _owner = msg.sender;
         uint index = deviceMap[_id];
         devices[index].name = _name;
@@ -125,7 +127,7 @@ contract Device {
     ///@notice In order to iterate with the devices of a given id we need this extra function with the current legth of device array
     ///@notice So in the Front end we would need to get the length and iterate for each device that we want to list in our platform 
     ///@notice and get the index for that device
-    function getDeviceByID(uint _id) public view returns(uint, string memory, string memory, uint){
+    function getDeviceByID(uint _id) public view returns(uint, uint, string memory, uint){
         uint index = deviceMap[_id];
         require(devices.length > index, "Wrong index");
         require(devices[index].uuID == _id, "Wrong ID");
@@ -151,5 +153,12 @@ contract Device {
         require(devices.length > index, "Wrong index");
         require(devices[index].uuID == _id, "Wrong ID");
         return(devices[index].energy);
+    }
+
+    function getTypeOfDevice(uint _id) public view returns(uint) {
+        uint index = deviceMap[_id];
+        require(devices.length > index, "Wrong index");
+        require(devices[index].uuID == _id, "Wrong ID");
+        return(devices[index].typeOfDevice);
     }
 }
