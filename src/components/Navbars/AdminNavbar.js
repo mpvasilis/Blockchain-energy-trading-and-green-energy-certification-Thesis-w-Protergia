@@ -107,11 +107,8 @@ function AdminNavbar(props) {
           </NavbarToggler>
           <Collapse navbar isOpen={collapseOpen}>
             <Nav className="ml-auto" navbar>
-              { Web3.givenProvider || true ? <Button className="btn-fill" color="secondary" type="button" onClick={ethEnabled}>
-                <img src={"https://docs.metamask.io/metamask-fox.svg"} style={{"height": "19px"}}></img>{"  "} Connect Wallet
-              </Button> :<></>}
               <UncontrolledDropdown nav>
-                <DropdownToggle
+                {/* <DropdownToggle
                   caret
                   color="default"
                   nav
@@ -124,7 +121,7 @@ function AdminNavbar(props) {
                     />
                   </div>
                   <p className="d-lg-none">Log out</p>
-                </DropdownToggle>
+                </DropdownToggle> */}
                 <DropdownMenu className="dropdown-navbar" right tag="ul">
                   <DropdownItem divider tag="li" />
                   <NavLink tag="li">
