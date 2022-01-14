@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import moment from 'moment';
 import Modal from  'react-modal';
 
-
+ 
 
 import {
   Button,
@@ -81,6 +81,7 @@ function EnergyTrading() {
    const[id, setId] = useState('');
 
   let subtitle;
+  
 
   const handleAccountsChanged = async (accounts) => {
 
@@ -91,7 +92,10 @@ function EnergyTrading() {
     }else if(accounts[0] !== account.current){
       account.current = accounts[0];
       setIsConnected(true)
-       
+      
+      let msg = "Welcome to Gridustry"
+      let signature = await web3.eth.personal.sign(msg, accounts[0]);
+      console.log(signature)
        await marketplace.methods.getDeviceByID(account.current).call({from: account.current}).then(function(result){
 
           // console.log("Object.values(result).length:", Object.values(result).length);
@@ -111,11 +115,11 @@ function EnergyTrading() {
     
     console.log("account current:", account.current);  
   }
-
-const signInMetamask = async(accounts) => {
+  
+const signInMetamask = async() => {
+  
   const provider = await detectEthereumProvider();
   
-
   if(provider !== window.ethereum) {
     console.error('Do you have multiple wallets installed?');
   }
@@ -141,7 +145,7 @@ const signInMetamask = async(accounts) => {
 
   provider.request({method: 'eth_requestAccounts' }).then(async params => {
     handleAccountsChanged(params);
-    
+   
   }).catch(err => {
     if(err.code === 4001){
       console.error('Please connect to Metamask.');
@@ -895,6 +899,7 @@ const signInMetamask = async(accounts) => {
   
   return (
     <>
+         
       <div className="content">             
     <Modal
   
@@ -970,7 +975,26 @@ const signInMetamask = async(accounts) => {
           </thead>
           
     </Modal>
+    {/* <Col md="7">
+    <Card style={{ width: '17rem' }}>
+        <CardHeader>
+          <h4 className="title">Metamask Sign Message</h4>
+          </CardHeader>
+         <div className="flex flex-wrap" >
+            <div className="w-full lg:w-1/2" >
+              <SignMessage />
+            </div>
+            <CardHeader>
+          <h4 className="title">Metamask Verification</h4>
+          </CardHeader>
+          <div className="w-full lg:w-1/2">
+              <VerifyMessage />
+          </div>
+         </div>
+        </Card>
+        </Col> */}
         <Row>
+        
           <Col md="7">
           <Card>
           <CardHeader>
@@ -1064,6 +1088,7 @@ const signInMetamask = async(accounts) => {
                 </Card> : <></>}
           
           </Col>
+          
           <Col md="5">
             
             <Card className="card-user">
