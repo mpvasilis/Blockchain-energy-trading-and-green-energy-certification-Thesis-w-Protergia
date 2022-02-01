@@ -92,16 +92,20 @@ function EnergyTrading() {
     }else if(accounts[0] !== account.current){
       account.current = accounts[0];
       setIsConnected(true)
-      
       let msg = "Welcome to Gridustry"
-      let signature = await web3.eth.personal.sign(msg, accounts[0]);
-      console.log(signature)
+      let signature =  await web3.eth.personal.sign(msg, accounts[0]);
+      let whoSigned =  web3.eth.accounts.recover(msg, signature);
+      console.log("Signature:", signature)
+      console.log("WHO SIGNED", whoSigned);
+     
        await marketplace.methods.getDeviceByID(account.current).call({from: account.current}).then(function(result){
-
+        
           // console.log("Object.values(result).length:", Object.values(result).length);
           if (account.current ==  Object.values(result)[0]){
+            
             setAlert(false);
             setDisable(false);
+            
           }
            else {
             setAlert(true);
@@ -117,6 +121,7 @@ function EnergyTrading() {
   }
   
 const signInMetamask = async() => {
+
   
   const provider = await detectEthereumProvider();
   
@@ -275,15 +280,15 @@ const signInMetamask = async() => {
       
     },
   };
-  const getDeviceType = (deviceId) =>{
-    let ret = ""
-    marketplace.methods.getTypeOfDevice(deviceId).call({from: account.current})
-    .then(function(result2){
-     console.log("RESULT2:" , result2);
-     ret = result2
-    });
-    return ret
-  }
+  // const getDeviceType = (deviceId) =>{
+  //   let ret = ""
+  //   marketplace.methods.getTypeOfDevice(deviceId).call({from: account.current})
+  //   .then(function(result2){
+  //    console.log("RESULT2:" , result2);
+  //    ret = result2
+  //   });
+  //   return ret
+  // }
   const toggleModal = () =>{
     setModalIsOpen(true)
   }
@@ -382,7 +387,7 @@ const signInMetamask = async() => {
       if(bidNum>0)  
       marketplace.methods.getAllBids().call().then(function(resultBid){
               setDataBids(resultBid);
-              console.log("ResultForAllBids:" , resultBid);
+              
               var rows = [];
               for (var i = offset; i < pageSize + offset  ; i++) {
                 if(i >=  bidNum)  break;
@@ -455,13 +460,13 @@ const signInMetamask = async() => {
                  <td>{result[1][i]/1000000}</td>
                  <td>{result[3][i]/1000000}</td>
                  <td>{moment((moment.unix(result[4][i]))).startOf('minute').fromNow()}</td>                 
-                <td> <Button variant="secondary"  size="sm"  data-id={result[2][i]} class="btn" onClick={event => removeAsk(event.target.dataset.id )}><i data-id={result[2][i]} class="fa fa-trash" ></i></Button></td>
-                <td> <Button class="btn" variant="secondary" size="sm" data-id={result[2][i]} onClick={event => {
+                <td> <Button variant="secondary"  size="sm"  data-id={result[2][i]} className="btn" onClick={event => removeAsk(event.target.dataset.id )}><i data-id={result[2][i]} className="fa fa-trash" ></i></Button></td>
+                <td> <Button className="btn" variant="secondary" size="sm" data-id={result[2][i]} onClick={event => {
                       setId(event.target.dataset.id);
                       setTableOpenMyAsks(true);
                       setTableOpenMyBids(false);
                       toggleModalUpdate();}}>
-                      <i data-id={result[2][i]} class="fa fa-edit" ></i>
+                      <i data-id={result[2][i]} className="fa fa-edit" ></i>
                      </Button>
                 </td>
               </tr>);
@@ -482,13 +487,13 @@ const signInMetamask = async() => {
         <td>{dataMyAsks[1][i]/1000000}</td>
         <td>{dataMyAsks[3][i]/1000000}</td>
         <td>{moment((moment.unix(dataMyAsks[4][i]))).startOf('minute').fromNow()}</td>
-        <td> <Button variant="secondary" size="sm" data-id={dataMyAsks[2][i]} class="btn" onClick={event => removeAsk(event.target.dataset.id)}><i data-id={dataMyAsks[2][i]} class="fa fa-trash" ></i></Button></td>
-        <td> <Button class="btn" variant="secondary" size="sm" data-id={dataMyAsks[2][i]} onClick={event => {
+        <td> <Button variant="secondary" size="sm" data-id={dataMyAsks[2][i]} className="btn" onClick={event => removeAsk(event.target.dataset.id)}><i data-id={dataMyAsks[2][i]} className="fa fa-trash" ></i></Button></td>
+        <td> <Button className="btn" variant="secondary" size="sm" data-id={dataMyAsks[2][i]} onClick={event => {
                  setId(event.target.dataset.id);
                  setTableOpenMyAsks(true);
                  setTableOpenMyBids(false);
                  toggleModalUpdate();}}>
-                 <i data-id={dataMyAsks[2][i]} class="fa fa-edit" ></i>
+                 <i data-id={dataMyAsks[2][i]} className="fa fa-edit" ></i>
              </Button>
         </td>
 
@@ -499,18 +504,18 @@ const signInMetamask = async() => {
      setMyAsks(rows)
     console.log(rows);
 }
-  }
+  };
 
   const getDataMyBids = (offset, update = false) => {
 
     if(dataMyBids===null || update){
-      marketplace.methods.getCountOfBids().call().then(function(myBidNum){
+      marketplace.methods.getCountOfBids().call({from: account.current}).then(function(myBidNum){
       console.log("My total bids:" , myBidNum);
       setTotalMyBids(myBidNum);
       setPagesCountMyBid(Math.ceil(myBidNum / myPageSize));
 
       if(myBidNum>0)
-      marketplace.methods.getMyBids().call().then(function(result){
+      marketplace.methods.getMyBids().call({from: account.current}).then(function(result){
             setDataMyBids(result);
             console.log("Result:" ,result);
             console.log(myPageSize + offset);
@@ -523,13 +528,13 @@ const signInMetamask = async() => {
                  <td>{result[1][i]/1000000}</td>
                  <td>{result[3][i]/1000000}</td>
                  <td>{moment((moment.unix(result[4][i]))).startOf('minute').fromNow()}</td>
-                 <td> <Button variant="secondary" size="sm" data-id={result[2][i]}  class="btn"  onClick={event => removeBid(event.target.dataset.id)}><i data-id={result[2][i]} class="fa fa-trash" ></i></Button></td>
+                 <td> <Button variant="secondary" size="sm" data-id={result[2][i]}  className="btn"  onClick={event => removeBid(event.target.dataset.id)}><i data-id={result[2][i]} className="fa fa-trash" ></i></Button></td>
                  <td> <Button variant="secondary" size="sm" data-id={result[2][i]} onClick={event => {
                          setId(event.target.dataset.id);
                          setTableOpenMyBids(true);
                          setTableOpenMyAsks(false);
-                         toggleModalUpdate();}}class="btn">
-                         <i data-id={result[2][i]} class="fa fa-edit" ></i>
+                         toggleModalUpdate();}}className="btn">
+                         <i data-id={result[2][i]} className="fa fa-edit" ></i>
                       </Button>
                  </td>
               </tr>);
@@ -548,12 +553,12 @@ const signInMetamask = async() => {
         <td>{dataMyBids[1][i]/1000000}</td>
         <td>{dataMyBids[3][i]/1000000}</td>
         <td>{moment((moment.unix(dataMyBids[4][i]))).startOf('minute').fromNow()}</td>
-        <td> <Button variant="secondary" size="sm" data-id={dataMyBids[2][i]} class="btn" onClick={event => removeBid(event.target.dataset.id)}><i data-id={dataMyBids[2][i]} class="fa fa-trash" ></i></Button></td>
+        <td> <Button variant="secondary" size="sm" data-id={dataMyBids[2][i]} className="btn" onClick={event => removeBid(event.target.dataset.id)}><i data-id={dataMyBids[2][i]} className="fa fa-trash" ></i></Button></td>
         <td> <Button variant="secondary" size="sm" data-id={dataMyBids[2][i]} onClick={event => {setId(event.target.dataset.id);
                setTableOpenMyBids(true);
                setTableOpenMyAsks(false);
-               toggleModalUpdate();}}class="btn">
-               <i data-id={dataMyBids[2][i]} class="fa fa-edit" ></i>
+               toggleModalUpdate();}}className="btn">
+               <i data-id={dataMyBids[2][i]} className="fa fa-edit" ></i>
              </Button>
         </td>
 
@@ -562,7 +567,7 @@ const signInMetamask = async() => {
       }
     }
     console.log(rows);  
-  }}
+  }};
   
 
   const removeAsk = async (id) => {
@@ -722,8 +727,8 @@ const signInMetamask = async() => {
 
         setIsLoading(false);
           setDataBids(null);
-          getDataBids(currentPageΒ   * pageSize, true);
           setDataMyBids(null);
+          getDataBids(currentPageΒ   * pageSize, true);
           getDataMyBids(currentPageMB   * myPageSize, true);
          
           console.log(e)
@@ -800,11 +805,11 @@ const signInMetamask = async() => {
         marketplace.methods.getDeviceByID(total[i]).call({from: account.current})
            .then(function(resultOptions){  
             
-             console.log("resultOptions:" ,resultOptions);
+            //  console.log("resultOptions:" ,resultOptions);
                optionArray.push( 
                 <option  value={resultOptions[0]}>{resultOptions[1]}</option>               
                     );
-             console.log("myOptions :" ,optionArray);
+            //  console.log("myOptions :" ,optionArray);
              setMyOptions(optionArray);
             
           });
@@ -817,23 +822,22 @@ const signInMetamask = async() => {
   const handleSelect=(e)=>{
     
     setSelectValue(e.target.value);
-    console.log("e.target.value" ,e.target.value); 
+    
    
  }
-
-
   useEffect(() => {
 
     web3.eth.getAccounts().then(r=>{
       handleAccountsChanged(r);
-
+      getOptionData();
+      getDataMyAsks(currentPageMA * myPageSize, true);
+      getDataMyBids(currentPageMB * myPageSize, true);
     });
     
-    getOptionData();
     getDataAsks(currentPageA * pageSize, true);
     getDataBids(currentPageΒ * pageSize, true);
-    getDataMyAsks(currentPageMA * myPageSize, true);
-    getDataMyBids(currentPageMB * myPageSize, true);
+    
+    
     
     marketplace.events.onNewBid({} , function(error, event){ 
     console.log("event:" , event); 
@@ -975,24 +979,7 @@ const signInMetamask = async() => {
           </thead>
           
     </Modal>
-    {/* <Col md="7">
-    <Card style={{ width: '17rem' }}>
-        <CardHeader>
-          <h4 className="title">Metamask Sign Message</h4>
-          </CardHeader>
-         <div className="flex flex-wrap" >
-            <div className="w-full lg:w-1/2" >
-              <SignMessage />
-            </div>
-            <CardHeader>
-          <h4 className="title">Metamask Verification</h4>
-          </CardHeader>
-          <div className="w-full lg:w-1/2">
-              <VerifyMessage />
-          </div>
-         </div>
-        </Card>
-        </Col> */}
+    
         <Row>
         
           <Col md="7">
@@ -1002,7 +989,7 @@ const signInMetamask = async() => {
           </CardHeader>
               <CardBody>
               <select 
-                    id="inputDevices" class="form-control "
+                    id="inputDevices" className="form-control "
                     value= {selectValue}
                     onChange={handleSelect} 
               >
@@ -1157,7 +1144,7 @@ const signInMetamask = async() => {
                         error && <div style={{color: `red`}}>Please fill all the blanks</div>
                       }
                    { isLoading ? 
-                     <div class="lds-hourglass"></div>
+                     <div className="lds-hourglass"></div>
                      :
                          <Button  variant="secondary" size="lg" disabled={disable}  onClick={() => addBidOrAsk()}>  
                            Place {open==='ask'? 'Ask':"Bid"}
@@ -1184,7 +1171,7 @@ const signInMetamask = async() => {
              </div>
                 
                 }
-                { alert && <div class="alert alert-warning" size= "lg" role="alert">
+                { alert && <div className="alert alert-warning" size= "lg" role="alert">
                   You must add a device first!
                 </div>
                 }

@@ -26,6 +26,7 @@
     "react-checkmark": "^1.4.0",
     "react-dom": "17.0.1",
     "react-dropdown": "^1.9.2",
+    "react-icons": "^4.3.1",
     "react-modal": "^3.14.4",
     "react-notification-alert": "0.0.13",
     "react-qr-code": "^2.0.2",

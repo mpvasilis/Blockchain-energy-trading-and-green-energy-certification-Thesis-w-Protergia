@@ -595,7 +595,7 @@ const handleAccountsChanged = (accounts) => {
                       }
                     <FormGroup>
                   { isLoading ? 
-                     <div class="lds-hourglass"></div>
+                     <div className="lds-hourglass"></div>
                     :
                     <Button variant="secondary" size="lg" onClick={() => createPPA()}>
                       Create {open==='CPPA'? 'CPPA':"PPA"}

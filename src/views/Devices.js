@@ -7,8 +7,13 @@ import "assets/css/black-dashboard-react.css";
 import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-
-// reactstrap components
+import { CgSun } from "react-icons/fa";
+import { GiWindTurbine } from "react-icons/fa";
+import { IoWaterSharp } from "react-icons/fa";
+// fas fa-solar-panel
+// fas fa-battery-full
+// fas fa-wind
+// fas fa-charging-station
 import {
 
   Card,
@@ -38,23 +43,24 @@ const marketplace = new web3.eth.Contract(abi, contractAddress);
 
 function Devices() {
   const [open, setOpen] = useState('add');
-  const [address, setAddress] = useState(0);
   const [input, setInput] = useState(''); 
   const account = useRef('');
   const [error, setError] = useState(false);
-  const [deviceAdded, setDeviceAdded] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
-   const [accounts, setAccounts] = useState([]);
-   const [id, setId] = useState(0);
    const [selectValue,setSelectValue]=useState('');
+   const [typeOfDevice,setTypeOfDevice]=useState('');
    const [deviceData, setDeviceData] = useState(null);
    const [totalDevices, setTotalDevices] = useState(0);
    const [myDevices, setMyDevices] = useState(null);
    const [currentPage, setCurrentPage] = useState(0);
    const [pagesCount, setPagesCount] = useState(0);
    const[isLoading, setIsLoading] = useState(false);
+   const pageSize = 10 ;
 
-   const pageSize = 5 ;
+   // <i class="cil-battery-charge"></i>
+   // fas fa-wind	
+   //<span class="material-icons">electric_car</span> electric_car
+   //<span class="iconify" data-icon="mdi:solar-power"></span>
 
   const signInMetamask = async() => {
     const provider = await detectEthereumProvider();
@@ -130,7 +136,7 @@ function Devices() {
 
       const getDeviceData = (offset, update = false)=>{
 
-       if(deviceData===null || update ){
+        if(deviceData===null || update){
         marketplace.methods.getMyDevices().call({from: account.current}).then(function(total){
             console.log("total devices:" , total);
             setTotalDevices(total.length);
@@ -140,25 +146,34 @@ function Devices() {
          for (var  i = 0  ; i < total.length ; i++) {
           marketplace.methods.getDeviceByID(total[i]).call({from: account.current})
               .then(function(result){
+               console.log("result:" ,result);
                 setDeviceData(result);
-                console.log("result:" ,result);
-                
-                  rows.push( <tr>
+              
+                  rows.push( <tr key = {"deviceData_" + i}>
                     <td>{result[0]}</td>
-                    <td>{result[1]}</td>
-                    <td>{result[2]}</td>
+                    <td >{result[1]}</td>
+                    <td >{ result[2] == "PV" ? 
+                    <i className="fas fa-solar-panel"  >{result[2]} </i>: null }
+                    { result[2] == "EV" ? 
+                    <i className="fas fa-charging-station">{result[2]} </i>: null }
+                    { result[2] == "wind" ? 
+                    <i className="fas fa-wind">{result[2]} </i>: null }
+                    { result[2] == "battery" ? 
+                    <i className="fas fa-battery-full " >{  result[2]} </i>: null }
+                    { result[2] == "Hydro turbine" ? 
+                    <i className="fas fa-tint">{result[2]} </i>: null }
+                    </td>  
+                    
                     <td>{moment((moment.unix(result[3]))).startOf('minute').fromNow()}</td>
-                    <td> <Button variant="secondary" size="sm" data-id={result[0]} class="btn" onClick={event => removeDevice(event.target.dataset.id)}>
-                         <i data-id={result[0]} class="fa fa-trash" ></i></Button>
+                    <td> <Button variant="secondary" size="sm" data-id={result[0]} className="btn" onClick={event => removeDevice(event.target.dataset.id)}>
+                         <i data-id={result[0]} className="fa fa-trash" ></i></Button>
                     </td>
                   </tr>);
                 setMyDevices(rows);
-                console.log("rows:" ,rows);
               });
           }
-        });
+        })
       }
-    
       // else {
       //   let rows = [];
       //   for (let i = offset; i < pageSize + offset  ; i++) {
@@ -169,8 +184,8 @@ function Devices() {
       //               <td>{deviceData[1]}</td>
       //               <td>{deviceData[2]}</td>
       //               <td>{moment((moment.unix(deviceData[3]))).startOf('minute').fromNow()}</td>
-      //               <td> <Button variant="secondary" size="sm" data-id={deviceData[0]} class="btn" onClick={event => removeDevice(event.target.dataset.id)}>
-      //                    <i data-id={deviceData[0]} class="fa fa-trash" ></i></Button>
+      //               <td> <Button variant="secondary" size="sm" data-id={deviceData[0]} className="btn" onClick={event => removeDevice(event.target.dataset.id)}>
+      //                    <i data-id={deviceData[0]} className="fa fa-trash" ></i></Button>
       //               </td>
       //     </tr>);
       //     setDeviceData(null);
@@ -180,14 +195,13 @@ function Devices() {
       //   console.log(rows);
       // }
     }
-    
-
+  
       const handleSelect=(e)=>{
         setSelectValue(e.target.value);
         console.log("(e.target.value:" ,e.target.value);
      }
-    
-       const addDevice= async () =>{
+
+       const addDevice = async () =>{
            //   if (account.current ===  Object.values(result)[0]){
            //      toast("This device has been already added!");
            //   }
@@ -203,10 +217,8 @@ function Devices() {
           setIsLoading(false);
           })
         }
-
-     
-
-      const removeDevice= async (id) => {
+        
+      const removeDevice = async (id) => {
     
         console.log("id: ", id);
         try{
@@ -222,7 +234,6 @@ function Devices() {
           
         }
       }
-    
       // const updateDevice = async (id) => {
     
       //   try{
@@ -244,26 +255,25 @@ function Devices() {
           
       //   }
       // }
-      if(deviceData===null ){
-        getDeviceData(currentPage * pageSize, true);
-        
-      }
       
+      
+     
       useEffect(() => {
 
-        // getDeviceData(currentPage * pageSize, true);
-        
         web3.eth.getAccounts().then(r=>{
+          
           handleAccountsChanged(r);
+          getDeviceData(currentPage * pageSize, true);
+
         });
+
        
           }, []);
-
 
   return (
     <>
       <div className="content">
-        <Row>
+      
               <Col md="6">
             <Card className="card-user">
               <CardBody>
@@ -287,30 +297,28 @@ function Devices() {
                                    value={input}
                                    onInput={e => setInput(e.target.value)}     
                                />
-                               < div class="form-group  col-md-13 "><br></br>
+                               < div className="form-group  col-md-13 "><br></br>
      
                                 <select 
-                                id="inputDevices" class="form-control "
+                                id="inputDevices" className="form-control "
                                 value= {selectValue}
                                 onChange={handleSelect} 
                                 // onSelect={handleSelect}
                                 >
-                                        <option >Select Devices</option>
+                                  
                                         <option value="Wind">Wind</option>
-                                        <option value="Biomass">Biomass</option>
-                                        <option value="Hydo turbine">Hydo turbine</option>
-                                        <option value="Solar Thermal">Solar Thermal</option>
-                                        <option value="PV">PV</option>
-                                        <option value="EV">EV</option>
+                                        <option value="Hydro turbine">Hydro turbine</option>
+                                        <option value="PV">Photovoltaic(PV)</option>
+                                        <option value="EV">Electric vehicles(EV) </option>
                                         <option value="Battery">Battery</option>
                                       </select> 
-                                     {/* <h4>You selected {selectValue}</h4> */}       
+                                     <h4>You selected {selectValue}</h4>       
                                 </div>
                                {
                                  error && <div style={{color: `red`}}>Please enter a valid ID</div>
                                }
                                { isLoading ? 
-                               <div class="lds-hourglass"></div>
+                               <div className="lds-hourglass"></div>
                                  :
                                 <Button variant="primary" size="lg" onClick={addDevice}  > Add Device  </Button>
                                 }
@@ -349,7 +357,7 @@ function Devices() {
                      <tr>
                        <th>id</th>
                        <th>Name</th>
-                       <th>Type of Device</th>
+                       <th>Type of device</th>
                        <th>Date</th>
                      </tr>
                      </thead>
@@ -373,7 +381,7 @@ function Devices() {
                </Card>
                  
                  </Col>
-                 </Row>
+                 
                 
                 
       </div>

@@ -8,7 +8,7 @@ contract deviceRegistry {
 
     //@notice Struct to store all devices 
     //@dev ownerOfDevice is the current address which the device is connected
-    //@dev typeOfDevice, PV, EV, Solar, Biomass, Hydo Turbine or battery(Multiple)
+    //@dev typeOfDevice, PV, EV, Solar, Biomass, Hydro Turbine or battery(Multiple)
     //@dev isExist to match the registered device with bool value.
     struct device {
         address ownerOfDevice;

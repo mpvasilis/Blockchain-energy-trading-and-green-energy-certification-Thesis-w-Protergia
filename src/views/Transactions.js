@@ -262,17 +262,16 @@ const signInMetamask = async(accounts) => {
     console.log(rows);
   }}
 
-  if(myData===null){
-        getMyData(currentPageMP * pageSize, true);
-  }
+  
 
   useEffect(() => {
     
     web3.eth.getAccounts().then(r=>{
       handleAccountsChanged(r);
+      getMyData(currentPageMP * pageSize, true);
     });
     // getData(currentPage * pageSize);
-    // getMyData(currentPageMP * pageSize, true);
+    
   }, []);
 
   return (

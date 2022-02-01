@@ -151,10 +151,10 @@ function AdminNavbar(props) {
                   onClick={(e) => e.preventDefault()}
                 >
                   <div className="photo">
-                    <img
+                    {/* <img
                       alt="..."
                       src={require("assets/img/anime3.png").default}
-                    />
+                    /> */}
                   </div>
                   <b className="caret d-none d-lg-block d-xl-block" />
                   <p className="d-lg-none">Log out</p>
