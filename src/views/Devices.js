@@ -149,19 +149,20 @@ function Devices() {
               //  console.log("result:" ,result);
                 setDeviceData(result);
               
-                  rows.push( <tr key = {"deviceData_"+i + i++}>
+                  rows.push( <tr key = {"deviceData_" + result[1]}>
+                    
                     <td>{result[0]}</td>
                     <td >{result[2]}</td>
                     <td >{ result[1] == "3" ? 
-                            <i className="fas fa-solar-panel"> </i>: null }
+                            <i className="fas fa-solar-panel fa-2x"> </i>: null }
                          { result[1] == "4" ? 
-                             <i className="fas fa-charging-station"> </i>: null }
+                             <i className="fas fa-charging-station fa-2x"> </i>: null }
                          { result[1] == "2" ? 
-                             <i className="fas fa-tint"> </i>: null }
+                             <i className="fas fa-tint fa-2x"> </i>: null }
                          { result[1] == "1" ? 
-                             <i className="fas fa-wind"></i>: null }
+                             <i className="fas fa-wind fa-2x"></i>: null }
                          { result[1] == "5" ? 
-                             <i className="fas fa-battery-full" ></i>: null }
+                             <i className="fas fa-battery-full fa-2x" ></i>: null }
                               
                     </td>  
                     
@@ -171,7 +172,9 @@ function Devices() {
                     </td>
                   </tr>);
                 setMyDevices(rows);
+
               });
+              
           }
         })
       }
@@ -203,10 +206,17 @@ function Devices() {
      }
 
        const addDevice = async () =>{
+
+        if (input === ""){
+          setError(true);
+        }  
+        else{   
+               setIsLoading(true);
+        
            //   if (account.current ===  Object.values(result)[0]){
            //      toast("This device has been already added!");
            //   }
-           setIsLoading(true);
+           
       
        await  marketplace.methods.createDevice(input, selectValue ).send({from: account.current}).on('transactionHash', (th) => {
           console.log("name:" , input);
@@ -217,7 +227,7 @@ function Devices() {
           getDeviceData(currentPage * pageSize, true);
           setIsLoading(false);
           })
-        }
+        }}
         
       const removeDevice = async (id) => {
     

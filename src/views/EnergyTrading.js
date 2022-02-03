@@ -328,10 +328,9 @@ const signInMetamask = async() => {
       marketplace.methods.getTotalAsks().call().then(function(askNum){
       console.log("Total asks:" , askNum);
       setTotalAsks(askNum);
-      
       setPagesCountAsk(Math.ceil(askNum / pageSize));
-      if(askNum>0)
 
+      if(askNum>0)
       marketplace.methods.getAllAsks().call()
           .then(function(resultAsk){
             setDataAsks(resultAsk);
@@ -414,7 +413,8 @@ const signInMetamask = async() => {
       setPagesCountBid(Math.ceil(bidNum / pageSize));
       
       if(bidNum>0)  
-      marketplace.methods.getAllBids().call().then(function(resultBid){
+      marketplace.methods.getAllBids().call()
+          .then(function(resultBid){
               setDataBids(resultBid);
               // console.log("resultBid:" , resultBid);
               var rows = [];
@@ -439,7 +439,8 @@ const signInMetamask = async() => {
                   <td>{resultBid[3][i]/1000000}</td>
                   <td>{resultBid[4][i]/1000000}</td>
                   <td>{moment((moment.unix(resultBid[5][i]))).startOf('minute').fromNow()}</td>
-                  <td> <Button variant="secondary" size="sm" data-id={resultBid[2][i]} onClick={event=>{
+                  <td> 
+                    <Button variant="secondary" size="sm" data-id={resultBid[2][i]} onClick={event=>{
                       setId(event.target.dataset.id);
                       setTableOpenAsks(false);
                       setTableOpenBids(true);
@@ -649,17 +650,14 @@ const signInMetamask = async() => {
       .then(function(receipt){
         getDataMyBids(currentPageMB * myPageSize, true);
         getDataBids(currentPageΒ * pageSize, true);
-        
       })
     }catch(e){
       console.log(e);
-      
     }
   }
 
   const updateAsk = async (id, amount, price) => {
 
-     
     try{
       await marketplace.methods.updateAsk(id, amount * 1000000, price * 1000000).send({from: account.current}).on('transactionHash', (th) => {
         console.log(th);
@@ -704,8 +702,6 @@ const signInMetamask = async() => {
   const tradeAsk = async (id, amount) => {
 
         setEnergyModalKW('')
-        console.log("amount: ", amount);
-        console.log("id: ", id);
     try{
         await marketplace.methods.buyAsk(id, amount * 1000000).send({from: account.current}).on('transactionHash', (th) => {
           console.log(th);
@@ -744,10 +740,8 @@ const signInMetamask = async() => {
 
   const addBidOrAsk = async () => {
     
-  
   if (open === 'bid'){
 
-     
       if (energyKW === "" || priceBid === "" ){
         setError(true);
       }  
@@ -888,62 +882,49 @@ const signInMetamask = async() => {
     getDataBids(currentPageΒ * pageSize, true);
     
     marketplace.events.onNewBid({} , function(error, event){ 
-    console.log("event:" , event); 
     getDataBids(currentPageΒ * pageSize);
     }) 
    .on('data',  function(event){
-     console.log(event.returnValues);
+    //  console.log(event.returnValues);
    })
 
    marketplace.events.onNewAsk({} , function(error, event){ 
-    console.log("event:" , event);  
     getDataAsks(currentPageA * pageSize);
   }) 
    .on('data',  function(event){
-     console.log(event.returnValues);
    })
 
    marketplace.events.onUpdateAsk({} , function(error, event){ 
-      console.log("event:" , event); 
       getDataAsks(currentPageA * pageSize);
       getDataMyAsks(currentPageMA * myPageSize);
   }) 
    .on('data',  function(event){
-     console.log(event.returnValues);
    })
 
    marketplace.events.onUpdateBid({} , function(error, event){ 
-    console.log("event:" , event);  
     getDataBids(currentPageΒ * pageSize);
     getDataMyBids(currentPageMB * myPageSize);
    }) 
    .on('data',  function(event){
-     console.log(event.returnValues);
    })
 
    marketplace.events.bidRemoved({} , function(error, event){ 
-      console.log("event:" , event); 
       getDataBids(currentPageΒ * pageSize); 
   }) 
     .on('data',  function(event){
-      console.log(event.returnValues);
     })
     
     marketplace.events.askRemoved({} , function(error, event){ 
-      console.log("event:" , event); 
       getDataAsks(currentPageA * pageSize);
        }) 
       .on('changed',  function(event){
-         console.log(event.returnValues);
       })
     
       marketplace.events.onPurchased({} , function(error, event){ 
-      console.log("event:" , event); 
       getDataBids(currentPageΒ * pageSize); 
       getDataAsks(currentPageA * pageSize);
   }) 
       .on('data',  function(event){
-        console.log(event.returnValues);
        })
 
   }, []);

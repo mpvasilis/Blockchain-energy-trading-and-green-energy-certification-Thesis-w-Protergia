@@ -1,21 +1,11 @@
 /**
- *Submitted for verification at Etherscan.io on 2021-12-15
+ *Submitted for verification at Etherscan.io on 2022-02-02
 */
 
 pragma solidity >=0.4.21 <0.9.0;
 
 // SPDX-License-Identifier: MIT
 library SafeMath {
-    /**
-     * @dev Returns the addition of two unsigned integers, reverting on
-     * overflow.
-     *
-     * Counterpart to Solidity's `+` operator.
-     *
-     * Requirements:
-     *
-     * - Addition cannot overflow.
-     */
     function add(uint256 a, uint256 b) internal pure returns (uint256) {
         uint256 c = a + b;
         require(c >= a, "SafeMath: addition overflow");
@@ -23,30 +13,10 @@ library SafeMath {
         return c;
     }
 
-    /**
-     * @dev Returns the subtraction of two unsigned integers, reverting on
-     * overflow (when the result is negative).
-     *
-     * Counterpart to Solidity's `-` operator.
-     *
-     * Requirements:
-     *
-     * - Subtraction cannot overflow.
-     */
     function sub(uint256 a, uint256 b) internal pure returns (uint256) {
         return sub(a, b, "SafeMath: subtraction overflow");
     }
 
-    /**
-     * @dev Returns the subtraction of two unsigned integers, reverting with custom message on
-     * overflow (when the result is negative).
-     *
-     * Counterpart to Solidity's `-` operator.
-     *
-     * Requirements:
-     *
-     * - Subtraction cannot overflow.
-     */
     function sub(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
         require(b <= a, errorMessage);
         uint256 c = a - b;
@@ -54,16 +24,6 @@ library SafeMath {
         return c;
     }
 
-    /**
-     * @dev Returns the multiplication of two unsigned integers, reverting on
-     * overflow.
-     *
-     * Counterpart to Solidity's `*` operator.
-     *
-     * Requirements:
-     *
-     * - Multiplication cannot overflow.
-     */
     function mul(uint256 a, uint256 b) internal pure returns (uint256) {
         // Gas optimization: this is cheaper than requiring 'a' not being zero, but the
         // benefit is lost if 'b' is also tested.
@@ -78,34 +38,10 @@ library SafeMath {
         return c;
     }
 
-    /**
-     * @dev Returns the integer division of two unsigned integers. Reverts on
-     * division by zero. The result is rounded towards zero.
-     *
-     * Counterpart to Solidity's `/` operator. Note: this function uses a
-     * `revert` opcode (which leaves remaining gas untouched) while Solidity
-     * uses an invalid opcode to revert (consuming all remaining gas).
-     *
-     * Requirements:
-     *
-     * - The divisor cannot be zero.
-     */
     function div(uint256 a, uint256 b) internal pure returns (uint256) {
         return div(a, b, "SafeMath: division by zero");
     }
 
-    /**
-     * @dev Returns the integer division of two unsigned integers. Reverts with custom message on
-     * division by zero. The result is rounded towards zero.
-     *
-     * Counterpart to Solidity's `/` operator. Note: this function uses a
-     * `revert` opcode (which leaves remaining gas untouched) while Solidity
-     * uses an invalid opcode to revert (consuming all remaining gas).
-     *
-     * Requirements:
-     *
-     * - The divisor cannot be zero.
-     */
     function div(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
         require(b > 0, errorMessage);
         uint256 c = a / b;
@@ -114,59 +50,20 @@ library SafeMath {
         return c;
     }
 
-    /**
-     * @dev Returns the remainder of dividing two unsigned integers. (unsigned integer modulo),
-     * Reverts when dividing by zero.
-     *
-     * Counterpart to Solidity's `%` operator. This function uses a `revert`
-     * opcode (which leaves remaining gas untouched) while Solidity uses an
-     * invalid opcode to revert (consuming all remaining gas).
-     *
-     * Requirements:
-     *
-     * - The divisor cannot be zero.
-     */
     function mod(uint256 a, uint256 b) internal pure returns (uint256) {
         return mod(a, b, "SafeMath: modulo by zero");
     }
 
-    /**
-     * @dev Returns the remainder of dividing two unsigned integers. (unsigned integer modulo),
-     * Reverts with custom message when dividing by zero.
-     *
-     * Counterpart to Solidity's `%` operator. This function uses a `revert`
-     * opcode (which leaves remaining gas untouched) while Solidity uses an
-     * invalid opcode to revert (consuming all remaining gas).
-     *
-     * Requirements:
-     *
-     * - The divisor cannot be zero.
-     */
     function mod(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
         require(b != 0, errorMessage);
         return a % b;
     }
 }
-// SPDX-License-Identifier: MIT
 
-/**
- * @title Counters
- * @author Matt Condon (@shrugs)
- * @dev Provides counters that can only be incremented or decremented by one. This can be used e.g. to track the number
- * of elements in a mapping, issuing ERC721 ids, or counting request ids.
- *
- * Include with `using Counters for Counters.Counter;`
- * Since it is not possible to overflow a 256 bit integer with increments of one, `increment` can skip the {SafeMath}
- * overflow check, thereby saving gas. This does assume however correct usage, in that the underlying `_value` is never
- * directly accessed.
- */
 library Counters {
     using SafeMath for uint256;
 
     struct Counter {
-        // This variable should never be directly accessed by users of the library: interactions must be restricted to
-        // the library's function. As of Solidity v0.5.2, this cannot be enforced, though there is a proposal to add
-        // this feature: see https://github.com/ethereum/solidity/issues/4637
         uint256 _value; // default: 0
     }
 
@@ -189,8 +86,10 @@ contract Device {
     using Counters for Counters.Counter;
     Counters.Counter private id;
 
+    enum Type {Wind, Biomass, Hydro, Solar, PV, EV, Battery}
+
     event onDeviceAdded(address indexed ownerOfDevice, uint date, string name);
-    event onDeviceUpdated(address indexed ownerOfDevice, string name, string typeDevice, uint date, uint id);
+    event onDeviceUpdated(address indexed ownerOfDevice, string name, uint typeDevice, uint date, uint id);
     event onUpdated(address indexed ownerOfDevice, uint date, uint energy, uint id);
     event onDeviceTransferOwnership(address oldOwner, address indexed newOwner, uint id);
     event onDeviceRemoved(address indexed owner, uint id, uint date);
@@ -198,8 +97,8 @@ contract Device {
 
     struct device {
         address owner;
-        string typeOfDevice;
         string name;
+        uint typeOfDevice;
         uint energy;
         uint uuID;
         uint date;
@@ -208,9 +107,7 @@ contract Device {
     mapping(uint => uint) deviceMap;
     device[] devices;
 
-    function createDevice(string memory _typeOfDevice, string memory _name) public {
-
-        ///@notice must added a valid way to check the validity of device input
+    function createDevice(string memory _name, uint _typeOfDevice) public {
 
         address _owner = msg.sender;
         uint currentTime = block.timestamp;
@@ -242,7 +139,7 @@ contract Device {
         }
     }
 
-    function updateDevice(uint _id, string memory _name, string memory _typeOfDevice) public {
+    function updateDevice(uint _id, string memory _name, uint _typeOfDevice) public {
         address _owner = msg.sender;
         uint index = deviceMap[_id];
         devices[index].name = _name;
@@ -303,10 +200,7 @@ contract Device {
         return idsList;
     }
 
-    ///@notice In order to iterate with the devices of a given id we need this extra function with the current legth of device array
-    ///@notice So in the Front end we would need to get the length and iterate for each device that we want to list in our platform 
-    ///@notice and get the index for that device
-    function getDeviceByID(uint _id) public view returns(uint, string memory, string memory, uint){
+    function getDeviceByID(uint _id) public view returns(uint, uint, string memory, uint){
         uint index = deviceMap[_id];
         require(devices.length > index, "Wrong index");
         require(devices[index].uuID == _id, "Wrong ID");
@@ -324,9 +218,6 @@ contract Device {
         return res;
     }
 
-    ///@notice Solidity generally can not return dynamic string arrays
-    ///@notice so, you can use this function to show the available energy per device
-    ///@notice and name, type of device as well, when someone click on it.
     function getEnergyPerDevice(uint _id) public view returns(uint) {
         uint index = deviceMap[_id];
         require(devices.length > index, "Wrong index");
@@ -334,7 +225,7 @@ contract Device {
         return(devices[index].energy);
     }
 
-    function getTypeOfDevice(uint _id) public view returns(string memory) {
+    function getTypeOfDevice(uint _id) public view returns(uint) {
         uint index = deviceMap[_id];
         require(devices.length > index, "Wrong index");
         require(devices[index].uuID == _id, "Wrong ID");
@@ -764,7 +655,7 @@ contract Marketplace is Device {
         return(_seller, _buyers, _ids, _energies, _prices, _dates);
     }
 
-    function getCountOfPurchases() private view returns(uint){
+    function getCountOfPurchases() public view returns(uint){
         address currentAddr = msg.sender;
         uint count = 0;
         for(uint i = 0; i<listOfPurchases.length; i++){
