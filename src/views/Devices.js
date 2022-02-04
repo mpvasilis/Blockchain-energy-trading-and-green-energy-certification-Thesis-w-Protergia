@@ -146,7 +146,6 @@ function Devices() {
           marketplace.methods.getDeviceByID(total[i]).call({from: account.current})
               .then(function(result){
                console.log("result:" ,result);
-               console.log("total:" ,total);
 
                 setDeviceData(result);
             
@@ -154,15 +153,15 @@ function Devices() {
                     
                     <td>{result[0]}</td>
                     <td >{result[2]}</td>
-                    <td >{ result[1] == "3" ? 
+                    <td >{result[1] == "3" ? 
                             <i className="fas fa-solar-panel fa-2x"> </i>: null }
-                         { result[1] == "4" ? 
+                         {result[1] == "4" ? 
                              <i className="fas fa-charging-station fa-2x"> </i>: null }
-                         { result[1] == "2" ? 
+                         {result[1] == "2" ? 
                              <i className="fas fa-tint fa-2x"> </i>: null }
-                         { result[1] == "1" ? 
+                         {result[1] == "1" ? 
                              <i className="fas fa-wind fa-2x"></i>: null }
-                         { result[1] == "5" ? 
+                         {result[1] == "5" ? 
                              <i className="fas fa-battery-full fa-2x" ></i>: null }
                               
                     </td>  
@@ -225,7 +224,8 @@ function Devices() {
            toast("A device has been succesfully added!")    
         })
         .then(function(e) {
-          getDeviceData(currentPage * pageSize, true);
+          getDeviceData();
+          ;
           setIsLoading(false);
           })
         }}
@@ -239,7 +239,8 @@ function Devices() {
             toast("You deleted your device successfully!") 
           })
           .then(function(){
-            getDeviceData();   
+            getDeviceData();
+            ;   
           })
         }catch(e){
           console.log(e);
@@ -273,11 +274,24 @@ function Devices() {
         web3.eth.getAccounts().then(r=>{
           handleAccountsChanged(r);
           console.log("r:", r)
-          getDeviceData();
+          getDeviceData(currentPage  * pageSize, true);
+          ;
         });
 
+        marketplace.events.onDeviceAdded({} , function(error, event){ 
+           getDeviceData(currentPage * pageSize);
+           }) 
+          .on('data',  function(event){
+            console.log('event.returnValues', event.returnValues);
+          })
 
-          }, []);
+        marketplace.events.onDeviceRemoved({} , function(error, event){ 
+           getDeviceData(currentPage * pageSize);
+           }) 
+          .on('data',  function(event){
+            console.log('event.returnValues', event.returnValues);
+          })
+      }, []);
 
   return (
     <>
@@ -314,7 +328,6 @@ function Devices() {
                                 onChange={handleSelect} 
                                 // onSelect={handleSelect}
                                 >
-
                                         <option value="1">Wind</option>
                                         <option value="2">Hydropower</option>
                                         <option value="3">Photovoltaic(PV)</option>
