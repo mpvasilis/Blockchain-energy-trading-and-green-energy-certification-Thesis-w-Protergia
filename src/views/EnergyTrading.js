@@ -921,7 +921,7 @@ const signInMetamask = async() => {
     marketplace.events.askRemoved({} , function(error, event){ 
       getDataAsks(currentPageA * pageSize);
        }) 
-      .on('changed',  function(event){
+      .on('data',  function(event){
       })
     
       marketplace.events.onPurchased({} , function(error, event){ 

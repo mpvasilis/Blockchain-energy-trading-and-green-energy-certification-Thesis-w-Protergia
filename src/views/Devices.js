@@ -42,7 +42,6 @@ var abi = [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address"
 const marketplace = new web3.eth.Contract(abi, contractAddress);
 
 function Devices() {
-  const [open, setOpen] = useState('add');
   const [input, setInput] = useState(''); 
   const account = useRef('');
   const [error, setError] = useState(false);
@@ -55,7 +54,7 @@ function Devices() {
    const [currentPage, setCurrentPage] = useState(0);
    const [pagesCount, setPagesCount] = useState(0);
    const[isLoading, setIsLoading] = useState(false);
-   const pageSize = 10 ;
+   const pageSize = 5 ;
 
    // <i class="cil-battery-charge"></i>
    // fas fa-wind	
@@ -99,7 +98,7 @@ function Devices() {
     
   };
   const handleAccountsChanged = (accounts) => {
-    console.log("ACCS: ", accounts);
+    // console.log("ACCS: ", accounts);
     if(accounts.length === 0) {
       setIsConnected(false)
       console.log("connect to metamsk");
@@ -135,6 +134,8 @@ function Devices() {
   };
 
       const getDeviceData = (offset, update = false)=>{
+
+        if(deviceData===null || update){
 
         marketplace.methods.getMyDevices().call({from: account.current}).then(function(total){
             console.log("total devices:" , total);
@@ -172,39 +173,45 @@ function Devices() {
                     </td>
                   </tr>);
                 setMyDevices(rows);
-
-              });
-              
+              });    
           }
         })
-      
-      // else {
-      //   let rows = [];
-      //   for (let i = offset; i < pageSize + offset  ; i++) {
+      }
+      else {
+        let rows = [];
+    
+          rows.push(<tr key = {"deviceData_" + Math.random()}>
+                    
+                    <td>{deviceData[0]}</td>
+                    <td >{deviceData[2]}</td>
+                    <td >{deviceData[1] == "3" ? 
+                            <i className="fas fa-solar-panel fa-2x"> </i>: null }
+                         {deviceData[1] == "4" ? 
+                             <i className="fas fa-charging-station fa-2x"> </i>: null }
+                         {deviceData[1] == "2" ? 
+                             <i className="fas fa-tint fa-2x"> </i>: null }
+                         {deviceData[1] == "1" ? 
+                             <i className="fas fa-wind fa-2x"></i>: null }
+                         {deviceData[1] == "5" ? 
+                             <i className="fas fa-battery-full fa-2x" ></i>: null }
+                    </td>         
+                    <td>{moment((moment.unix(deviceData[3]))).startOf('minute').fromNow()}</td>
+                    <td> <Button variant="secondary" size="sm" data-id={deviceData[0]} className="btn" onClick={event => removeDevice(event.target.dataset.id)}>
+                         <i data-id={deviceData[0]} className="fa fa-trash" ></i></Button>
+                    </td>
+          </tr>);
+          setDeviceData(null);
           
-      //     console.log("offset2:" ,offset);
-      //     rows.push( <tr>
-      //               <td>{deviceData[0]}</td>
-      //               <td>{deviceData[1]}</td>
-      //               <td>{deviceData[2]}</td>
-      //               <td>{moment((moment.unix(deviceData[3]))).startOf('minute').fromNow()}</td>
-      //               <td> <Button variant="secondary" size="sm" data-id={deviceData[0]} className="btn" onClick={event => removeDevice(event.target.dataset.id)}>
-      //                    <i data-id={deviceData[0]} className="fa fa-trash" ></i></Button>
-      //               </td>
-      //     </tr>);
-      //     setDeviceData(null);
-          
-      //   }
-      //   setMyDevices(rows)
-      //   console.log(rows);
-      // }
+        
+        setMyDevices(rows)
+        console.log(rows);
+      }
     }
   
       const handleSelect=(e)=>{
         setSelectValue(e.target.value);
         console.log("(e.target.value:" ,e.target.value);
      }
-
        const addDevice = async () =>{
 
         if (input === ""){
@@ -216,15 +223,13 @@ function Devices() {
            //   if (account.current ===  Object.values(result)[0]){
            //      toast("This device has been already added!");
            //   }
-           
-      
        await  marketplace.methods.createDevice(input, selectValue ).send({from: account.current}).on('transactionHash', (th) => {
           console.log("name:" , input);
           console.log("type:" , selectValue );
            toast("A device has been succesfully added!")    
         })
         .then(function(e) {
-          getDeviceData();
+          getDeviceData(currentPage * pageSize, true);
           ;
           setIsLoading(false);
           })
@@ -239,7 +244,7 @@ function Devices() {
             toast("You deleted your device successfully!") 
           })
           .then(function(){
-            getDeviceData();
+            getDeviceData(currentPage * pageSize, true);
             ;   
           })
         }catch(e){
@@ -385,7 +390,6 @@ function Devices() {
                      </thead>
                      <tbody>
                      {myDevices}
-
                      </tbody>
                    </Table> 
                    : <></>}
