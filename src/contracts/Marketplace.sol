@@ -1,5 +1,5 @@
 /**
- *Submitted for verification at Etherscan.io on 2022-02-02
+ *Submitted for verification at Etherscan.io on 2022-02-04
 */
 
 pragma solidity >=0.4.21 <0.9.0;
@@ -629,7 +629,7 @@ contract Marketplace is Device {
         for(uint i = 0; i < listOfEnergyAsks.length; i++){
             buyers[i] = listOfEnergyAsks[i].buyer;
             _ids[i] = listOfEnergyAsks[i].idOfAsk;
-            _idDevice[i] = listOfEnergyBids[i].idOfDevice;
+            _idDevice[i] = listOfEnergyAsks[i].idOfDevice;
             _energies[i] = listOfEnergyAsks[i].energy;
             _prices[i] = listOfEnergyAsks[i].price;
             _dates[i] = listOfEnergyAsks[i].timestamp;
