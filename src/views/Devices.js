@@ -7,13 +7,7 @@ import "assets/css/black-dashboard-react.css";
 import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import { CgSun } from "react-icons/fa";
-import { GiWindTurbine } from "react-icons/fa";
-import { IoWaterSharp } from "react-icons/fa";
-// fas fa-solar-panel
-// fas fa-battery-full
-// fas fa-wind
-// fas fa-charging-station
+
 import {
 
   Card,
@@ -46,15 +40,18 @@ function Devices() {
   const account = useRef('');
   const [error, setError] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
-   const [selectValue,setSelectValue]=useState('1');
-   const [typeOfDevice,setTypeOfDevice]=useState('');
-   const [deviceData, setDeviceData] = useState(null);
-   const [totalDevices, setTotalDevices] = useState(0);
-   const [myDevices, setMyDevices] = useState(null);
-   const [currentPage, setCurrentPage] = useState(0);
-   const [pagesCount, setPagesCount] = useState(0);
-   const[isLoading, setIsLoading] = useState(false);
-   const pageSize = 5 ;
+  const [selectValue,setSelectValue]=useState('1');
+  const [typeOfDevice,setTypeOfDevice]=useState('');
+  const [deviceData, setDeviceData] = useState(null);
+  const [totalDevices, setTotalDevices] = useState(0);
+  const [myDevices, setMyDevices] = useState(null);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [pagesCount, setPagesCount] = useState(0);
+  const[isLoading, setIsLoading] = useState(false);
+  const [Ress, setRess] = useState('');
+  const [Crg, setCrg] = useState('');
+  const [id, setId] = useState(0);
+  const pageSize = 5 ;
 
    // <i class="cil-battery-charge"></i>
    // fas fa-wind	
@@ -133,6 +130,24 @@ function Devices() {
      console.log(_currentPage);
   };
 
+  const SetCrg = (id) =>{
+
+    marketplace.methods.getEnergyPerDevice(id).call().then(function(crg){
+       setCrg(crg);})
+  }
+
+const setRes = () => {
+    web3.eth.getAccounts().then(function(accounts){
+    var acc=accounts[0];
+    marketplace.methods.getTotalEnergy().call({from: acc}).then(function(res){
+
+   setRess(res);
+
+console.log("res:", res);
+
+})}
+)};
+
       const getDeviceData = (offset, update = false)=>{
 
         if(deviceData===null || update){
@@ -146,7 +161,7 @@ function Devices() {
          for (var  i = 0  ; i < total.length ; i++) {
           marketplace.methods.getDeviceByID(total[i]).call({from: account.current})
               .then(function(result){
-               console.log("result:" ,result);
+              //  console.log("result:" ,result);
 
                 setDeviceData(result);
             
@@ -166,8 +181,12 @@ function Devices() {
                              <i className="fas fa-battery-full fa-2x" ></i>: null }
                               
                     </td>  
-                    
                     <td>{moment((moment.unix(result[3]))).startOf('minute').fromNow()}</td>
+                    <td>
+                    <Button variant="secondary" size="sm" data-id={result[0]} onClick={event => {setId(event.target.dataset.id); },event => SetCrg(event.target.dataset.id)}class="btn">
+                         <i data-id={result[0]} class="fa fa-edit" ></i>
+                    </Button>
+                    </td>
                     <td> <Button variant="secondary" size="sm" data-id={result[0]} className="btn" onClick={event => removeDevice(event.target.dataset.id)}>
                          <i data-id={result[0]} className="fa fa-trash" ></i></Button>
                     </td>
@@ -252,6 +271,7 @@ function Devices() {
           
         }
       }
+     
       // const updateDevice = async (id) => {
     
       //   try{
@@ -280,6 +300,7 @@ function Devices() {
           handleAccountsChanged(r);
           console.log("r:", r)
           getDeviceData(currentPage  * pageSize, true);
+          setRes();
           ;
         });
 
@@ -300,13 +321,14 @@ function Devices() {
 
   return (
     <>
-      <div className="content">
-      
-              <Col md="6">
+      <div className="content"> 
+      <Row>
+              <Col md="7">
             <Card className="card-user">
               <CardBody>
                 <CardText/>
                 <div>
+                  
                    {isConnected
                       ?   <form>
                       <div className="author">
@@ -350,7 +372,8 @@ function Devices() {
                                 <Button variant="primary" size="lg" onClick={addDevice}  > Add Device  </Button>
                                 }
                              </FormGroup>
-                             </Col>       
+                             </Col>   
+                                 
                              </div>    
                              </form>
 
@@ -369,9 +392,7 @@ function Devices() {
                </div> 
                 </CardBody>
                 </Card>
-                </Col>
-                <Col md="7">
-                   
+               
                    <Card>
                  <CardHeader>
                    <h5 className="title">List of my devices</h5>
@@ -407,6 +428,27 @@ function Devices() {
                </Card>
                  
                  </Col>
+            <Col md="5">
+                  <Card className="card-users">
+                  <CardBody> 
+                  <div className="authors">
+          
+                        <div className="block block-ones" />
+                        <div className="block block-twos" />
+                        <div className="block block-threes" />
+                        <div className="block block-fours" />
+                        <h2 className="total-energy">Total energy : {Ress}</h2>
+                        <h2 className="nrg-by-id">Energy : {Crg}</h2>
+                        <p className="energy-byid"></p>
+                   </div>    
+                   </CardBody>
+                   </Card>
+             </Col>
+                                 
+                       
+                   
+                 
+                 </Row>
                  
                 
                 
