@@ -5,9 +5,10 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "5.15.1",
     "@metamask/detect-provider": "^1.2.0",
+    "@openzeppelin/contracts": "^4.5.0",
     "@react-pdf/renderer": "^2.0.19",
     "@reduxjs/toolkit": "^1.6.1",
-    "@truffle/hdwallet-provider": "^1.2.1",
+    "@truffle/hdwallet-provider": "^1.7.0",
     "babel-polyfill": "^6.26.0",
     "babel-register": "^6.26.0",
     "bootstrap": "4.5.3",
@@ -37,6 +38,7 @@
     "react-toastify": "^8.0.2",
     "reactstrap": "8.7.1",
     "truffle": "^5.1.54",
+    "truffle-hdwallet-provider": "^1.0.17",
     "web3": "^1.5.2",
     "yup": "^0.32.9"
   },

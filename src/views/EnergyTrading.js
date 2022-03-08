@@ -362,7 +362,7 @@ const signInMetamask = async() => {
                   <td>{moment((moment.unix(resultAsk[5][i]))).startOf('minute').fromNow()}</td>
                 <td>
                
-               <Button variant="secondary" size="sm" data-id={resultAsk[1][i]} onClick={event=>{
+               <Button variant="secondary" size="sm" data-id={resultAsk[2][i]} onClick={event=>{
                  setId(event.target.dataset.id);
                  setTableOpenBids(false);
                  setTableOpenAsks(true);
@@ -397,7 +397,12 @@ const signInMetamask = async() => {
          <td>{dataAsks[4][i]/1000000}</td>
           <td>{moment((moment.unix(dataAsks[5][i]))).startOf('minute').fromNow()}</td>
         <td> 
-        <Button variant="secondary" size="sm" data-id={dataAsks[1][i]}onClick={event=>{setId(event.target.dataset.id); toggleModal();}}>Trade</Button>
+        <Button variant="secondary" size="sm" data-id={dataAsks[2][i]}onClick={event=>{
+          setId(event.target.dataset.id);
+          toggleModal();
+          setTableOpenBids(false);
+          setTableOpenAsks(true);
+          }}>Trade</Button>
          </td>
       </tr>);
       setDataAsks(null);
@@ -482,6 +487,8 @@ const signInMetamask = async() => {
         <td>{moment((moment.unix(dataBids[5][i]))).startOf('minute').fromNow()}</td>
         <td> <Button variant="secondary" size="sm" data-id={dataBids[2][i]} onClick={event=>{
           setId(event.target.dataset.id); 
+          setTableOpenAsks(false);
+          setTableOpenBids(true);
           toggleModal();}}
           >Trade</Button>
         </td>

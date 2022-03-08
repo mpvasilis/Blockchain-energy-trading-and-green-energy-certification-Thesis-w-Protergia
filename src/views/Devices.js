@@ -429,7 +429,7 @@ console.log("res:", res);
                  
                  </Col>
             <Col md="5">
-                  <Card className="card-users">
+                  
                   <CardBody> 
                   <div className="authors">
           
@@ -438,11 +438,11 @@ console.log("res:", res);
                         <div className="block block-threes" />
                         <div className="block block-fours" />
                         <h2 className="total-energy">Total energy : {Ress}</h2>
-                        <h2 className="nrg-by-id">Energy : {Crg}</h2>
+                        <h2 className="nrg-by-id"> Energy : {Crg}</h2>
                         <p className="energy-byid"></p>
                    </div>    
                    </CardBody>
-                   </Card>
+                   
              </Col>
                                  
                        

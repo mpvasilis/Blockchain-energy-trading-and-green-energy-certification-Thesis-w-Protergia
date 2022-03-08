@@ -4,7 +4,7 @@ require("babel-polyfill");
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 //aspect lamp jacket pet vehicle essence child salad uphold fold nurse judge
 //near ethics bitter absorb treat alien ski other exile cluster lonely arrive (Chris R)
-const MNEMONIC = 'vibrant high banana genius excess decorate liberty club clip business hand hill';
+const MNEMONIC = 'coil dry juice rocket cotton mention tomato hungry review pyramid equip clown';
 //get test ether for ropsten from https://moonborrow.com/
 module.exports = {
     networks: {
@@ -46,6 +46,7 @@ module.exports = {
     contracts_build_directory: "./src/abis/",
     compilers: {
         solc: {
+            version: "^0.8.4",
             optimizer: {
                 enabled: true,
                 runs: 200,
